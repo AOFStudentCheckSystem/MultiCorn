@@ -1,0 +1,64 @@
+group 'cn.com.guardinatech.aofgo'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext {
+        kotlin_version = '1.2.0'
+        vertx_version = '3.5.0'
+        hibernate_version = '5.2.12.Final'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+sourceCompatibility = 1.8
+
+
+ext {
+    log4j2Version = '2.8.2'
+    slf4jVersion = '1.7.25'
+}
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile "io.vertx:vertx-core:$vertx_version"
+    compile "io.vertx:vertx-lang-kotlin-coroutines:$vertx_version"
+
+    // Hibernate
+    compile group: 'org.hibernate', name: 'hibernate-core', version: "$hibernate_version"
+    compile group: 'org.hibernate', name: 'hibernate-c3p0', version: "$hibernate_version"
+    compile group: 'org.hibernate', name: 'hibernate-envers', version: "$hibernate_version"
+
+    // Logging
+    compile "org.apache.logging.log4j:log4j-api:$log4j2Version",
+            "org.apache.logging.log4j:log4j-core:$log4j2Version",
+            "org.apache.logging.log4j:log4j-slf4j-impl:$log4j2Version",
+            "org.apache.logging.log4j:log4j-jcl:$log4j2Version",
+            "org.slf4j:slf4j-api:$slf4jVersion"
+
+    // Kotlin Language Libraries
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.3'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
