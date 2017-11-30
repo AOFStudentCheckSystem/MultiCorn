@@ -9,4 +9,5 @@ import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) {
     val logger = LoggerFactory.getLogger("Main")
+    logger.debug("Starting Application...")
 }

@@ -69,6 +69,9 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
+ext.debug = project.hasProperty('debug')
+
+
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
@@ -81,12 +84,20 @@ task copyLibraries(type: Copy) {
     into("$buildDir/out/std/libs")
 }
 
-jar {
+processResources {
+    if (!debug) {
+        println("Building Release")
+        exclude("log4j2-test.xml")
+    } else {
+        println("Building DEBUG")
+    }
+}
 
+jar {
     manifest {
         attributes(
                 "Manifest-Version": "1.0",
-                'Class-Path': configurations.runtime.files.collect { "libs/$it.name" }.join(' '),
+                'Class-Path': configurations.runtime.files.collect { "libs/$it.name" }.join(' ') + ' libs/',
                 "Main-Class": "cn.com.guardiantech.aofgo.backend.AOFGOBackendMainKt"
         )
     }

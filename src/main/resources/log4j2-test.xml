@@ -1,0 +1,18 @@
+<Configuration>
+    <Appenders>
+        <Console name="SysOut" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%logger{1}/%level]: %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.reflections" level="OFF"/>
+        <Logger name="com.mchange" level="OFF"/>
+        <Logger name="io.netty" level="OFF"/>
+        <Logger name="com.j256.simplemagic" level="WARN"/>
+        <Logger name="io.vertx" level="WARN"/>
+        <Logger name="io.vertx.ext.web.impl.RouterImpl" level="trace"/>
+        <Root level="trace">
+            <AppenderRef ref="SysOut"/>
+        </Root>
+    </Loggers>
+</Configuration>
