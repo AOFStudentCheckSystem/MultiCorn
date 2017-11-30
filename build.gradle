@@ -17,7 +17,6 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'application'
 apply plugin: 'kotlin'
 apply plugin: "kotlin-allopen"
 apply plugin: "kotlin-noarg"
@@ -32,7 +31,6 @@ noArg {
 }
 
 sourceCompatibility = 1.8
-mainClassName = 'cn.com.guardiantech.aofgo.backend.AOFGOBackendMainKt'
 
 ext {
     log4j2Version = '2.8.2'
@@ -82,9 +80,17 @@ task copyLibraries(type: Copy) {
     from configurations.runtime
     into("$buildDir/out/std/libs")
 }
-// TODO missing lib classpath
 
 jar {
+
+    manifest {
+        attributes(
+                "Manifest-Version": "1.0",
+                'Class-Path': configurations.runtime.files.collect { "libs/$it.name" }.join(' '),
+                "Main-Class": "cn.com.guardiantech.aofgo.backend.AOFGOBackendMainKt"
+        )
+    }
+
     dependsOn(copyLibraries)
     destinationDir = file("$buildDir/out/std/")
 }
