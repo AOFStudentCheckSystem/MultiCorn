@@ -14,6 +14,6 @@ import javax.persistence.Id
 class Subject (
     @Id
     @GeneratedValue
-    val id: Long = -1,
+    val id: Long = -1
 
 )
