@@ -11,7 +11,8 @@
         <Logger name="com.j256.simplemagic" level="WARN"/>
         <Logger name="io.vertx" level="WARN"/>
         <Logger name="io.vertx.ext.web.impl.RouterImpl" level="trace"/>
-        <Root level="trace">
+        <Logger name="cn.com" level="TRACE"/>
+        <Root level="INFO">
             <AppenderRef ref="SysOut"/>
         </Root>
     </Loggers>

@@ -1,12 +1,11 @@
 package cn.com.guardiantech.aofgo.backend
 
+import cn.com.guardiantech.aofgo.backend.util.ConfigurationUtil
 import cn.com.guardiantech.aofgo.backend.util.HibernateUtil
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
 import org.hibernate.cfg.Environment
 import org.slf4j.LoggerFactory
-import javax.persistence.EntityManagerFactory
-import javax.persistence.Persistence
 
 /**
  * Created by Codetector on 29/11/2017.
@@ -14,7 +13,7 @@ import javax.persistence.Persistence
  */
 
 object AOFGOBackendMain {
-    private val logger = LoggerFactory.getLogger("Main")
+    private val logger = LoggerFactory.getLogger(AOFGOBackendMain::class.java)
     lateinit var sf: SessionFactory
 
     @JvmStatic
@@ -37,11 +36,17 @@ object AOFGOBackendMain {
         logger.info("============== END Entity Mapping ==============")
 
 
+        config.setProperty(Environment.URL, "jdbc:mysql://127.0.0.1:3306/aofgo?useSSL=false")
+        config.setProperty(Environment.USER, ConfigurationUtil.getSystemProperty("dbuser"))
+        config.setProperty(Environment.PASS, ConfigurationUtil.getSystemProperty("dbpass"))
 
-        config.setProperty(Environment.JPA_JDBC_USER, "")
-        config.setProperty(Environment.JPA_JDBC_PASSWORD, "")
-
-        logger.debug("Hibernate Configuration: ", config.properties)
+        logger.debug("Hibernate Configuration: ${config.properties}")
         this.sf = config.buildSessionFactory()
+        val session = this.sf.openSession()
+        session.beginTransaction()
+        session.createNativeQuery("SELECT 1;")
+        session.transaction.commit()
+        session.close()
+
     }
 }
