@@ -15,5 +15,4 @@ class Subject (
     @Id
     @GeneratedValue
     val id: Long = -1
-
 )
