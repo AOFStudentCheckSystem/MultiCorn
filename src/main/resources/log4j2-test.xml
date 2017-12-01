@@ -5,13 +5,17 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="org.reflections" level="OFF"/>
+        <Logger name="org.reflections" level="WARN"/>
         <Logger name="com.mchange" level="OFF"/>
         <Logger name="io.netty" level="OFF"/>
         <Logger name="com.j256.simplemagic" level="WARN"/>
         <Logger name="io.vertx" level="WARN"/>
         <Logger name="io.vertx.ext.web.impl.RouterImpl" level="trace"/>
-        <Logger name="cn.com" level="TRACE"/>
+
+        <Logger name="org.hibernate" level="WARN"/>
+        <Logger name="org.hibernate.SQL" level="DEBUG"/>
+
+        <Logger name="cn.com" level="DEBUG"/>
         <Root level="INFO">
             <AppenderRef ref="SysOut"/>
         </Root>

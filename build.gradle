@@ -109,3 +109,8 @@ jar {
     dependsOn(copyLibraries)
     destinationDir = file("$buildDir/out/std/")
 }
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
