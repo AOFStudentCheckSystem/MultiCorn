@@ -3,6 +3,7 @@ package cn.com.guardiantech.aofgo.backend
 import cn.com.guardiantech.aofgo.backend.util.ConfigurationUtil
 import cn.com.guardiantech.aofgo.backend.util.HibernateUtil
 import cn.com.guardiantech.aofgo.backend.util.*
+import io.vertx.core.Vertx
 import kotlinx.coroutines.experimental.runBlocking
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
@@ -17,14 +18,20 @@ import org.slf4j.LoggerFactory
 object AOFGOBackendMain {
     private val logger = LoggerFactory.getLogger(AOFGOBackendMain::class.java)
     lateinit var sessionFactory: SessionFactory
+        private set
+    lateinit var sharedVertx: Vertx
+        private set
 
     @JvmStatic
     fun main(args: Array<String>) {
         System.setProperty("org.jboss.logging.provider", "slf4j");
+        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
+
         val beginTS = System.currentTimeMillis()
         logger.info("Starting Application...")
 
         // Configure and Initialize Hibernate
+
         logger.info("Initializing Hibernate...")
         logger.info("Loading Hibernate Configuration...")
         val config = Configuration().configure(this.javaClass.getResource("/persistence.xml"))
@@ -48,5 +55,12 @@ object AOFGOBackendMain {
             }
         }
         logger.info("Hibernate Initialized")
+
+
+        // Initialize Web Service
+        logger.info("Initializing Web Service")
+        this.sharedVertx = Vertx.vertx()
+
+
     }
 }
