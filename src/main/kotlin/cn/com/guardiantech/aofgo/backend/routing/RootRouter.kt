@@ -4,11 +4,13 @@ import cn.com.guardiantech.aofgo.backend.annotation.Controller
 import cn.com.guardiantech.aofgo.backend.annotation.RouteMapping
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
+import io.vertx.core.http.HttpServer
 import io.vertx.ext.web.Router
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.util.*
+import kotlin.coroutines.experimental.suspendCoroutine
 
 /**
  * Created by Codetector on 01/12/2017.
@@ -90,6 +92,23 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
                 }
             }
 
+        }
+    }
+
+
+    /**
+     * Start HttpServer on the specified port
+     * @param port, the port value range 1 - 65535 (unsigned short max)
+     */
+    suspend fun listen(port: Int) = suspendCoroutine<HttpServer> { coRoutine ->
+        vertx.createHttpServer().requestHandler {
+            // Implement Request Handling Processer
+        }.listen(port) {
+            if (it.succeeded()) {
+                coRoutine.resume(it.result())
+            } else {
+                coRoutine.resumeWithException(it.cause())
+            }
         }
     }
 }
