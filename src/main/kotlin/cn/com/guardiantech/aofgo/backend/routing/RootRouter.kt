@@ -23,9 +23,9 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
 
     private lateinit var rootRouter: Router
 
-    private val routeMapping: MutableMap<RouteInfo, Method> = hashMapOf()
+    internal val routeMapping: MutableMap<RouteInfo, Method> = hashMapOf()
 
-    private val controllerMapping: MutableMap<Class<*>, Any> = hashMapOf()
+    internal val controllerMapping: MutableMap<Class<*>, Any> = hashMapOf()
 
     fun initialize() {
         logger.info("Initializing RootRouter Mappings...")
@@ -101,8 +101,9 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
      * @param port, the port value range 1 - 65535 (unsigned short max)
      */
     suspend fun listen(port: Int) = suspendCoroutine<HttpServer> { coRoutine ->
-        vertx.createHttpServer().requestHandler {
-            // Implement Request Handling Processer
+        vertx.createHttpServer().requestHandler { request ->
+
+            // TODO: Implement Request Handling Processer
         }.listen(port) {
             if (it.succeeded()) {
                 coRoutine.resume(it.result())
