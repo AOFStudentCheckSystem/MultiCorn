@@ -1,12 +1,8 @@
 package cn.com.guardiantech.aofgo.backend.routing
 
-import com.nhaarman.mockito_kotlin.mock
-import io.vertx.core.Vertx
 import io.vertx.core.impl.VertxImpl
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
-import org.junit.runner.RunWith
 import org.mockito.Mockito
 
 /**
