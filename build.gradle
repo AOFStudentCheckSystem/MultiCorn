@@ -18,8 +18,11 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'application'
 apply plugin: "kotlin-allopen"
 apply plugin: "kotlin-noarg"
+
+mainClassName = "cn.com.guardiantech.aofgo.backend.AOFGOBackendMain"
 
 allOpen {
     annotation('javax.persistence.MappedSuperclass')
@@ -76,7 +79,7 @@ dependencies {
     testCompile "org.mockito:mockito-core:2.+"
 }
 
-ext.debug = project.hasProperty('debug')
+ext.debug = project.hasProperty('debug') && (Boolean.parseBoolean(project.property("debug") as String))
 
 
 compileKotlin {
@@ -100,12 +103,16 @@ processResources {
     }
 }
 
+run {
+    setSystemProperties(System.getProperties() as Map<String, ?>)
+}
+
 jar {
     manifest {
         attributes(
                 "Manifest-Version": "1.0",
                 'Class-Path': configurations.runtime.files.collect { "libs/$it.name" }.join(' ') + ' libs/',
-                "Main-Class": "cn.com.guardiantech.aofgo.backend.AOFGOBackendMain"
+                "Main-Class": mainClassName
         )
     }
 

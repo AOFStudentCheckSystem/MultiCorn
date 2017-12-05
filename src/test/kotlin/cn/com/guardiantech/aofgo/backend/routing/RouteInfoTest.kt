@@ -37,5 +37,42 @@ class RouteInfoTest {
         } catch (e: InvalidRouteException){
             // Expected
         }
+
+        val test4 = "/"
+        assertEquals("/", RouteInfo.generatePatternForURL(test4).toString())
+    }
+
+    @Test
+    fun testMatchRoute() {
+        // Simple Normal URL Test
+        val test1 = RouteInfo("/this/is/cool")
+        assertFalse("This should not match",  test1.matchRoute("/of/course"))
+        assertFalse("This should not match",  test1.matchRoute("/of/course/this"))
+        assertFalse("This should not match",  test1.matchRoute("/this"))
+        assertFalse("This should not match",  test1.matchRoute("/this/should/not"))
+        assertTrue("This should match",  test1.matchRoute("/this/is/cool"))
+
+        // URL With Path Variable in the middle
+        val test2 = RouteInfo("/this/:is/cool")
+        assertFalse("This should not match",  test2.matchRoute("/of/course"))
+        assertFalse("This should not match",  test2.matchRoute("/of/course/this"))
+        assertFalse("This should not match",  test2.matchRoute("/this"))
+        assertFalse("This should not match",  test2.matchRoute("/this/should/not"))
+        assertFalse("This should not match",  test2.matchRoute("/this//cool"))
+        assertTrue("This should match",  test2.matchRoute("/this/is/cool"))
+        assertTrue("This should match",  test2.matchRoute("/this/very/cool"))
+        assertTrue("This should match",  test2.matchRoute("/this/:fucks/cool"))
+
+        //URL With PathVariable in the ened
+        val test3 = RouteInfo("/this/is/:cool")
+        assertFalse("This should not match",  test3.matchRoute("/of/course"))
+        assertFalse("This should not match",  test3.matchRoute("/of/course/this"))
+        assertFalse("This should not match",  test3.matchRoute("/this"))
+        assertFalse("This should not match",  test3.matchRoute("/this/should/not"))
+        assertFalse("This should not match",  test3.matchRoute("/this/is/"))
+        assertFalse("This should not match",  test3.matchRoute("/this/is"))
+        assertTrue("This should match",  test3.matchRoute("/this/is/cool"))
+        assertTrue("This should match",  test3.matchRoute("/this/is/asdfasd"))
+        assertTrue("This should match",  test3.matchRoute("/this/is/:cool"))
     }
 }

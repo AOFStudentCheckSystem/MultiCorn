@@ -2,15 +2,14 @@ package cn.com.guardiantech.aofgo.backend.routing
 
 import cn.com.guardiantech.aofgo.backend.annotation.Controller
 import cn.com.guardiantech.aofgo.backend.annotation.RouteMapping
-import cn.com.guardiantech.aofgo.backend.util.append
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerRequest
-import io.vertx.ext.web.Router
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.util.*
+import kotlin.NoSuchElementException
 
 /**
  * Created by Codetector on 01/12/2017.
@@ -94,11 +93,23 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
     }
 
     fun routeRequest(request: HttpServerRequest) {
-        val processedRoute = request.path().replace("/\\z".toRegex(), "").replace("/+".toRegex(),"/")
+        var processedRoute = request.path().replace("/\\z".toRegex(), "").replace("/+".toRegex(), "/")
+        if (processedRoute.isEmpty()) {
+            processedRoute = "/"
+        }
         logger.debug("Accepted request: $processedRoute")
         // Start Matching
+        try {
+            val routeMapping = routeMapping.entries.first {
+                it.key.matchRoute(processedRoute)
+            }
+            logger.debug("Route found -> ${routeMapping.value.name}")
 
-
+        } catch (e: NoSuchElementException) {
+            // TODO: Locate Failure Handler (Not Implemented yet)
+            logger.debug("Route NOT found, returning 404 by default")
+            request.response().setStatusCode(404).end("HTTP/1.1 - 404 NOT FOUND")
+        }
 
     }
 

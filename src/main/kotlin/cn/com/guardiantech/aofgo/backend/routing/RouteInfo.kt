@@ -10,7 +10,7 @@ import java.util.regex.Pattern
  * Created by Codetector on 02/12/2017.
  * Project aofgo-backend
  */
-class RouteInfo(val route: String, val method: Array<HttpMethod>) {
+class RouteInfo(val route: String, val method: Array<HttpMethod> = arrayOf()) {
     internal var compiledPattern: Pattern
 
     init {
@@ -23,11 +23,11 @@ class RouteInfo(val route: String, val method: Array<HttpMethod>) {
     }
 
     internal fun getMatcher(string: String): Matcher = compiledPattern.matcher(string)
-//
-//    internal fun matchRoute(route: String): Boolean {
-//        val matcher = getMatcher(route)
-////        if (compiledPattern.)
-//    }
+
+    internal fun matchRoute(route: String): Boolean {
+        val matcher = getMatcher(route)
+        return (route.matches(compiledPattern.toRegex()))
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -53,13 +53,13 @@ class RouteInfo(val route: String, val method: Array<HttpMethod>) {
 
     companion object {
         internal fun generatePatternForURL(rawUrl: String): Pattern {
-            var sb: String = rawUrl.toLowerCase()
-            sb = sb.replace("/+".toRegex(), "/") // Replace redundant backslash
-            sb = sb.replace("/\\z".toRegex(), "")
+            var currentURL: String = rawUrl.toLowerCase()
+            currentURL = currentURL.replace("/+".toRegex(), "/") // Replace redundant backslash
+            currentURL = currentURL.replace("/\\z".toRegex(), "")
 
             // (?<variable1>[^/]*)
             val variableList = hashSetOf<String>()
-            val matcher = "/:(?<varName>[^/]*)".toRegex().toPattern().matcher(sb)
+            val matcher = "/:(?<varName>[^/]*)".toRegex().toPattern().matcher(currentURL)
             while (matcher.find()) {
                 if (matcher.groupCount() == 1) {
                     val varName = matcher.group("varName")
@@ -71,9 +71,14 @@ class RouteInfo(val route: String, val method: Array<HttpMethod>) {
                 }
             }
             variableList.forEach {
-                sb = sb.replace(":$it", "(?<$it>[^/]+)", true)
+                currentURL = currentURL.replace(":$it", "(?<$it>[^/]+)", true)
             }
-            return Pattern.compile(sb)
+
+            if (currentURL.isEmpty()) {
+                currentURL = "/"
+            }
+
+            return Pattern.compile(currentURL)
         }
     }
 }
