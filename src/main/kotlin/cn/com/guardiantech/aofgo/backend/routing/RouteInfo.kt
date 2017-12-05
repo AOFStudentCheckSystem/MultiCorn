@@ -10,7 +10,7 @@ import java.util.regex.Pattern
  * Created by Codetector on 02/12/2017.
  * Project aofgo-backend
  */
-class RouteInfo(val route: String, val method: Array<HttpMethod> = arrayOf()) {
+class RouteInfo(val route: String, val method: Array<HttpMethod> = HttpMethod::class.java.enumConstants) {
     internal var compiledPattern: Pattern
 
     init {

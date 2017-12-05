@@ -43,7 +43,7 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
                 parentMethod = routeMappingAnnotation.method
             } else {
                 parentRoute = ""
-                parentMethod = arrayOf()
+                parentMethod = HttpMethod.values()
             }
             logger.debug("@Controller class: ${clazz.simpleName} has rootRoute of: $parentRoute and Methods: ${Arrays.toString(parentMethod)}")
 
@@ -97,17 +97,21 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
         if (processedRoute.isEmpty()) {
             processedRoute = "/"
         }
-        logger.debug("Accepted request: $processedRoute")
+        logger.debug("Accepted request: $processedRoute, ${request.method()} (${request.rawMethod()})")
         // Start Matching
         try {
             val routeMapping = routeMapping.entries.first {
-                it.key.matchRoute(processedRoute)
+                it.key.matchRoute(processedRoute) && it.key.method.contains(request.method())
             }
-            logger.debug("Route found -> ${routeMapping.value.name}")
+            logger.debug("Route found -> ${routeMapping.value.declaringClass.name}::${routeMapping.value.name}()")
 
-            val target = controllerMapping.get(routeMapping.value.declaringClass)
+            val handler = routeMapping.value
+            val target = controllerMapping[handler.declaringClass]
             if (target != null) {
-                val rtn = routeMapping.value.invoke(target)
+                // Resolve Arguments
+                val paramValues = Array<Any?>(handler.parameterCount, {null})
+
+                val rtn = handler.invoke(target, *paramValues)
                 request.response().setStatusCode(200).end(rtn.toString())
             } else {
                 request.response().setStatusCode(500).end("HTTP/1.1 - 500 INTERNAL SERVER ERROR")
