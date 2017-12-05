@@ -11,8 +11,6 @@ import org.junit.Assert.*
  */
 class RouteInfoTest {
 
-
-
     @Test
     fun testRouteRegularExpressionGeneration () {
 
@@ -29,8 +27,7 @@ class RouteInfoTest {
         // Test PathVariable RegEx Generation
         val test3 = "/this/:is/very/:cool"
         val test3Result = RouteInfo.generatePatternForURL(test3).toString()
-        assertEquals("Failed to replace pathVariables", "/this/(?<is>[^/]*)/very/(?<cool>[^/]*)", test3Result)
-
+        assertEquals("Failed to replace pathVariables", "/this/(?<is>[^/]+)/very/(?<cool>[^/]+)", test3Result)
 
         // Test PathVariable Duplicate Detection
         try {
@@ -40,7 +37,5 @@ class RouteInfoTest {
         } catch (e: InvalidRouteException){
             // Expected
         }
-
-
     }
 }

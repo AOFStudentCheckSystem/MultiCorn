@@ -2,15 +2,15 @@ package cn.com.guardiantech.aofgo.backend.routing
 
 import cn.com.guardiantech.aofgo.backend.annotation.Controller
 import cn.com.guardiantech.aofgo.backend.annotation.RouteMapping
+import cn.com.guardiantech.aofgo.backend.util.append
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
-import io.vertx.core.http.HttpServer
+import io.vertx.core.http.HttpServerRequest
 import io.vertx.ext.web.Router
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.util.*
-import kotlin.coroutines.experimental.suspendCoroutine
 
 /**
  * Created by Codetector on 01/12/2017.
@@ -20,8 +20,6 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
     companion object {
         private val logger = LoggerFactory.getLogger(RootRouter::class.java)
     }
-
-    private lateinit var rootRouter: Router
 
     internal val routeMapping: MutableMap<RouteInfo, Method> = hashMapOf()
 
@@ -95,21 +93,24 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
         }
     }
 
+    fun routeRequest(request: HttpServerRequest) {
+        val processedRoute = request.path().replace("/\\z".toRegex(), "").replace("/+".toRegex(),"/")
+        logger.debug("Accepted request: $processedRoute")
+        // Start Matching
+
+
+
+    }
+
 
     /**
      * Start HttpServer on the specified port
      * @param port, the port value range 1 - 65535 (unsigned short max)
      */
-    suspend fun listen(port: Int) = suspendCoroutine<HttpServer> { coRoutine ->
+    fun listen(port: Int) {
         vertx.createHttpServer().requestHandler { request ->
-
+            this.routeRequest(request)
             // TODO: Implement Request Handling Processer
-        }.listen(port) {
-            if (it.succeeded()) {
-                coRoutine.resume(it.result())
-            } else {
-                coRoutine.resumeWithException(it.cause())
-            }
-        }
+        }.listen(port)
     }
 }

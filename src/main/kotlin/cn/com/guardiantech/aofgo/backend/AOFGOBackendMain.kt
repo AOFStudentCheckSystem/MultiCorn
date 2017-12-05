@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend
 
+import cn.com.guardiantech.aofgo.backend.routing.RootRouter
 import cn.com.guardiantech.aofgo.backend.util.ConfigurationUtil
 import cn.com.guardiantech.aofgo.backend.util.HibernateUtil
 import cn.com.guardiantech.aofgo.backend.util.*
@@ -51,7 +52,7 @@ object AOFGOBackendMain {
         this.sessionFactory = config.buildSessionFactory()
         runBlocking {
             entityManager {
-                val hibernateTest = it.createNativeQuery("SELECT 1;").singleResult
+                it.createNativeQuery("SELECT 1;").singleResult
             }
         }
         logger.info("Hibernate Initialized")
@@ -60,7 +61,9 @@ object AOFGOBackendMain {
         // Initialize Web Service
         logger.info("Initializing Web Service")
         this.sharedVertx = Vertx.vertx()
-
+        val rootRouter = RootRouter(this.sharedVertx, "cn.com")
+        rootRouter.initialize()
+        rootRouter.listen(9080)
 
     }
 }

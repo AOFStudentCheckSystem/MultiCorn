@@ -11,11 +11,23 @@ import java.util.regex.Pattern
  * Project aofgo-backend
  */
 class RouteInfo(val route: String, val method: Array<HttpMethod>) {
-    internal lateinit var compiledPattern: Pattern
+    internal var compiledPattern: Pattern
 
     init {
         // Compile Regular Expression
+        try {
+            this.compiledPattern = generatePatternForURL(route)
+        } catch (throwable: Throwable) {
+            throw InvalidRouteException(this.route, "Failed to parse route, ${throwable.message}")
+        }
     }
+
+    internal fun getMatcher(string: String): Matcher = compiledPattern.matcher(string)
+//
+//    internal fun matchRoute(route: String): Boolean {
+//        val matcher = getMatcher(route)
+////        if (compiledPattern.)
+//    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -59,11 +71,8 @@ class RouteInfo(val route: String, val method: Array<HttpMethod>) {
                 }
             }
             variableList.forEach {
-                sb = sb.replace(":$it", "(?<$it>[^/]*)", true)
+                sb = sb.replace(":$it", "(?<$it>[^/]+)", true)
             }
-
-            // Check for Invalid Route
-
             return Pattern.compile(sb)
         }
     }
