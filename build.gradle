@@ -30,6 +30,7 @@ allOpen {
 
 noArg {
     annotation('cn.com.guardiantech.aofgo.backend.NoArg')
+    annotation('cn.com.guardiantech.aofgo.backend.annotation.Controller')
     annotation('javax.persistence.Entity')
 }
 

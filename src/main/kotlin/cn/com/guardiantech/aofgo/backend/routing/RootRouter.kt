@@ -105,6 +105,14 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
             }
             logger.debug("Route found -> ${routeMapping.value.name}")
 
+            val target = controllerMapping.get(routeMapping.value.declaringClass)
+            if (target != null) {
+                val rtn = routeMapping.value.invoke(target)
+                request.response().setStatusCode(200).end(rtn.toString())
+            } else {
+                request.response().setStatusCode(500).end("HTTP/1.1 - 500 INTERNAL SERVER ERROR")
+            }
+
         } catch (e: NoSuchElementException) {
             // TODO: Locate Failure Handler (Not Implemented yet)
             logger.debug("Route NOT found, returning 404 by default")
