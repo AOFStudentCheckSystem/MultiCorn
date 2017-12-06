@@ -84,8 +84,11 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
                 // Resolve Arguments
                 val paramValues = Array<Any?>(handler.parameterCount, {null})
 
+                // Inject HttpRequest if Handkerchief annotation is found
                 RoutingUtils.fillSimpleAnnotationParams(Handkerchief::class.java, request, handler, paramValues)
-                
+
+
+
                 val rtn = handler.invoke(target, *paramValues)
                 request.response().setStatusCode(200).end(rtn.toString())
             } else {
@@ -96,6 +99,9 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
             // TODO: Locate Failure Handler (Not Implemented yet)
             logger.debug("Route NOT found, returning 404 by default")
             request.response().setStatusCode(404).end("HTTP/1.1 - 404 NOT FOUND")
+        } catch (e: Throwable) {
+            request.response().setStatusCode(500).end(e.message)
+            logger.error("Exception during route processing: ${request.path()}", e)
         }
 
     }

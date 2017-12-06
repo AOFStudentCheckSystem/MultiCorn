@@ -1,10 +1,14 @@
 package cn.com.guardiantech.aofgo.backend.util
 
+import cn.com.guardiantech.aofgo.backend.annotation.PathVariable
 import cn.com.guardiantech.aofgo.backend.annotation.RouteMapping
 import cn.com.guardiantech.aofgo.backend.routing.RouteInfo
 import io.vertx.core.http.HttpMethod
+import io.vertx.core.http.HttpServerRequest
 import org.slf4j.Logger
 import java.lang.reflect.Method
+import java.net.URLDecoder
+import java.net.URLEncoder
 
 /**
  * Created by Codetector on 05/12/2017.
@@ -59,5 +63,34 @@ object RoutingUtils {
                 }
             }
         }
+    }
+
+    fun fillPathParam(route: RouteInfo, processedRoute: String, method: Method, arrayOfParams: Array<Any?>) {
+        val matcher = route.getMatcher(processedRoute)
+        if (matcher.find()) {
+            // Valid Route
+
+            method.parameters.forEachIndexed { index, parameter ->
+                if (parameter.isAnnotationPresent(PathVariable::class.java)) {
+                    val annotation = parameter.getDeclaredAnnotation(PathVariable::class.java)
+
+                    val paramName = if (annotation.name.isNotEmpty()) annotation.name.toLowerCase() else parameter.name.toLowerCase()
+
+                    try {
+                        val matchResult = URLDecoder.decode((matcher.group(paramName) ?: ""), "UTF-8")
+                        if (!parameter.type.isAssignableFrom(matchResult.javaClass)) {
+                            // TODO: Insert Jackson magic here.
+                        }
+                        arrayOfParams[index] = matchResult
+                    } catch (e: IllegalArgumentException) {
+                        // No Capture Group Found
+                    }
+                }
+            }
+
+        } else {
+            throw IllegalArgumentException("Failed to match route")
+        }
+
     }
 }
