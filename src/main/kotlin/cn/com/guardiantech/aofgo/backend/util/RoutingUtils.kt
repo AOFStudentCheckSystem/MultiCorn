@@ -3,12 +3,14 @@ package cn.com.guardiantech.aofgo.backend.util
 import cn.com.guardiantech.aofgo.backend.annotation.PathVariable
 import cn.com.guardiantech.aofgo.backend.annotation.RouteMapping
 import cn.com.guardiantech.aofgo.backend.routing.RouteInfo
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.databind.JsonMappingException
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.vertx.core.http.HttpMethod
-import io.vertx.core.http.HttpServerRequest
 import org.slf4j.Logger
+import java.io.IOException
 import java.lang.reflect.Method
 import java.net.URLDecoder
-import java.net.URLEncoder
 
 /**
  * Created by Codetector on 05/12/2017.
@@ -77,14 +79,21 @@ object RoutingUtils {
                     val paramName = if (annotation.name.isNotEmpty()) annotation.name.toLowerCase() else parameter.name.toLowerCase()
 
                     try {
-                        val matchResult = URLDecoder.decode((matcher.group(paramName) ?: ""), "UTF-8")
-                        if (!parameter.type.isAssignableFrom(matchResult.javaClass)) {
-                            // TODO: Insert Jackson magic here.
+                        var matchResult: Any = URLDecoder.decode((matcher.group(paramName) ?: ""), "UTF-8")
+                        if (!parameter.type.isAssignableFrom(String::class.java)) {
+                            matchResult = ObjectMapper().readValue(matchResult as String, parameter.type.javaClass)
                         }
                         arrayOfParams[index] = matchResult
                     } catch (e: IllegalArgumentException) {
                         // No Capture Group Found
+                    } catch (e: JsonMappingException) {
+
+                    } catch (e: JsonParseException) {
+
+                    } catch (e: IOException) {
+
                     }
+                    // TODO Handle Exceptions
                 }
             }
 

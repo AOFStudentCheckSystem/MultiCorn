@@ -2,7 +2,6 @@ package cn.com.guardiantech.aofgo.backend.routing
 
 import cn.com.guardiantech.aofgo.backend.annotation.PathVariable
 import cn.com.guardiantech.aofgo.backend.util.RoutingUtils
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.vertx.core.impl.VertxImpl

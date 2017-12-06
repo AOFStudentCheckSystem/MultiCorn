@@ -4,6 +4,7 @@ import cn.com.guardiantech.aofgo.backend.annotation.Controller
 import cn.com.guardiantech.aofgo.backend.annotation.Handkerchief
 import cn.com.guardiantech.aofgo.backend.annotation.RouteMapping
 import cn.com.guardiantech.aofgo.backend.util.RoutingUtils
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerRequest
@@ -11,7 +12,6 @@ import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.util.*
-import kotlin.NoSuchElementException
 
 /**
  * Created by Codetector on 01/12/2017.
@@ -21,6 +21,8 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
     companion object {
         private val logger = LoggerFactory.getLogger(RootRouter::class.java)
     }
+
+    private val objectMapper = ObjectMapper()
 
     internal val routeMapping: MutableMap<RouteInfo, Method> = hashMapOf()
 
@@ -89,8 +91,15 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
 
                 RoutingUtils.fillPathParam(routeMapping.key, processedRoute, handler, paramValues)
 
-                val rtn = handler.invoke(target, *paramValues)
-                request.response().setStatusCode(200).end(rtn.toString())
+                var rtn = handler.invoke(target, *paramValues)
+
+                if (!request.response().ended()) {
+                    // TODO: Implement an Object {HTTP Setting} That Allows Modification of statusCode
+                    if (rtn !is String) {
+                        rtn = objectMapper.writeValueAsString(rtn)
+                    }
+                    request.response().setStatusCode(200).end(rtn as String)
+                }
             } else {
                 request.response().setStatusCode(500).end("HTTP/1.1 - 500 INTERNAL SERVER ERROR")
             }
