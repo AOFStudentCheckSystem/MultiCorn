@@ -1,13 +1,12 @@
 package cn.com.guardiantech.aofgo.backend.routing
 
-import cn.com.guardiantech.aofgo.backend.annotation.Controller
-import cn.com.guardiantech.aofgo.backend.annotation.Handkerchief
-import cn.com.guardiantech.aofgo.backend.annotation.RouteMapping
+import cn.com.guardiantech.aofgo.backend.annotation.*
 import cn.com.guardiantech.aofgo.backend.util.RoutingUtils
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerRequest
+import kotlinx.coroutines.experimental.launch
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
@@ -67,12 +66,17 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
         }
     }
 
-    fun routeRequest(request: HttpServerRequest) {
+    fun routeRequest(request: HttpServerRequest) = launch {
+        val requestBody:ByteArray = RoutingUtils.bodyHandler(request)
+        val requestBodyString = String(requestBody, Charsets.UTF_8)
+
         var processedRoute = request.path().replace("/\\z".toRegex(), "").replace("/+".toRegex(), "/")
         if (processedRoute.isEmpty()) {
             processedRoute = "/"
         }
+
         logger.debug("Accepted request: $processedRoute, ${request.method()} (${request.rawMethod()})")
+        logger.debug("RequestBody has a size of ${requestBody.size}")
         // Start Matching
         try {
             val routeMapping = routeMapping.entries.first {
@@ -84,10 +88,14 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
             val target = controllerMapping[handler.declaringClass]
             if (target != null) {
                 // Resolve Arguments
-                val paramValues = Array<Any?>(handler.parameterCount, {null})
+                val paramValues = Array<Any?>(handler.parameterCount, { null })
 
                 // Inject HttpRequest if Handkerchief annotation is found
                 RoutingUtils.fillSimpleAnnotationParams(Handkerchief::class.java, request, handler, paramValues)
+                // Inject RawRequestBody
+                RoutingUtils.fillSimpleAnnotationParams(RawRequestBody::class.java, requestBody, handler, paramValues)
+                // Inject RequestBody
+                RoutingUtils.fillSimpleAnnotationParams(RequestBody::class.java, requestBodyString, handler, paramValues)
 
                 RoutingUtils.fillPathParam(routeMapping.key, processedRoute, handler, paramValues)
 

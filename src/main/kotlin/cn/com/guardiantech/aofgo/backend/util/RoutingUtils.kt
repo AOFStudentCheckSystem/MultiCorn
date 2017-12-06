@@ -7,10 +7,14 @@ import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.vertx.core.http.HttpMethod
+import io.vertx.core.http.HttpServerRequest
 import org.slf4j.Logger
 import java.io.IOException
 import java.lang.reflect.Method
 import java.net.URLDecoder
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.experimental.suspendCoroutine
 
 /**
  * Created by Codetector on 05/12/2017.
@@ -55,13 +59,17 @@ object RoutingUtils {
         return hasRoutingFunction
     }
 
-    fun fillSimpleAnnotationParams(annotation: Class<out Annotation>, objectToFill: Any, method: Method, arrayOfParams: Array<Any?>) {
-        method.parameters.forEachIndexed { index, it ->
-            if (it.isAnnotationPresent(annotation)) {
-                if (it.type.isAssignableFrom(objectToFill::class.java)) {
+    fun fillSimpleAnnotationParams(annotation: Class<out Annotation>, objectToFill: Any, method: Method, arrayOfParams: Array<Any?>, objectMapper: ObjectMapper? = null) {
+        method.parameters.forEachIndexed { index, parameter ->
+            if (parameter.isAnnotationPresent(annotation)) {
+                if (parameter.type.isAssignableFrom(objectToFill::class.java)) {
                     arrayOfParams[index] = objectToFill
                 } else {
-                    IllegalArgumentException("Failed to Insert ${objectToFill.javaClass.name} is not compatable with ${it.type.simpleName}")
+                    if (objectToFill is String) {
+                        arrayOfParams[index] = (objectMapper ?: ObjectMapper()).readValue(objectToFill, parameter.type.javaClass)
+                    } else {
+                        IllegalArgumentException("Failed to Insert ${objectToFill.javaClass.name} is not compatable with ${parameter.type.simpleName}")
+                    }
                 }
             }
         }
@@ -100,6 +108,12 @@ object RoutingUtils {
         } else {
             throw IllegalArgumentException("Failed to match route")
         }
+    }
 
+    suspend fun bodyHandler(httpServerRequest: HttpServerRequest) = suspendCoroutine<ByteArray> { coroutine ->
+        httpServerRequest.bodyHandler {
+            val bytes = it.bytes
+            coroutine.resume(bytes)
+        }
     }
 }
