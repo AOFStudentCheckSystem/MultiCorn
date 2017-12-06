@@ -1,7 +1,9 @@
 package cn.com.guardiantech.aofgo.backend.routing
 
 import cn.com.guardiantech.aofgo.backend.annotation.Controller
+import cn.com.guardiantech.aofgo.backend.annotation.Handkerchief
 import cn.com.guardiantech.aofgo.backend.annotation.RouteMapping
+import cn.com.guardiantech.aofgo.backend.util.RoutingUtils
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerRequest
@@ -47,39 +49,10 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
             }
             logger.debug("@Controller class: ${clazz.simpleName} has rootRoute of: $parentRoute and Methods: ${Arrays.toString(parentMethod)}")
 
-            var hasRoutingFunction = false
-
-            clazz.declaredMethods.forEach { function ->
-                logger.trace("Processing Method: ${function.name}")
-                val annotation = function.getDeclaredAnnotation(RouteMapping::class.java)
-                if (annotation != null) {
-                    logger.debug("Method ${function.name} found with @RouteMapping annotation present.")
-                    hasRoutingFunction = true
-                    val routeMethod = if (annotation.method.isEmpty()) parentMethod else annotation.method
-                    val routePath: String = {
-                        val sb = StringBuilder()
-                        if (parentRoute.isNotEmpty()) {
-                            if (!parentRoute.startsWith("/")) {
-                                sb.append("/")
-                            }
-                            sb.append(parentRoute)
-                        }
-                        if (annotation.path.isNotEmpty()) {
-                            if (!annotation.path.startsWith("/")) {
-                                sb.append('/')
-                            }
-                            sb.append(annotation.path)
-                        }
-                        sb.toString()
-                    }()
-                    val routeInfo = RouteInfo(routePath, routeMethod)
-                    logger.debug("Method ${function.name} has resolved to $routeInfo")
-                    routeMapping.put(routeInfo, function)
-                }
-            }
+            val isClassValidController = RoutingUtils.processController(clazz, parentRoute, parentMethod, routeMapping, logger)
 
             // Has at least one(1) routing implementation, instantiate and record the class
-            if (hasRoutingFunction) {
+            if (isClassValidController) {
                 // TODO: Autowire after implementing service system
                 try {
                     val instance = clazz.newInstance()
@@ -111,6 +84,8 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
                 // Resolve Arguments
                 val paramValues = Array<Any?>(handler.parameterCount, {null})
 
+                RoutingUtils.fillSimpleAnnotationParams(Handkerchief::class.java, request, handler, paramValues)
+                
                 val rtn = handler.invoke(target, *paramValues)
                 request.response().setStatusCode(200).end(rtn.toString())
             } else {
