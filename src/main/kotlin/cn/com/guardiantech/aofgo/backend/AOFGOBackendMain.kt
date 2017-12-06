@@ -25,8 +25,8 @@ object AOFGOBackendMain {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        System.setProperty("org.jboss.logging.provider", "slf4j");
-        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
+        System.setProperty("org.jboss.logging.provider", "slf4j")
+        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory")
 
         val beginTS = System.currentTimeMillis()
         logger.info("Starting Application...")

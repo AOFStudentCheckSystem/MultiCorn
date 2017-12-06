@@ -87,7 +87,7 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
                 // Inject HttpRequest if Handkerchief annotation is found
                 RoutingUtils.fillSimpleAnnotationParams(Handkerchief::class.java, request, handler, paramValues)
 
-
+                RoutingUtils.fillPathParam(routeMapping.key, processedRoute, handler, paramValues)
 
                 val rtn = handler.invoke(target, *paramValues)
                 request.response().setStatusCode(200).end(rtn.toString())
