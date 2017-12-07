@@ -103,7 +103,7 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
                 var rtn: Any? = handler.invoke(target, *paramValues)
 
                 if (rtn == null || rtn is Unit) {
-                    request.response().setStatusCode(304).end()
+                    request.response().setStatusCode(204).end()
                 }
 
                 if (!request.response().ended()) {
