@@ -3,6 +3,7 @@ package cn.com.guardiantech.aofgo.backend.routing
 import cn.com.guardiantech.aofgo.backend.annotation.*
 import cn.com.guardiantech.aofgo.backend.util.RoutingUtils
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.netty.handler.codec.http.HttpResponseStatus
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerRequest
@@ -99,7 +100,11 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
 
                 RoutingUtils.fillPathParam(routeMapping.key, processedRoute, handler, paramValues)
 
-                var rtn = handler.invoke(target, *paramValues)
+                var rtn: Any? = handler.invoke(target, *paramValues)
+
+                if (rtn == null || rtn is Unit) {
+                    request.response().setStatusCode(304).end()
+                }
 
                 if (!request.response().ended()) {
                     // TODO: Implement an Object {HTTP Setting} That Allows Modification of statusCode
