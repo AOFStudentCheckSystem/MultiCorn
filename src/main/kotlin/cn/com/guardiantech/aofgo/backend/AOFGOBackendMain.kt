@@ -51,7 +51,7 @@ object AOFGOBackendMain {
         logger.trace("Hibernate Configuration: ${config.properties}")
         this.sessionFactory = config.buildSessionFactory()
         runBlocking {
-            entityManager {
+            entityManagerSuspend {
                 it.createNativeQuery("SELECT 1;").singleResult
             }
         }

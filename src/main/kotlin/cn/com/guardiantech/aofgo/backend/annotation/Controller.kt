@@ -5,4 +5,4 @@ package cn.com.guardiantech.aofgo.backend.annotation
  * Project aofgo-backend
  */
 @Target(allowedTargets = [AnnotationTarget.CLASS])
-annotation class Controller(val basePath:String = "")
+annotation class Controller

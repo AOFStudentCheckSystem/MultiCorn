@@ -117,7 +117,7 @@ class RootRouter(val vertx: Vertx, private val basePackage: String? = null) {
             logger.debug("Route NOT found, returning 404 by default")
             request.response().setStatusCode(404).end("HTTP/1.1 - 404 NOT FOUND")
         } catch (e: Throwable) {
-            request.response().setStatusCode(500).end(e.message)
+            request.response().setStatusCode(500).end(Arrays.toString(e.stackTrace))
             logger.error("Exception during route processing: ${request.path()}", e)
         }
 

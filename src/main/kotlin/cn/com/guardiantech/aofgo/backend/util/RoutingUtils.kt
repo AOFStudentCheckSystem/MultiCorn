@@ -66,7 +66,7 @@ object RoutingUtils {
                     arrayOfParams[index] = objectToFill
                 } else {
                     if (objectToFill is String) {
-                        arrayOfParams[index] = (objectMapper ?: ObjectMapper()).readValue(objectToFill, parameter.type.javaClass)
+                        arrayOfParams[index] = (objectMapper ?: ObjectMapper()).readValue(objectToFill, parameter.type)
                     } else {
                         IllegalArgumentException("Failed to Insert ${objectToFill.javaClass.name} is not compatable with ${parameter.type.simpleName}")
                     }

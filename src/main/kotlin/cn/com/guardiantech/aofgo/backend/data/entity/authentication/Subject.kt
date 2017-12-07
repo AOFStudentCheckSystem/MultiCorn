@@ -9,18 +9,28 @@ import javax.persistence.*
  */
 @NoArg
 @Entity
-class Subject (
-    @Id
-    @GeneratedValue
-    val id: Long = -1,
+class Subject(
+        @Id
+        @GeneratedValue
+        val id: Long = -1,
 
-    @OneToMany(mappedBy = "owner", orphanRemoval = true)
-    val principals: MutableSet<Principal> = hashSetOf(),
+        @OneToMany(mappedBy = "owner", orphanRemoval = true)
+        val principals: MutableSet<Principal> = hashSetOf(),
 
-    @OneToMany(mappedBy = "owner", orphanRemoval = true)
-    val credentials: MutableSet<Principal> = hashSetOf(),
+        @OneToMany(mappedBy = "owner", orphanRemoval = true)
+        val credentials: MutableSet<Credential> = hashSetOf(),
 
-    @Lob
-    @Column(nullable = true)
-    val subjectAttachedInfo: String? = null
-)
+        @Lob
+        @Column(nullable = true)
+        val subjectAttachedInfo: String? = null
+) {
+    fun addPrincipal(p: Principal) {
+        p.owner = this
+        principals.add(p)
+    }
+
+    fun addCredential(c: Credential) {
+        c.owner = this
+        credentials.add(c)
+    }
+}

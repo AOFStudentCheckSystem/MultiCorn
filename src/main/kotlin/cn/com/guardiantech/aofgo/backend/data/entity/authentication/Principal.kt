@@ -8,10 +8,10 @@ import javax.persistence.*
  */
 @Entity
 @Table(uniqueConstraints = arrayOf(UniqueConstraint(columnNames = arrayOf("principal_type", "principal_owner"))))
-class Principal (
+class Principal(
         @Id
         @GeneratedValue
-        val id: Long,
+        val id: Long = -1,
 
         @Enumerated(EnumType.STRING)
         @Column(name = "principal_type")
@@ -22,5 +22,5 @@ class Principal (
 
         @ManyToOne
         @JoinColumn(name = "principal_owner")
-        val owner: Subject
+        var owner: Subject
 )

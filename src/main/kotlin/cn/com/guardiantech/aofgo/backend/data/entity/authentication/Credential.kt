@@ -23,9 +23,10 @@ class Credential (
         @Column(name = "credential_secret", nullable = false)
         var secret: String,
 
+
         @ManyToOne
         @JoinColumn(name = "credential_owner")
-        val owner: Subject,
+        var owner: Subject,
 
         @ElementCollection
         @CollectionTable(name = "credential_secret_history", joinColumns = [(JoinColumn(name = "id"))])
