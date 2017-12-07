@@ -111,9 +111,13 @@ object RoutingUtils {
     }
 
     suspend fun bodyHandler(httpServerRequest: HttpServerRequest) = suspendCoroutine<ByteArray> { coroutine ->
-        httpServerRequest.bodyHandler {
-            val bytes = it.bytes
-            coroutine.resume(bytes)
+        try {
+            httpServerRequest.bodyHandler {
+                val bytes = it.bytes
+                coroutine.resume(bytes)
+            }
+        } catch (_: IllegalStateException) {
+            coroutine.resume(ByteArray(0))
         }
     }
 }
