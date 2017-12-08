@@ -1,9 +1,9 @@
 package cn.com.guardiantech.aofgo.backend.controller
 
-import cn.com.guardiantech.aofgo.backend.annotation.Controller
-import cn.com.guardiantech.aofgo.backend.annotation.Handkerchief
-import cn.com.guardiantech.aofgo.backend.annotation.RequestBody
-import cn.com.guardiantech.aofgo.backend.annotation.RouteMapping
+import cn.codetector.jet.controller.annotation.Controller
+import cn.codetector.jet.controller.annotation.Handkerchief
+import cn.codetector.jet.controller.annotation.RequestBody
+import cn.codetector.jet.controller.annotation.RouteMapping
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
 import cn.com.guardiantech.aofgo.backend.service.AuthenticationSerivce
 import io.vertx.core.http.HttpMethod
@@ -20,7 +20,7 @@ class AuthenticationController {
 
     @RouteMapping("/")
     fun test(@Handkerchief httpServerRequest: HttpServerRequest): String {
-        return "Hello World"
+        return httpServerRequest.toString()
     }
 
     @RouteMapping(path = "/register", method = [(HttpMethod.POST)])

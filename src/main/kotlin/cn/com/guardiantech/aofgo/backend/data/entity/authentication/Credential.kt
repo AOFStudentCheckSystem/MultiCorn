@@ -1,6 +1,5 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.UpdateTimestamp
 import java.util.*
 import javax.persistence.*

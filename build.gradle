@@ -29,7 +29,7 @@ allOpen {
 }
 
 noArg {
-    annotation('cn.com.guardiantech.aofgo.backend.annotation.NoArg')
+    annotation('cn.codetector.jet.controller.annotation.NoArg')
     annotation('cn.com.guardiantech.aofgo.backend.annotation.Controller')
     annotation('javax.persistence.Entity')
     invokeInitializers = true
@@ -49,25 +49,17 @@ ext {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url 'http://nexus.codetector.cn/repository/aofgo/' }
 }
 
 dependencies {
-    compile "io.vertx:vertx-core:$vertx_version"
-    compile "io.vertx:vertx-web:$vertx_version"
-    compile "io.vertx:vertx-lang-kotlin-coroutines:$vertx_version"
+
+    compile group: 'cn.codetector', name: 'jet', version: '2.0-SNAPSHOT'
 
     // Hibernate
     compile group: 'org.hibernate', name: 'hibernate-core', version: "$hibernate_version"
     compile group: 'org.hibernate', name: 'hibernate-c3p0', version: "$hibernate_version"
     compile group: 'org.hibernate', name: 'hibernate-envers', version: "$hibernate_version"
-
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.2'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.2'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.2'
-    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: '2.9.2'
-    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: '2.9.2'
-
-    compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
 
     // Logging
     compile "org.apache.logging.log4j:log4j-api:$log4j2Version",

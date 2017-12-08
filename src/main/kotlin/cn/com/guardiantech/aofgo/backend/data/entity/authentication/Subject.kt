@@ -1,6 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
-import cn.com.guardiantech.aofgo.backend.annotation.NoArg
+import cn.codetector.jet.controller.annotation.NoArg
 import javax.persistence.*
 
 /**

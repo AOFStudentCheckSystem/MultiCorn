@@ -1,9 +1,9 @@
 package cn.com.guardiantech.aofgo.backend
 
-import cn.com.guardiantech.aofgo.backend.routing.RootRouter
+import cn.codetector.jet.Jet
 import cn.com.guardiantech.aofgo.backend.util.ConfigurationUtil
 import cn.com.guardiantech.aofgo.backend.util.HibernateUtil
-import cn.com.guardiantech.aofgo.backend.util.*
+import cn.com.guardiantech.aofgo.backend.util.entityManagerSuspend
 import io.vertx.core.Vertx
 import kotlinx.coroutines.experimental.runBlocking
 import org.hibernate.SessionFactory
@@ -61,9 +61,9 @@ object AOFGOBackendMain {
         // Initialize Web Service
         logger.info("Initializing Web Service")
         this.sharedVertx = Vertx.vertx()
-        val rootRouter = RootRouter(this.sharedVertx, "cn.com")
-        rootRouter.initialize()
-        rootRouter.listen(9080)
+        val jet = Jet(sharedVertx)
+        jet.initialize()
+        jet.beginListen(9080)
 
     }
 }
