@@ -1,6 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.jackson.test
 
-import cn.com.guardiantech.aofgo.backend.annotation.NoArg
+import cn.codetector.jet.controller.annotation.NoArg
 
 @NoArg
 data class WrapperObject(
