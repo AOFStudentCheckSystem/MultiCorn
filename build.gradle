@@ -54,7 +54,7 @@ repositories {
 
 dependencies {
 
-    compile group: 'cn.codetector', name: 'jet', version: '2.0-SNAPSHOT'
+    compile group: 'cn.codetector', name: 'jet', version: '2.0-SNAPSHOT', changing: true
 
     // Hibernate
     compile group: 'org.hibernate', name: 'hibernate-core', version: "$hibernate_version"
