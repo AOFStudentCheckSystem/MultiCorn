@@ -6,6 +6,5 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.PrincipalTyp
 @NoArg
 data class PrincipalRequest(
         val type: PrincipalType,
-
         val identification: String
 )

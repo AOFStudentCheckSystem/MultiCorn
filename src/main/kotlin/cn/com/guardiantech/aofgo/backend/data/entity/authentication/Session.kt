@@ -1,5 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
+import cn.com.guardiantech.aofgo.backend.annotation.NoArg
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonProperty
 import javax.persistence.*
 
@@ -15,8 +17,9 @@ class Session (
 
         val sessionKey: String,
 
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.EAGER)
         @JoinColumn
+        @JsonBackReference
         val subject: Subject,
 
         @ElementCollection

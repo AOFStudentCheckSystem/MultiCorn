@@ -7,7 +7,7 @@ import javax.persistence.*
  * Project aofgo-backend
  */
 @Entity
-@Table(uniqueConstraints = arrayOf(UniqueConstraint(columnNames = arrayOf("principal_type", "principal_owner"))))
+@Table(uniqueConstraints = [(UniqueConstraint(columnNames = arrayOf("principal_type", "principal_owner")))])
 class Principal(
         @Id
         @GeneratedValue
