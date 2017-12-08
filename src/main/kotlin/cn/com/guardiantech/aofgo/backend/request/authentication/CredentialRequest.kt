@@ -6,6 +6,5 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.CredentialTy
 @NoArg
 data class CredentialRequest(
         val type: CredentialType,
-
         var secret: String
 )

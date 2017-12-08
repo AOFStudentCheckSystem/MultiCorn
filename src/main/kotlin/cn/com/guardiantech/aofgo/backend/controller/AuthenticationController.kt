@@ -27,4 +27,9 @@ class AuthenticationController {
     fun register(@RequestBody registerRequest: RegisterRequest) {
         authenticationSerivce.register(registerRequest)
     }
+
+    @RouteMapping(path = "/auth", method = [(HttpMethod.POST)])
+    fun authenticate(@RequestBody authRequest: AuthenticationRequest): Session {
+        return authenticationSerivce.authenticate(authRequest)
+    }
 }

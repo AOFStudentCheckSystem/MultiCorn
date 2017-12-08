@@ -7,7 +7,6 @@ import javax.persistence.*
  * Created by Codetector on 29/11/2017.
  * Project aofgo-backend
  */
-@NoArg
 @Entity
 class Subject(
         @Id
