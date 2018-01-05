@@ -6,4 +6,6 @@ import java.util.*
 
 interface SessionRepository : CrudRepository<Session, Long> {
     fun findById(id: Long): Optional<Session>
+
+    fun findBySessionKey(sessionKey: String): Optional<Session>
 }
