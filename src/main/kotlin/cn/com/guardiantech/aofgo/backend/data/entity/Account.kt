@@ -26,7 +26,7 @@ class Account(
         val phone: String,
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "type")
+        @Column(name = "account_type")
         val type: AccountType,
 
         @Column(name = "preferred_name")

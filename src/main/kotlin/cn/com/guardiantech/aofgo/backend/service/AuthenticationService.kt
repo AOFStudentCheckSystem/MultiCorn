@@ -4,9 +4,9 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Credential
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Principal
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
-import cn.com.guardiantech.aofgo.backend.repo.CredentialRepo
-import cn.com.guardiantech.aofgo.backend.repo.PrincipalRepo
-import cn.com.guardiantech.aofgo.backend.repo.SessionRepo
+import cn.com.guardiantech.aofgo.backend.repository.CredentialRepository
+import cn.com.guardiantech.aofgo.backend.repository.PrincipalRepository
+import cn.com.guardiantech.aofgo.backend.repository.SessionRepository
 import cn.com.guardiantech.aofgo.backend.repository.SubjectRepository
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service
 @Service
 class AuthenticationService @Autowired constructor(
         val subjectRepo: SubjectRepository,
-        val principalRepo: PrincipalRepo,
-        val credentialRepo: CredentialRepo,
-        val sessionRepo: SessionRepo
+        val principalRepo: PrincipalRepository,
+        val credentialRepo: CredentialRepository,
+        val sessionRepo: SessionRepository
 ) {
 
     fun register(registerRequest: RegisterRequest) {

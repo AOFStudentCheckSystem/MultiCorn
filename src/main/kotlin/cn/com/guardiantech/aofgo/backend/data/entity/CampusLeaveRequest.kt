@@ -16,7 +16,7 @@ class CampusLeaveRequest(
         val student: Student,
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "type")
+        @Column(name = "leave_type")
         val type: LeaveType,
 
         @Column(name = "description")
@@ -30,6 +30,7 @@ class CampusLeaveRequest(
         val statusMessage: String,
 
         @Column(name = "required_permission")
+        @ElementCollection
         val requiredPermission: MutableSet<String>,
 
         @OneToMany
@@ -40,7 +41,7 @@ class CampusLeaveRequest(
         @Column(name = "transportation_method")
         val transportationMethod: TransportationMethod,
 
-        @Column(name = "transportation-note")
+        @Column(name = "transportation_note")
         val transportationNote: String,
 
         @Column(name = "date_of_leave")
