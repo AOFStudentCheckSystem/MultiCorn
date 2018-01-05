@@ -58,11 +58,17 @@ ext {
     mysql_version = '6.0.6'
 }
 
+
+
+configurations.all {
+    exclude group: "ch.qos.logback"
+}
+
+
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile('org.springframework.cloud:spring-cloud-starter-feign')
-	compile('org.springframework.cloud:spring-cloud-starter-ribbon')
 	compile('org.springframework.boot:spring-boot-starter-validation')
+    compile('org.springframework.boot:spring-boot-starter-web')
 
     // Kotlin Language Libraries
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
@@ -83,6 +89,11 @@ dependencies {
 }
 
 ext.debug = project.hasProperty('debug') && (Boolean.parseBoolean(project.property("debug") as String))
+
+bootRun {
+    // support passing -Dsystem.property=value to bootRun task
+    systemProperties = System.properties
+}
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"

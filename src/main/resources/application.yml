@@ -1,0 +1,21 @@
+server:
+  port: 9080
+spring:
+  application:
+    name: aofgo-backend
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57InnoDBDialect
+  datasource:
+    url: jdbc:mysql://${dbaddr:localhost}:${dbport:3306}/${dbname:aofgo}?useUnicode=yes&characterEncoding=UTF-8&useSSL=${useSSL:false}
+    username: ${dbuser}
+    password: ${dbpass}
+    dbcp2:
+      test-while-idle: true
+      validation-query: SELECT 1
+    driver-class-name: com.mysql.cj.jdbc.Driver
