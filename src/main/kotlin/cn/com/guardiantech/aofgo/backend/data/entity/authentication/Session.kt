@@ -2,6 +2,7 @@ package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.*
 import javax.persistence.*
 
 /**
@@ -9,7 +10,7 @@ import javax.persistence.*
  * Project aofgo-backend
  */
 @Entity
-class Session (
+class Session(
         @Id
         @GeneratedValue
         val id: Long = -1,
@@ -24,7 +25,15 @@ class Session (
         @ElementCollection
         @CollectionTable(joinColumns = [(JoinColumn(name = "id"))])
         @Column(name = "authenticated_factor")
-        val authenticatedFactors: MutableSet<CredentialType> = hashSetOf()
+        val authenticatedFactors: MutableSet<CredentialType> = hashSetOf(),
+
+        @Column(nullable = false)
+        @Temporal(TemporalType.TIMESTAMP)
+        val creationTimestamp: Date = Date(),
+
+        @Column(nullable = false, updatable = true, name = "accessed")
+        @Temporal(TemporalType.TIMESTAMP)
+        var accessTimestamp: Date = Date()
 ) {
     @JsonProperty("permission")
     fun getPermissions(): Set<String> {
