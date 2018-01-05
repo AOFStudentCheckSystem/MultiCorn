@@ -7,7 +7,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.repo.CredentialRepo
 import cn.com.guardiantech.aofgo.backend.repo.PrincipalRepo
 import cn.com.guardiantech.aofgo.backend.repo.SessionRepo
-import cn.com.guardiantech.aofgo.backend.repo.SubjectRepo
+import cn.com.guardiantech.aofgo.backend.repository.SubjectRepository
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
 import cn.com.guardiantech.aofgo.backend.util.SessionUtil
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class AuthenticationService @Autowired constructor(
-        val subjectRepo: SubjectRepo,
+        val subjectRepo: SubjectRepository,
         val principalRepo: PrincipalRepo,
         val credentialRepo: CredentialRepo,
         val sessionRepo: SessionRepo
