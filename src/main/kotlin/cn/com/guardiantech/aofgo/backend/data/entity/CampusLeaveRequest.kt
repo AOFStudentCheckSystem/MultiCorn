@@ -4,6 +4,7 @@ import org.hibernate.secure.spi.GrantedPermission
 import java.util.*
 import javax.persistence.*
 
+@Entity
 class CampusLeaveRequest(
         @Id
         @GeneratedValue

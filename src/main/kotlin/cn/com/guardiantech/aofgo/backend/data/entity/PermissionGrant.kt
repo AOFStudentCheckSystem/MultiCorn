@@ -3,6 +3,7 @@ package cn.com.guardiantech.aofgo.backend.data.entity
 import java.util.*
 import javax.persistence.*
 
+@Entity
 class PermissionGrant(
         @Id
         @GeneratedValue
