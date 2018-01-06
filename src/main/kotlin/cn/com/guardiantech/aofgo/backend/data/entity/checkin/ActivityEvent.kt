@@ -25,7 +25,8 @@ class ActivityEvent(
 
         var eventTime: Date = Date(),
 
-        var eventStatus: Int = 0,
+        @Enumerated(value = EnumType.STRING)
+        var eventStatus: EventStatus = EventStatus.FUTURE,
 
         @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.ALL))
         @Column(nullable = false)

@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.repository.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
+import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.repository.PagingAndSortingRepository
 import java.util.*
@@ -19,5 +20,5 @@ interface EventRepository : PagingAndSortingRepository<ActivityEvent, Long>{
 
     fun findByEventId(eventID: String): Optional<ActivityEvent>
 
-    fun findByEventStatus(status: Int): Set<ActivityEvent>
+    fun findByEventStatus(status: EventStatus): Set<ActivityEvent>
 }
