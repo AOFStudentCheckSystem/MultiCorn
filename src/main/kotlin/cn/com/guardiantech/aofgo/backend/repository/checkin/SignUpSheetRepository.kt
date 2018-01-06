@@ -1,6 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.repository.checkin
 
-import cn.com.guardiantech.checkin.server.entity.SignUpSheet
+import cn.com.guardiantech.aofgo.backend.data.entity.checkin.SignUpSheet
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.repository.CrudRepository
 import java.util.*
