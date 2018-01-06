@@ -26,6 +26,4 @@ class StudentController @Autowired constructor(
             throw e
         }
     }
-
-
 }
