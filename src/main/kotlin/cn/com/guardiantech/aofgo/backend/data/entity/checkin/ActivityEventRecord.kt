@@ -1,7 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
@@ -12,26 +11,24 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "event_records", uniqueConstraints = arrayOf(UniqueConstraint(name = "unique_record_event", columnNames = arrayOf("event", "student"))))
-class ActivityEventRecord {
+class ActivityEventRecord(
+        @Id
+        @GeneratedValue
+        var id: Long = 0,
 
-    @Id
-    @GeneratedValue
-    var id: Long = 0
+        var signupTime: Long = -1,
 
+        var checkInTime: Long = -1
+) {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(optional = false)
     @JoinColumn(name = "student")
     lateinit var student: Student
 
-    @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(optional = false)
     @JoinColumn(name = "event")
     lateinit var event: ActivityEvent
-
-    var signupTime: Long = -1
-
-    var checkInTime: Long = -1
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
