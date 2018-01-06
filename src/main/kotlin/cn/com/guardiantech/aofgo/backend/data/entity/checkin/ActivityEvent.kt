@@ -25,7 +25,7 @@ class ActivityEvent(
 
         var eventTime: Date = Date(),
 
-        var eventStatus: Short = 0,
+        var eventStatus: Int = 0,
 
         @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.ALL))
         @Column(nullable = false)
