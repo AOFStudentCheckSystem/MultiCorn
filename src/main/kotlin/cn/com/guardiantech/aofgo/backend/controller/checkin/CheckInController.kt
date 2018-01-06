@@ -7,9 +7,11 @@ import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionResponse
 import cn.com.guardiantech.aofgo.backend.service.checkin.CheckInService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import java.util.NoSuchElementException
+import java.util.*
 import javax.validation.Valid
 
 /**
@@ -22,14 +24,18 @@ import javax.validation.Valid
 class CheckInController @Autowired constructor(
         private val checkInService: CheckInService
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(CheckInController::class.java)
+
     @RequestMapping(path = ["/submit"], method = [RequestMethod.PUT, RequestMethod.PATCH])
     fun checkInSubmission(@RequestBody @Valid request: CheckInSubmissionRequest): CheckInSubmissionResponse {
         return try {
             checkInService.checkInSubmission(request)
         } catch (e: IllegalArgumentException) {
-            throw BadRequestException()
+            logger.error("Error @ checkInSubmission", e)
+            throw BadRequestException(e.message)
         } catch (e: Throwable) {
-            throw RepositoryException()
+            logger.error("Error @ checkInSubmission", e)
+            throw RepositoryException(e.message)
         }
     }
 
@@ -38,7 +44,8 @@ class CheckInController @Autowired constructor(
         return try {
             checkInService.getRecordForEvent(eventId)
         } catch (e: NoSuchElementException) {
-            throw NotFoundException()
+            logger.error("Error @ getRecordForEvent", e)
+            throw NotFoundException(e.message)
         }
     }
 }

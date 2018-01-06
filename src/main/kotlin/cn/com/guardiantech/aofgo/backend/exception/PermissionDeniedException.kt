@@ -8,4 +8,4 @@ import org.springframework.web.bind.annotation.ResponseStatus
  * Project backend
  */
 @ResponseStatus(HttpStatus.FORBIDDEN)
-class PermissionDeniedException: RuntimeException()
+class PermissionDeniedException(message: String?): ControllerException(message)

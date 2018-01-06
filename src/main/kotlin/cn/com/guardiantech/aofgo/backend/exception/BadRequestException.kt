@@ -8,4 +8,4 @@ import org.springframework.web.bind.annotation.ResponseStatus
  * Project AOFGoBackend
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-class BadRequestException: RuntimeException()
+class BadRequestException(message: String?): ControllerException(message)

@@ -9,4 +9,4 @@ import org.springframework.web.bind.annotation.ResponseStatus
  */
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-class NotFoundException: RuntimeException()
+class NotFoundException(message: String?): ControllerException(message)
