@@ -92,7 +92,7 @@ ext.debug = project.hasProperty('debug') && (Boolean.parseBoolean(project.proper
 
 bootRun {
     // support passing -Dsystem.property=value to bootRun task
-    systemProperties = System.properties
+    systemProperties = System.properties as Map<String, ?>
 }
 
 compileKotlin {
