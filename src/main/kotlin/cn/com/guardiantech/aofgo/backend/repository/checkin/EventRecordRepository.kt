@@ -1,9 +1,8 @@
 package cn.com.guardiantech.aofgo.backend.repository.checkin
 
-import cn.com.guardiantech.checkin.server.entity.ActivityEvent
-import cn.com.guardiantech.checkin.server.entity.ActivityEventRecord
-import cn.com.guardiantech.checkin.server.entity.Student
-import org.springframework.data.jpa.repository.Query
+import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
+import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEventRecord
 import org.springframework.data.repository.CrudRepository
 import java.util.*
 
