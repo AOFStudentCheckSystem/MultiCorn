@@ -1,9 +1,11 @@
 package cn.com.guardiantech.aofgo.backend.service
 
+import cn.com.guardiantech.aofgo.backend.authentication.AuthenticationMechanism
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Credential
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Principal
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
+import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.repository.CredentialRepository
 import cn.com.guardiantech.aofgo.backend.repository.PrincipalRepository
 import cn.com.guardiantech.aofgo.backend.repository.SessionRepository
@@ -21,15 +23,22 @@ class AuthenticationService @Autowired constructor(
         private val subjectRepo: SubjectRepository,
         private val principalRepo: PrincipalRepository,
         private val credentialRepo: CredentialRepository,
-        private val sessionRepo: SessionRepository
+        private val sessionRepo: SessionRepository,
+        private val authenticationMechanism: AuthenticationMechanism
 ) {
 
     @Value("\${auth.sessionTimeout}")
     private var sessionTimeout: Int = 60
 
-    fun register(registerRequest: RegisterRequest) {
+    /**
+     * @throws org.springframework.dao.DataIntegrityViolationException Duplicate principal
+     */
+    fun register(registerRequest: RegisterRequest): Subject {
         val newSubject = subjectRepo.save(Subject(
                 subjectAttachedInfo = registerRequest.subjectAttachedInfo))
+
+        val processedSecret = authenticationMechanism.encryptCredentialSecret(registerRequest.credential.type, registerRequest.credential.secret)
+
         principalRepo.save(Principal(
                 type = registerRequest.principal.type,
                 identification = registerRequest.principal.identification,
@@ -37,29 +46,30 @@ class AuthenticationService @Autowired constructor(
         ))
         credentialRepo.save(Credential(
                 type = registerRequest.credential.type,
-                secret = registerRequest.credential.secret,
+                secret = processedSecret,
                 owner = newSubject
         ))
+        return newSubject
     }
 
     fun authenticate(authRequest: AuthenticationRequest): Session {
         //NoSuchElementException
-        val principle = principalRepo.findByTypeAndIdentification(
+        val principal = principalRepo.findByTypeAndIdentification(
                 authRequest.principal.type,
                 authRequest.principal.identification).get()
-        val owner = principle.owner
+        val owner = principal.owner
         val ownerFoundCredential = owner.credentials.find {
-            it.type == authRequest.credential.type && it.secret == authRequest.credential.secret
+            it.type == authRequest.credential.type && authenticationMechanism.verifyCredentialSecret(it, authRequest.credential.secret)
         }
         if (ownerFoundCredential !== null) {
             return sessionRepo.save(Session(
                     sessionKey = SessionUtil.secureRandomBase64Identifier(),
                     subject = owner,
-                    authenticatedFactors = mutableSetOf(ownerFoundCredential.type)
+                    authenticatedFactors = hashSetOf(ownerFoundCredential.type)
             ))
         } else {
             // Invalid Credential
-            throw RuntimeException()
+            throw UnauthorizedException("Invalid username or password")
         }
     }
 
