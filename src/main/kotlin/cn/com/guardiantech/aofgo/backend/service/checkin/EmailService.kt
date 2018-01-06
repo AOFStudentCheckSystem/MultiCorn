@@ -16,7 +16,7 @@ import javax.mail.internet.InternetAddress
  */
 @Service
 class EmailService {
-    @Value("\${spring.mail.from}")
+    @Value("\${spring.mail.from:}")
     lateinit var from: String
 
     @Autowired

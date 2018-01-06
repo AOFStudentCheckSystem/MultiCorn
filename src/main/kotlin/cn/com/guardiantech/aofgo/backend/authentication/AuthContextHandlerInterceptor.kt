@@ -17,7 +17,7 @@ open class AuthContextHandlerInterceptor constructor(
 
     private val logger: Logger = LoggerFactory.getLogger(AuthContextHandlerInterceptor::class.java)
 
-    override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+    override fun preHandle(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?): Boolean {
 
         // Implement AuthContext
         val authHeader = request.getHeader("Authorization")
@@ -46,12 +46,12 @@ open class AuthContextHandlerInterceptor constructor(
         return true
     }
 
-    override fun postHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any, modelAndView: ModelAndView) {
+    override fun postHandle(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, modelAndView: ModelAndView?) {
         AuthContext.clear()
         logger.debug("Clearing AuthContext")
     }
 
-    override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse, handler: Any, ex: Exception) {
+    override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, ex: Exception?) {
         AuthContext.clear()
         logger.debug("Clearing AuthContext")
     }
