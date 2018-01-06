@@ -13,17 +13,17 @@ class Subject(
         @Column(name = "subject_id", unique = true)
         val id: Long = -1,
 
-        @OneToMany(mappedBy = "owner", orphanRemoval = true)
+        @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
         val principals: MutableSet<Principal> = hashSetOf(),
 
-        @OneToMany(mappedBy = "owner", orphanRemoval = true)
+        @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
         val credentials: MutableSet<Credential> = hashSetOf(),
 
         @Lob
         @Column(nullable = true)
         val subjectAttachedInfo: String? = null,
 
-        @ManyToMany
+        @ManyToMany(fetch = FetchType.EAGER)
         @JoinTable(
                 name = "subject_roles",
                 joinColumns = [(JoinColumn(name = "subject_id", referencedColumnName = "subject_id", nullable = false))],

@@ -17,12 +17,12 @@ class Session(
 
         val sessionKey: String,
 
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.EAGER)
         @JoinColumn
         @JsonBackReference
         val subject: Subject,
 
-        @ElementCollection
+        @ElementCollection(fetch = FetchType.EAGER)
         @CollectionTable(joinColumns = [(JoinColumn(name = "id"))])
         @Column(name = "authenticated_factor")
         val authenticatedFactors: MutableSet<CredentialType> = hashSetOf(),
