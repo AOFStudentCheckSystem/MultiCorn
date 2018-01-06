@@ -5,8 +5,11 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
 /**
  * Created by dummy on 4/28/17.
  */
-class AuthContext(val internalSession: Session? = null) {
+class AuthContext(private val internalSession: Session? = null) {
 
+    fun isAuthenticated():Boolean {
+        return (this.internalSession?.isAuthenticated()?:false) && (this.internalSession?.isAuthorized()?:false)
+    }
 
     companion object {
         private var threadLocalContext = ThreadLocal<AuthContext>()

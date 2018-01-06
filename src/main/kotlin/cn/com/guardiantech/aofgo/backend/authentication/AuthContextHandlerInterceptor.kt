@@ -1,8 +1,10 @@
 package cn.com.guardiantech.aofgo.backend.authentication
 
+import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.service.AuthenticationService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
 import java.lang.Exception
@@ -27,7 +29,20 @@ open class AuthContextHandlerInterceptor constructor(
                 AuthContext.clear()
             }
         }
-        //Todo implement permission check
+
+        val authCtx = AuthContext.currentContext
+
+        if (handler is HandlerMethod) {
+            if (handler.hasMethodAnnotation(Require::class.java)) {
+                val require = handler.getMethodAnnotation(Require::class.java)
+                // Todo implement permission check
+                if (authCtx.isAuthenticated()) {
+
+                } else {
+                    return false
+                }
+            }
+        }
         return true
     }
 
