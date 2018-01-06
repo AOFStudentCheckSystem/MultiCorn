@@ -5,16 +5,16 @@ import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRe
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
 import cn.com.guardiantech.aofgo.backend.service.AuthenticationService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 /**
  * Created by Codetector on 01/12/2017.
  * Project aofgo-backend
  */
-@Controller
+@RestController
 @RequestMapping("/auth")
 class AuthenticationController @Autowired constructor(
         val authenticationService: AuthenticationService
