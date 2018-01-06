@@ -34,15 +34,15 @@ class Student(
         val dormInfo: String,
 
         @OneToMany
-        @JoinColumn(name = "account_id")
+        @JoinTable
         val advisors: MutableSet<Account> = hashSetOf(),
 
         @OneToMany
-        @JoinColumn(name = "account_id")
+        @JoinTable
         val parents: MutableSet<Account> = hashSetOf(),
 
         @OneToOne
-        @JoinColumn(name = "account_id")
+        @JoinColumn
         val account: Account?
 
 //        @OneToMany

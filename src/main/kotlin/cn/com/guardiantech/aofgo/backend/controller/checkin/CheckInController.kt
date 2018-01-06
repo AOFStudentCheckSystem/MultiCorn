@@ -1,18 +1,17 @@
 package cn.com.guardiantech.aofgo.backend.controller.checkin
 
-import abs
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEventRecord
-import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRecordRepository
-import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
-import cn.com.guardiantech.aofgo.backend.repository.checkin.StudentPagedRepository
+import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
+import cn.com.guardiantech.aofgo.backend.exception.NotFoundException
+import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionResponse
+import cn.com.guardiantech.aofgo.backend.service.checkin.CheckInService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RestController
-import unitDirection
+import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.Valid
 
 /**
@@ -21,62 +20,32 @@ import javax.validation.Valid
  */
 
 @RestController
-@RequestMapping(path = ["/checkin"])
+@RequestMapping(path = ["/checkin/checkin"])
 class CheckInController @Autowired constructor(
-    private val recordRepository: EventRecordRepository,
-    private val eventRepository: EventRepository,
-    private val studentPagedRepository: StudentPagedRepository,
-    private val eventRecordRepository: EventRecordRepository
-){
+        private val checkInService: CheckInService
+) {
+    private val logger: Logger = LoggerFactory.getLogger(CheckInController::class.java)
+
     @RequestMapping(path = ["/submit"], method = [RequestMethod.PUT, RequestMethod.PATCH])
     fun checkInSubmission(@RequestBody @Valid request: CheckInSubmissionRequest): CheckInSubmissionResponse {
-//        var isRequestValid = true
-//        var error: Throwable? = null
-        try {
-            val event = eventRepository.findByEventId(request.targetEvent).get()
-            if (event.eventStatus > 1) {
-                throw IllegalArgumentException("Event has been completed. Invalid request.")
-            }
-
-            if (event.eventStatus < 1) {
-                event.eventStatus = 1
-                eventRepository.save(event)
-            }
-
-            val records = request.recordsToUpload
-
-            var effectiveUpdate = 0
-            var validRecords = 0
-            val totalRecords = records.size
-
-            records.forEach { o ->
-                validRecords++
-                val recordTimestamp = o.timestamp
-                val recordNewStatus = o.status
-                val targetStudent = studentPagedRepository.findByIdNumberIgnoreCase(o.studentId).get()
-                val targetEventRecord = recordRepository.findByEventAndStudent(event, targetStudent).orElseGet {
-                    val r = ActivityEventRecord()
-                    r.event = event
-                    r.student = targetStudent
-                    r
-                }
-                if (targetEventRecord.checkInTime.abs() <= recordTimestamp.abs()) {
-                    effectiveUpdate++
-                    targetEventRecord.checkInTime = recordNewStatus.unitDirection() * recordTimestamp
-                }
-                eventRecordRepository.save(targetEventRecord)
-            }
-
-            return CheckInSubmissionResponse(
-                    targetEvent = event.eventId,
-                    totalRecordsReceived = totalRecords,
-                    validRecords = validRecords,
-                    effectiveRecords = effectiveUpdate
-            )
+        return try {
+            checkInService.checkInSubmission(request)
+        } catch (e: IllegalArgumentException) {
+            logger.error("Error @ checkInSubmission", e)
+            throw BadRequestException(e.message)
         } catch (e: Throwable) {
-//            isRequestValid = false
-//            error = e
-            throw e
+            logger.error("Error @ checkInSubmission", e)
+            throw RepositoryException(e.message)
+        }
+    }
+
+    @RequestMapping(path = ["/record/{eventId}"], method = [(RequestMethod.GET)])
+    fun getRecordForEvent(@PathVariable("eventId") eventId: String): List<ActivityEventRecord> {
+        return try {
+            checkInService.getRecordForEvent(eventId)
+        } catch (e: NoSuchElementException) {
+            logger.error("Error @ getRecordForEvent", e)
+            throw NotFoundException(e.message)
         }
     }
 }

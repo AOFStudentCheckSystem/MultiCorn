@@ -7,18 +7,19 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
-		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
         classpath("org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}")
+		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
-apply plugin: 'java'
+//apply plugin: 'java'
+
 apply plugin: 'kotlin'
+apply plugin: 'kotlin-allopen'
 apply plugin: 'kotlin-spring'
 apply plugin: "kotlin-noarg"
-apply plugin: "kotlin-allopen"
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
@@ -36,10 +37,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url 'http://nexus.codetector.cn/repository/aofgo/' }
-}
-
-allOpen {
-    annotation('javax.persistence.MappedSuperclass')
 }
 
 noArg {
@@ -69,11 +66,14 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
 	compile('org.springframework.boot:spring-boot-starter-validation')
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-mail')
 
     // Kotlin Language Libraries
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
 	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
+
+    compile group: 'com.google.guava', name: 'guava', version: '23.0'
 
     // Logging
     compile "org.apache.logging.log4j:log4j-api:$log4j2Version",
@@ -92,7 +92,7 @@ ext.debug = project.hasProperty('debug') && (Boolean.parseBoolean(project.proper
 
 bootRun {
     // support passing -Dsystem.property=value to bootRun task
-    systemProperties = System.properties
+    systemProperties = System.properties as Map<String, ?>
 }
 
 compileKotlin {
