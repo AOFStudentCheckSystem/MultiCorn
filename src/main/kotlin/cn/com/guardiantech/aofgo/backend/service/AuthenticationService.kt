@@ -15,6 +15,7 @@ import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
 import cn.com.guardiantech.aofgo.backend.util.SessionUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -31,7 +32,7 @@ class AuthenticationService @Autowired constructor(
     private var sessionTimeout: Int = 60
 
     /**
-     * @throws org.springframework.dao.DataIntegrityViolationException Duplicate principal
+     * @throws DataIntegrityViolationException Duplicate principal
      */
     fun register(registerRequest: RegisterRequest): Subject {
         val newSubject = subjectRepo.save(Subject(

@@ -24,22 +24,18 @@ class EventGroupController @Autowired constructor(
     private val logger: Logger = LoggerFactory.getLogger(EventGroupController::class.java)
 
     @RequestMapping(path = ["/create"], method = [RequestMethod.POST])
-    fun createGroup(@RequestBody @Valid request: CreateGroupRequest) =
-            try {
-                eventGroupService.createGroup(request)
-            } catch (e: NoSuchElementException) {
-                logger.error("Error @ createGroup", e)
-                throw NotFoundException(e.message)
-            }
+    fun createGroup(@RequestBody @Valid request: CreateGroupRequest) = try {
+        eventGroupService.createGroup(request)
+    } catch (e: NoSuchElementException) {
+        throw NotFoundException("Group not found")
+    }
 
     @RequestMapping(path = ["/edit/{groupId}/add"], method = [RequestMethod.POST])
     fun addEventToGroup(@RequestBody @Valid request: CREventToGroupRequest,
-                        @PathVariable("groupId") groupId: Long) =
-            try {
-                eventGroupService.addEventToGroup(request, groupId)
-            } catch (e: NoSuchElementException) {
-                logger.error("Error @ addEventToGroup", e)
-                throw NotFoundException(e.message)
-            }
+                        @PathVariable("groupId") groupId: Long) = try {
+        eventGroupService.addEventToGroup(request, groupId)
+    } catch (e: NoSuchElementException) {
+        throw NotFoundException("Group or event not found")
+    }
 
 }

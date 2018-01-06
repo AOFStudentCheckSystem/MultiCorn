@@ -10,6 +10,7 @@ import cn.com.guardiantech.aofgo.backend.service.checkin.EventService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
@@ -21,7 +22,7 @@ import javax.validation.Valid
  * Project AOFGoBackend
  */
 @RestController
-@RequestMapping(path = ["checkin/event"], produces = [MediaType.APPLICATION_JSON_UTF8_VALUE])
+@RequestMapping(path = ["/checkin/event"], produces = [MediaType.APPLICATION_JSON_UTF8_VALUE])
 class EventController @Autowired constructor(
         private val eventService: EventService
 ) {
@@ -33,26 +34,20 @@ class EventController @Autowired constructor(
 
     @RequestMapping(path = ["/create"], method = [RequestMethod.POST])
     fun createEvent(@RequestBody @Valid request: EventRequest): ActivityEvent =
-            try {
-                eventService.createEvent(request)
+            eventService.createEvent(request)
 //            JSONObject().put("success",true).put("newEvent", JSONObject().put("eventId", evt.eventId)).encode()
-            } catch (e: Throwable) {
-                logger.error("Error @ createEvent", e)
-                throw RepositoryException(e.message)
-            }
 
-    @RequestMapping(path = ["/list"])
+    @GetMapping(path = ["/list"])
     fun listAllEvents(pageable: Pageable) =
             eventService.listAllEvents(pageable)
 //        return eventRepo.findAll(PageRequest(pageable.pageNumber, pageable.pageSize, Sort(Sort.Direction.ASC, "eventTime")))
 
-    @RequestMapping(path = ["/list/{status}"])
+    @GetMapping(path = ["/list/{status}"])
     fun listEventsByStatus(@PathVariable status: String): Set<ActivityEvent> =
             try {
                 eventService.listEventsByStatus(status)
-            } catch (e: Throwable) {
-                logger.error("Error @ listEventsByStatus", e)
-                throw BadRequestException(e.message)
+            } catch (e: IllegalArgumentException) {
+                throw BadRequestException("No event status with name")
             }
 
     @RequestMapping(path = ["/list/{id}"], method = [(RequestMethod.GET)])
@@ -60,8 +55,7 @@ class EventController @Autowired constructor(
             try {
                 eventService.getEventById(id)
             } catch (e: NoSuchElementException) {
-                logger.error("Error @ createEvent", e)
-                throw NotFoundException(e.message)
+                throw NotFoundException("Cannot find event")
             }
 
     @GetMapping(path = ["/listall"])
@@ -70,16 +64,13 @@ class EventController @Autowired constructor(
 
     @RequestMapping(path = ["/edit/{eventId}"], method = [(RequestMethod.POST)])
     fun editEvent(@PathVariable("eventId") eventId: String,
-                  @RequestBody @Valid request: EventRequest): ActivityEvent =
-            try {
-                eventService.editEvent(eventId, request)
-            } catch (e: IllegalArgumentException) {
-                logger.error("Error @ editEvent", e)
-                throw BadRequestException(e.message)
-            } catch (e: Throwable) {
-                logger.error("Error @ editEvent", e)
-                throw RepositoryException(e.message)
-            }
+                  @RequestBody @Valid request: EventRequest): ActivityEvent = try {
+        eventService.editEvent(eventId, request)
+    } catch (e: IllegalArgumentException) {
+        throw BadRequestException(e.message)
+    } catch (e: NoSuchElementException) {
+        throw RepositoryException("Cannot find event")
+    }
 
     //TODO: Judgement and dealing with Student without account
     @RequestMapping(path = ["/sendmail"], method = [(RequestMethod.POST)])
@@ -87,13 +78,8 @@ class EventController @Autowired constructor(
             try {
                 eventService.sendSummaryEmail(request)
             } catch (e: IllegalArgumentException) {
-                logger.error("Error @ sendSummaryEmail", e)
                 throw BadRequestException(e.message)
             } catch (e: NoSuchElementException) {
-                logger.error("Error @ sendSummaryEmail", e)
-                throw NotFoundException(e.message)
-            } catch (e: Throwable) {
-                logger.error("Error @ sendSummaryEmail", e)
-                throw RepositoryException(e.message)
+                throw RepositoryException("Cannot find event")
             }
 }

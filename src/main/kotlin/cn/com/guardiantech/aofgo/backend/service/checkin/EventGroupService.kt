@@ -7,10 +7,7 @@ import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.CREventToGroupRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.CreateGroupRequest
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestParam
 
 /**
  * Created by dedztbh on 1/6/18.
@@ -23,16 +20,20 @@ class EventGroupService @Autowired constructor(
         private val eventGroupRepo: EventGroupRepository
 ) {
 
+    /**
+     * @throws NoSuchElementException Group not found
+     */
     fun createGroup(request: CreateGroupRequest) {
         val events: MutableSet<ActivityEvent> = hashSetOf()
         request.groupItems.forEach {
-            //NSEE
             events.add(eventRepo.findByEventId(it).get())
         }
         val group = eventGroupRepo.save(EventGroup(name = request.name, events = events))
     }
 
-    //NSEE
+    /**
+     * @throws NoSuchElementException Group or event not found
+     */
     fun addEventToGroup(request: CREventToGroupRequest, groupId: Long) {
         val targetGroup = eventGroupRepo.findById(groupId).get()
         val targetEvent = eventRepo.findByEventId(request.eventId).get()

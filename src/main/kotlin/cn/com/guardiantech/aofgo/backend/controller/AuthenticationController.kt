@@ -35,7 +35,7 @@ class AuthenticationController @Autowired constructor(
         val msg = when (e) {
             is DataIntegrityViolationException -> "Duplicate principal"
             else -> {
-                logger.error("Error @ register", e)
+                logger.error("Unexpected Error @ register", e)
                 null
             }
         }

@@ -40,6 +40,9 @@ class EventService @Autowired constructor(
     fun listAllEvents(pageable: Pageable): Page<ActivityEvent> =
             eventRepository.findAll(pageable)
 
+    /**
+     * @throws IllegalArgumentException No event status with name
+     */
     fun listEventsByStatus(status: String): Set<ActivityEvent> {
         val statusNumber = status.toIntOrNull()
         val statusEnum = if (statusNumber != null) {
@@ -47,18 +50,23 @@ class EventService @Autowired constructor(
                 it.status == statusNumber
             }
         } else {
-            //May Explode
             EventStatus.valueOf(status)
         }
         return eventRepository.findByEventStatus(statusEnum)
     }
 
-    //NSEE
+    /**
+     * @throws NoSuchElementException Cannot find event
+     */
     fun getEventById(id: String) = eventRepository.findByEventId(id).get()
 
     fun listAllEventsNoPage(): Page<ActivityEvent> =
             listAllEvents(PageRequest(0, Int.MAX_VALUE))
 
+    /**
+     * @throws NoSuchElementException Cannot find event
+     * @throws IllegalArgumentException
+     */
     fun editEvent(eventId: String, request: EventRequest): ActivityEvent {
         val eventToEdit = eventRepository.findByEventId(eventId).get()
         if (eventToEdit.eventStatus == EventStatus.COMPLETED) {
@@ -79,11 +87,14 @@ class EventService @Autowired constructor(
         return eventRepository.save(eventToEdit)
     }
 
+    /**
+     * @throws NoSuchElementException Cannot find event
+     * @throws IllegalArgumentException
+     */
     fun sendSummaryEmail(request: SendEmailRequest) {
         if (!isValidEmailAddress(request.address)) {
             throw IllegalArgumentException("Invalid email address")
         }
-        //NSEE
         val event = eventRepository.findByEventId(request.eventId).get()
         if (event.eventStatus.status < 2) {
             throw IllegalArgumentException("Only completed events is allowed to compile a result list")
