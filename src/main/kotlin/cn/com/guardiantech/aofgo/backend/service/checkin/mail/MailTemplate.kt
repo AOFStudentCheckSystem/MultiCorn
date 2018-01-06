@@ -1,6 +1,4 @@
-package cn.com.guardiantech.checkin.server.mail
-
-import java.util.*
+package cn.com.guardiantech.aofgo.backend.service.checkin.mail
 
 class MailTemplate constructor(var templateContent: String) {
     var recipientAddress: String = ""

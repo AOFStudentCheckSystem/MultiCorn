@@ -1,7 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.service.checkin
 
-import cn.com.guardiantech.checkin.server.mail.MailTemplate
-import cn.com.guardiantech.checkin.server.mail.MailTemplateFactory
+import cn.com.guardiantech.aofgo.backend.service.checkin.mail.MailTemplate
+import cn.com.guardiantech.aofgo.backend.service.checkin.mail.MailTemplateFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
