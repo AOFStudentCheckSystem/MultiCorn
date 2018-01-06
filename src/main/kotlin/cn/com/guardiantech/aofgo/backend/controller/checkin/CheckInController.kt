@@ -7,11 +7,9 @@ import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.StudentPagedRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionResponse
+import cn.com.guardiantech.aofgo.backend.request.checkin.RecordForEvent
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import unitDirection
 import javax.validation.Valid
 
@@ -23,11 +21,11 @@ import javax.validation.Valid
 @RestController
 @RequestMapping(path = ["/checkin"])
 class CheckInController @Autowired constructor(
-    private val recordRepository: EventRecordRepository,
-    private val eventRepository: EventRepository,
-    private val studentPagedRepository: StudentPagedRepository,
-    private val eventRecordRepository: EventRecordRepository
-){
+        private val recordRepository: EventRecordRepository,
+        private val eventRepository: EventRepository,
+        private val studentPagedRepository: StudentPagedRepository,
+        private val eventRecordRepository: EventRecordRepository
+) {
     @RequestMapping(path = ["/submit"], method = [RequestMethod.PUT, RequestMethod.PATCH])
     fun checkInSubmission(@RequestBody @Valid request: CheckInSubmissionRequest): CheckInSubmissionResponse {
 //        var isRequestValid = true
@@ -79,4 +77,9 @@ class CheckInController @Autowired constructor(
             throw e
         }
     }
+
+    @RequestMapping(path = ["/record/{eventId}"], method = [(RequestMethod.GET)])
+    fun getRecordForEvent(@PathVariable("eventId") eventId: String): RecordForEvent = RecordForEvent(
+            eventRecordRepository.findByEvent(
+                    eventRepository.findByEventId(eventId).get()).toTypedArray())
 }
