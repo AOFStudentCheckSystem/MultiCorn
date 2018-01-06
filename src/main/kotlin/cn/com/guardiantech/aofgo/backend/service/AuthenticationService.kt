@@ -30,7 +30,10 @@ class AuthenticationService @Autowired constructor(
     @Value("\${auth.sessionTimeout}")
     private var sessionTimeout: Int = 60
 
-    fun register(registerRequest: RegisterRequest) {
+    /**
+     * @throws org.springframework.dao.DataIntegrityViolationException Duplicate principal
+     */
+    fun register(registerRequest: RegisterRequest): Subject {
         val newSubject = subjectRepo.save(Subject(
                 subjectAttachedInfo = registerRequest.subjectAttachedInfo))
 
@@ -46,6 +49,7 @@ class AuthenticationService @Autowired constructor(
                 secret = processedSecret,
                 owner = newSubject
         ))
+        return newSubject
     }
 
     fun authenticate(authRequest: AuthenticationRequest): Session {
