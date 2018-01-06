@@ -19,3 +19,5 @@ spring:
       test-while-idle: true
       validation-query: SELECT 1
     driver-class-name: com.mysql.cj.jdbc.Driver
+auth:
+  sessionTimeout: 1800

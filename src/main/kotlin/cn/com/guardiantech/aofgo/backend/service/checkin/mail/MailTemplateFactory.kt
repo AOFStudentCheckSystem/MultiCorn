@@ -1,8 +1,7 @@
-package cn.com.guardiantech.checkin.server.mail
+package cn.com.guardiantech.aofgo.backend.service.checkin.mail
 
 import com.google.common.io.Resources
 import java.io.File
-import java.nio.charset.Charset
 import java.util.*
 
 /**
@@ -12,8 +11,8 @@ import java.util.*
 class MailTemplateFactory {
     companion object {
         fun createTemplateByFileName(fileName: String): MailTemplate {
-            println(Arrays.toString(File(this.javaClass.getResource("/email").path).list()))
-            return MailTemplate(Resources.toString(this.javaClass.getResource("/email/$fileName.template"), Charsets.UTF_8))
+            println(Arrays.toString(File(this::class.java.getResource("/email").path).list()))
+            return MailTemplate(Resources.toString(this::class.java.getResource("/email/$fileName.template"), Charsets.UTF_8))
         }
     }
 }

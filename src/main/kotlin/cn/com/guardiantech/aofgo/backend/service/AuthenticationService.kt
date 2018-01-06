@@ -12,15 +12,20 @@ import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRe
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
 import cn.com.guardiantech.aofgo.backend.util.SessionUtil
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class AuthenticationService @Autowired constructor(
-        val subjectRepo: SubjectRepository,
-        val principalRepo: PrincipalRepository,
-        val credentialRepo: CredentialRepository,
-        val sessionRepo: SessionRepository
+        private val subjectRepo: SubjectRepository,
+        private val principalRepo: PrincipalRepository,
+        private val credentialRepo: CredentialRepository,
+        private val sessionRepo: SessionRepository
 ) {
+
+    @Value("\${auth.sessionTimeout}")
+    private var sessionTimeout: Int = 60
 
     fun register(registerRequest: RegisterRequest) {
         val newSubject = subjectRepo.save(Subject(
@@ -56,5 +61,23 @@ class AuthenticationService @Autowired constructor(
             // Invalid Credential
             throw RuntimeException()
         }
+    }
+
+    fun authenticateSession(session: String): Session? {
+        val sessionFind = sessionRepo.findBySessionKey(session)
+
+        val expireDate = Calendar.getInstance()
+        expireDate.time = Date()
+        expireDate.add(Calendar.SECOND, sessionTimeout)
+
+        if (sessionFind.isPresent) {
+            val returnSession = sessionFind.get()
+            if (returnSession.accessTimestamp.before(expireDate.time)) {
+                returnSession.accessTimestamp = Date()
+                sessionRepo.save(returnSession)
+                return returnSession
+            }
+        }
+        return null
     }
 }

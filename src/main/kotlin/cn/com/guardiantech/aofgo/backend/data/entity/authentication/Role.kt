@@ -7,7 +7,7 @@ class Role(
         @Id
         @GeneratedValue
         @Column(name = "role_id")
-        val roleId: Long = -1,
+        val id: Long = -1,
 
         @Column(name = "role_name", unique = true)
         val roleName: String,
