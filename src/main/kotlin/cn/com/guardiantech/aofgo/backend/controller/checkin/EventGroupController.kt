@@ -75,19 +75,19 @@ class EventGroupController @Autowired constructor(
     fun listEventGroups(pageable: Pageable): Page<EventGroup> =
             eventGroupService.listEventGroups(pageable)
 
-    @GetMapping(path = ["/list/{id}"])
+    @RequestMapping(path = ["/list/{id}"], method = [RequestMethod.GET])
     fun getEventGroupById(@PathVariable id: Long) = try {
         eventGroupService.getEventGroupById(id)
     } catch (e: NoSuchElementException) {
         throw NotFoundException("Group not found")
     }
 
-    @GetMapping(path = ["/listall"])
+    @RequestMapping(path = ["/listall"], method = [RequestMethod.GET])
     fun listAllEventGroups() =
             listEventGroups(
                     PageRequest(0, Int.MAX_VALUE))
 
-    @GetMapping(path = ["/list-available"])
+    @RequestMapping(path = ["/list-available"], method = [RequestMethod.GET])
     fun listAvailable() =
             eventGroupService.listAvailable()
 }
