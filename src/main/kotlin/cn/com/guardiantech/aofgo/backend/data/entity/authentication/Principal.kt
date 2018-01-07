@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import javax.persistence.*
 
 /**
@@ -22,5 +23,6 @@ class Principal(
 
         @ManyToOne
         @JoinColumn(name = "principal_owner")
+        @JsonBackReference
         var owner: Subject
 )

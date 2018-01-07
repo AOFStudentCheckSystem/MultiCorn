@@ -16,8 +16,12 @@ import cn.com.guardiantech.aofgo.backend.util.SessionUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
+import javax.transaction.Transactional
 
 @Service
 class AuthenticationService @Autowired constructor(
@@ -28,12 +32,17 @@ class AuthenticationService @Autowired constructor(
         private val authenticationMechanism: AuthenticationMechanism
 ) {
 
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
+
     @Value("\${auth.sessionTimeout}")
     private var sessionTimeout: Int = 60
 
     /**
      * @throws DataIntegrityViolationException Duplicate principal
      */
+    @Transactional
+    @Modifying
     fun register(registerRequest: RegisterRequest): Subject {
         val newSubject = subjectRepo.save(Subject(
                 subjectAttachedInfo = registerRequest.subjectAttachedInfo))
@@ -50,6 +59,7 @@ class AuthenticationService @Autowired constructor(
                 secret = processedSecret,
                 owner = newSubject
         ))
+        entityManager.refresh(newSubject)
         return newSubject
     }
 
