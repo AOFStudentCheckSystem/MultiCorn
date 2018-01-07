@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import javax.persistence.*
 
 /**
@@ -14,9 +15,11 @@ class Subject(
         val id: Long = -1,
 
         @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
+        @JsonManagedReference
         val principals: MutableSet<Principal> = hashSetOf(),
 
         @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
+        @JsonManagedReference
         val credentials: MutableSet<Credential> = hashSetOf(),
 
         @Lob
