@@ -3,8 +3,8 @@ package cn.com.guardiantech.aofgo.backend.service.checkin
 import abs
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEventRecord
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
+import cn.com.guardiantech.aofgo.backend.repository.checkin.ActivityEventRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRecordRepository
-import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.StudentPagedRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionResponse
@@ -20,7 +20,7 @@ import unitDirection
 @Service
 class CheckInService @Autowired constructor(
         private val recordRepository: EventRecordRepository,
-        private val eventRepository: EventRepository,
+        private val eventRepository: ActivityEventRepository,
         private val studentPagedRepository: StudentPagedRepository,
         private val eventRecordRepository: EventRecordRepository
 ) {

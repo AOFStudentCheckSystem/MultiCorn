@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 class SignupService @Autowired constructor(
         private val sheetRepository: SignUpSheetRepository,
         private val signupSheetEntryRepository: SignupSheetEntryRepository,
-        private val eventRepository: EventRepository,
+        private val eventRepository: ActivityEventRepository,
         private val eventRecordRepository: EventRecordRepository,
         private val groupRepository: EventGroupRepository,
         private val emailService: EmailService

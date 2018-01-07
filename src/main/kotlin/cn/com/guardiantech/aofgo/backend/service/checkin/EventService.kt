@@ -2,8 +2,8 @@ package cn.com.guardiantech.aofgo.backend.service.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
+import cn.com.guardiantech.aofgo.backend.repository.checkin.ActivityEventRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRecordRepository
-import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.SendEmailRequest
 import cn.com.guardiantech.aofgo.backend.service.checkin.mail.MailTemplateFactory
@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.*
+import kotlin.NoSuchElementException
 
 /**
  * Created by dedztbh on 1/6/18.
@@ -22,12 +23,17 @@ import java.util.*
 
 @Service
 class EventService @Autowired constructor(
-        private val eventRepository: EventRepository,
+        private val eventRepository: ActivityEventRepository,
         private val eventRecordRepository: EventRecordRepository,
         private val mailService: EmailService
 ) {
 
-    fun removeEvent(eventID: String) = eventRepository.removeByEventId(eventID)
+    fun removeEvent(eventID: String) {
+        val linesChanged = eventRepository.removeByEventId(eventID)
+        if (linesChanged == 0L) {
+            throw NoSuchElementException("Failed to locate ActivityEvent(eventId=$eventID)")
+        }
+    }
 
     fun createEvent(request: EventRequest): ActivityEvent {
         return eventRepository.save(
