@@ -2,8 +2,8 @@ package cn.com.guardiantech.aofgo.backend.service.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventGroup
+import cn.com.guardiantech.aofgo.backend.repository.checkin.ActivityEventRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventGroupRepository
-import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.CREventToGroupRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.GroupRequest
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +20,7 @@ import java.util.*
 
 @Service
 class EventGroupService @Autowired constructor(
-        private val eventRepo: EventRepository,
+        private val eventRepo: ActivityEventRepository,
         private val eventGroupRepo: EventGroupRepository
 ) {
 

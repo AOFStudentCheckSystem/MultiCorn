@@ -10,9 +10,9 @@ import cn.com.guardiantech.aofgo.backend.service.checkin.EventService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -29,8 +29,14 @@ class EventController @Autowired constructor(
     private val logger: Logger = LoggerFactory.getLogger(EventController::class.java)
 
     @RequestMapping(path = ["/remove/{id}"], method = [RequestMethod.DELETE])
-    fun removeEvent(@PathVariable("id") eventID: String) =
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun removeEvent(@PathVariable("id") eventID: String) {
+        try {
             eventService.removeEvent(eventID)
+        } catch (e: NoSuchElementException) {
+            throw BadRequestException(e.message)
+        }
+    }
 
     @RequestMapping(path = ["/create"], method = [RequestMethod.POST])
     fun createEvent(@RequestBody @Valid request: EventRequest): ActivityEvent =
