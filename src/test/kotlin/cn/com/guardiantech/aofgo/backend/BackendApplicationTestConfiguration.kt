@@ -1,5 +1,7 @@
 package cn.com.guardiantech.aofgo.backend
 
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration
+import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 
@@ -9,4 +11,7 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 @ComponentScan("cn.com.guardiantech.aofgo.backend")
-class BackendApplicationTestConfiguration
+@ImportAutoConfiguration(classes = [MailSenderAutoConfiguration::class])
+class BackendApplicationTestConfiguration {
+
+}

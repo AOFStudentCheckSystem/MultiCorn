@@ -11,12 +11,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
   mail:
-    from: "AOF Activity Sign-up<signups@233.com.hk>"
-    host: hn2.guardiantech.com.cn
+    from: "DUMMY<example@example.com>"
+    host: localhost
     protocol: smtps
-    port: 587
-    username: ${smtpusr:signups@233.com.hk}
-    password: ${smtppass}
+    port: 588
+    username: "DUMMY"
+    password: "DUMMY"
     properties:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true

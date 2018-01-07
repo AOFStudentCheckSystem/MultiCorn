@@ -25,7 +25,7 @@ spring:
     protocol: smtps
     port: 587
     username: ${smtpusr:signups@233.com.hk}
-    password: ${smtppass}
+    password: ${smtppass:}
     properties:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true
