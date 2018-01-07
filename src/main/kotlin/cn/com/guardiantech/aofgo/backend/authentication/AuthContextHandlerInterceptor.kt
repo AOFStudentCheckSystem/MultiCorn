@@ -33,8 +33,11 @@ open class AuthContextHandlerInterceptor constructor(
         val authCtx = AuthContext.currentContext
 
         if (handler is HandlerMethod) {
-            if (handler.hasMethodAnnotation(Require::class.java)) {
-                val require = handler.getMethodAnnotation(Require::class.java)
+            if (checkRequire(handler)) {
+
+                // This should be guaranteed, as checkRequire has already checked the preconditions
+                val require = getNearestRequire(handler)!!
+
                 // Todo implement permission check
                 if (authCtx.isAuthenticated()) {
 
@@ -44,6 +47,19 @@ open class AuthContextHandlerInterceptor constructor(
             }
         }
         return true
+    }
+
+    private fun checkRequire(handlerMethod: HandlerMethod): Boolean {
+        return handlerMethod.hasMethodAnnotation(Require::class.java) || handlerMethod.method.declaringClass.isAnnotationPresent(Require::class.java)
+    }
+
+    private fun getNearestRequire(handlerMethod: HandlerMethod): Require? {
+        if (handlerMethod.hasMethodAnnotation(Require::class.java)) {
+            return handlerMethod.getMethodAnnotation(Require::class.java)
+        } else if (handlerMethod.method.declaringClass.isAnnotationPresent(Require::class.java)) {
+            return handlerMethod.method.declaringClass.getDeclaredAnnotation(Require::class.java)
+        }
+        return null
     }
 
     override fun postHandle(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, modelAndView: ModelAndView?) {
