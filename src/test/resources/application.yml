@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: aofgo-backend
+  jpa:
+    database: HSQL
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  mail:
+    from: "AOF Activity Sign-up<signups@233.com.hk>"
+    host: hn2.guardiantech.com.cn
+    protocol: smtps
+    port: 587
+    username: ${smtpusr:signups@233.com.hk}
+    password: ${smtppass}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.transport.protocol: smtps
+auth:
+  sessionTimeout: 1800

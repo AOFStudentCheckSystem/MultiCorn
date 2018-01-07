@@ -83,9 +83,11 @@ dependencies {
             "org.slf4j:slf4j-api:$slf4jVersion"
 
 
-    runtime('com.h2database:h2')
     runtime group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
+
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+    testRuntime('com.h2database:h2')
 }
 
 ext.debug = project.hasProperty('debug') && (Boolean.parseBoolean(project.property("debug") as String))
