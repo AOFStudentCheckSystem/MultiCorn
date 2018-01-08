@@ -43,12 +43,12 @@ class EventController @Autowired constructor(
             eventService.createEvent(request)
 //            JSONObject().put("success",true).put("newEvent", JSONObject().put("eventId", evt.eventId)).encode()
 
-    @GetMapping(path = ["/list"])
+    @RequestMapping(path = ["/list"], method = [RequestMethod.GET])
     fun listAllEvents(pageable: Pageable) =
             eventService.listAllEvents(pageable)
 //        return eventRepo.findAll(PageRequest(pageable.pageNumber, pageable.pageSize, Sort(Sort.Direction.ASC, "eventTime")))
 
-    @GetMapping(path = ["/list/{status}"])
+    @RequestMapping(path = ["/list/{status}"], method = [RequestMethod.GET])
     fun listEventsByStatus(@PathVariable status: String): Set<ActivityEvent> =
             try {
                 eventService.listEventsByStatus(status)
@@ -56,7 +56,7 @@ class EventController @Autowired constructor(
                 throw BadRequestException("No event status with name")
             }
 
-    @RequestMapping(path = ["/list/{id}"], method = [(RequestMethod.GET)])
+    @RequestMapping(path = ["/list/{id}"], method = [RequestMethod.GET])
     fun getEventById(@PathVariable id: String): ActivityEvent =
             try {
                 eventService.getEventById(id)
@@ -64,11 +64,11 @@ class EventController @Autowired constructor(
                 throw NotFoundException("Cannot find event")
             }
 
-    @GetMapping(path = ["/listall"])
+    @RequestMapping(path = ["/listall"], method = [RequestMethod.GET])
     fun listAllEventsNoPage(): Page<ActivityEvent> =
             eventService.listAllEventsNoPage()
 
-    @RequestMapping(path = ["/edit/{eventId}"], method = [(RequestMethod.POST)])
+    @RequestMapping(path = ["/edit/{eventId}"], method = [RequestMethod.POST])
     fun editEvent(@PathVariable("eventId") eventId: String,
                   @RequestBody @Valid request: EventRequest): ActivityEvent = try {
         eventService.editEvent(eventId, request)
@@ -79,13 +79,12 @@ class EventController @Autowired constructor(
     }
 
     //TODO: Judgement and dealing with Student without account
-    @RequestMapping(path = ["/sendmail"], method = [(RequestMethod.POST)])
-    fun sendSummaryEmail(@RequestBody @Valid request: SendEmailRequest) =
-            try {
-                eventService.sendSummaryEmail(request)
-            } catch (e: IllegalArgumentException) {
-                throw BadRequestException(e.message)
-            } catch (e: NoSuchElementException) {
-                throw RepositoryException("Cannot find event")
-            }
+    @RequestMapping(path = ["/sendmail"], method = [RequestMethod.POST])
+    fun sendSummaryEmail(@RequestBody @Valid request: SendEmailRequest) = try {
+        eventService.sendSummaryEmail(request)
+    } catch (e: IllegalArgumentException) {
+        throw BadRequestException(e.message)
+    } catch (e: NoSuchElementException) {
+        throw RepositoryException("Cannot find event")
+    }
 }

@@ -2,8 +2,8 @@ package cn.com.guardiantech.aofgo.backend.service.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
-import cn.com.guardiantech.aofgo.backend.repository.checkin.ActivityEventRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRecordRepository
+import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.SendEmailRequest
 import cn.com.guardiantech.aofgo.backend.service.checkin.mail.MailTemplateFactory
@@ -23,7 +23,7 @@ import kotlin.NoSuchElementException
 
 @Service
 class EventService @Autowired constructor(
-        private val eventRepository: ActivityEventRepository,
+        private val eventRepository: EventRepository,
         private val eventRecordRepository: EventRecordRepository,
         private val mailService: EmailService
 ) {
