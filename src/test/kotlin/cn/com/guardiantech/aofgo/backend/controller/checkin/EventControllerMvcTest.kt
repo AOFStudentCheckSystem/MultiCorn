@@ -16,13 +16,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.data.web.config.EnableSpringDataWebSupport
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.*
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat
+import java.text.DateFormat
 
 
 @RunWith(SpringRunner::class)
@@ -30,6 +34,7 @@ import java.util.*
 @DataJpaTest
 @Import(BackendApplicationTestConfiguration::class)
 @AutoConfigureMockMvc
+@EnableSpringDataWebSupport
 class EventControllerMvcTest {
 
     @Autowired private lateinit var mockMvc: MockMvc
@@ -39,6 +44,13 @@ class EventControllerMvcTest {
 
     private lateinit var event: ActivityEvent
 
+    private val eventCreationRawRequest = """
+                            {
+                                "name":"Tset",
+                                "description":null,
+                                "time":613006413
+                            }
+                        """.trimIndent()
 
     @Before
     fun setUp() {
@@ -79,31 +91,35 @@ class EventControllerMvcTest {
         val count = eventRepo.count()
         mockMvc
                 .perform(post("/checkin/event/create")
-                        .content("""
-                            {
-                                "name":"Tset",
-                                "description":null,
-                                "time":613006413
-                            }
-                        """.trimIndent())
+                        .content(eventCreationRawRequest)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk)
-                .andExpect{
+                .andExpect {
                     val obj = JSONObject(it.response.contentAsString)
-                    assertNotNull(obj.optString("eventId", null))
-                    assertEquals( "Tset", obj.optString("eventName", null))
+                    assertEquals("Tset", obj.optString("eventName", null))
+                    val id= obj.optString("eventId", null)
+                    assertNotNull(id)
                     assertEquals("", obj.optString("eventDescription", null))
-                    assertEquals(89, Date(obj.optLong("eventTime", Long.MIN_VALUE) * 1000).year)
+                    assertEquals(613006413000, eventRepo.findByEventId(id).get().eventTime.time)
+                    assertEquals(613006413, obj.optLong("eventTime", Long.MIN_VALUE))
                     assertEquals("FUTURE", obj.optString("eventStatus"))
                 }
         assertEquals(count + 1, eventRepo.count())
     }
 
+
     @Test
     fun listAllEvents() {
-//        mockMvc
-//                .perform(get())
+        mockMvc
+                .perform(get("/checkin/event/list")
+                        .content(eventCreationRawRequest)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andDo {
+                    println(it.response.contentAsString)
+                }
     }
 
     @Test
