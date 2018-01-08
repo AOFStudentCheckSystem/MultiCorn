@@ -56,7 +56,7 @@ class EventController @Autowired constructor(
                 throw BadRequestException("No event status with name")
             }
 
-    @RequestMapping(path = ["/list/{id}"], method = [RequestMethod.GET])
+    @RequestMapping(path = ["/{id}"], method = [RequestMethod.GET])
     fun getEventById(@PathVariable id: String): ActivityEvent =
             try {
                 eventService.getEventById(id)

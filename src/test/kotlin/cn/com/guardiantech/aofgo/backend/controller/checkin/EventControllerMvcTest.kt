@@ -6,6 +6,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
+import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert.*
 import org.junit.Before
@@ -23,10 +24,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.*
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat
-import java.text.DateFormat
 
 
 @RunWith(SpringRunner::class)
@@ -98,7 +95,7 @@ class EventControllerMvcTest {
                 .andExpect {
                     val obj = JSONObject(it.response.contentAsString)
                     assertEquals("Tset", obj.optString("eventName", null))
-                    val id= obj.optString("eventId", null)
+                    val id = obj.optString("eventId", null)
                     assertNotNull(id)
                     assertEquals("", obj.optString("eventDescription", null))
                     assertEquals(613006413000, eventRepo.findByEventId(id).get().eventTime.time)
@@ -107,7 +104,6 @@ class EventControllerMvcTest {
                 }
         assertEquals(count + 1, eventRepo.count())
     }
-
 
     @Test
     fun listAllEvents() {
@@ -124,6 +120,36 @@ class EventControllerMvcTest {
 
     @Test
     fun listEventsByStatus() {
+        val boardingEvent = eventController.createEvent(
+                EventRequest(
+                        name = "まほう2",
+                        description = null,
+                        status = EventStatus.BOARDING,
+                        time = null
+                )
+        )
+        mockMvc.perform(get("/checkin/event/list/future"))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andDo {
+                    val arr = JSONArray(it.response.contentAsString)
+                    assertEquals(1, arr.length())
+                    assertNotEquals(boardingEvent.eventId, arr.getJSONObject(0).getString("eventId"))
+                }
+        mockMvc.perform(get("/checkin/event/list/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andDo {
+                    val arr = JSONArray(it.response.contentAsString)
+                    assertEquals(1, arr.length())
+                    assertEquals(boardingEvent.eventId, arr.getJSONObject(0).getString("eventId"))
+                }
+        mockMvc.perform(get("/checkin/event/list/COMPLETED"))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andDo {
+                    val arr = JSONArray(it.response.contentAsString)
+                    assertEquals(0, arr.length())
+                }
+        mockMvc.perform(get("/checkin/event/list/MAHOU"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 
     @Test

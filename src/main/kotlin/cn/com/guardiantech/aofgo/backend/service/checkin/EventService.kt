@@ -40,7 +40,8 @@ class EventService @Autowired constructor(
                 ActivityEvent(
                         eventName = request.name,
                         eventTime = request.time ?: Date(),
-                        eventDescription = request.description ?: ""))
+                        eventDescription = request.description ?: "",
+                        eventStatus = request.status ?: EventStatus.FUTURE))
     }
 
     fun listAllEvents(pageable: Pageable): Page<ActivityEvent> =
@@ -50,13 +51,14 @@ class EventService @Autowired constructor(
      * @throws IllegalArgumentException No event status with name
      */
     fun listEventsByStatus(status: String): Set<ActivityEvent> {
-        val statusNumber = status.toIntOrNull()
+        val upperCasedStatus= status.toUpperCase()
+        val statusNumber = upperCasedStatus.toIntOrNull()
         val statusEnum = if (statusNumber != null) {
             EventStatus.values().first {
                 it.status == statusNumber
             }
         } else {
-            EventStatus.valueOf(status)
+            EventStatus.valueOf(upperCasedStatus)
         }
         return eventRepository.findByEventStatus(statusEnum)
     }
