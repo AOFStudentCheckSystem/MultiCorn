@@ -24,6 +24,10 @@ class CheckInService @Autowired constructor(
         private val studentPagedRepository: StudentPagedRepository,
         private val eventRecordRepository: EventRecordRepository
 ) {
+    /**
+     * @throws IllegalArgumentException
+     * @throws NoSuchElementException Event or student not found
+     */
     fun checkInSubmission(request: CheckInSubmissionRequest): CheckInSubmissionResponse {
         val event = eventRepository.findByEventId(request.targetEvent).get()
         if (event.eventStatus.status > 1) {
@@ -67,7 +71,9 @@ class CheckInService @Autowired constructor(
         )
     }
 
-    // NoSuchElementException
+    /**
+     * @throws NoSuchElementException Event not found
+     */
     fun getRecordForEvent(eventId: String) =
             eventRecordRepository.findByEvent(
                     eventRepository.findByEventId(eventId).get())

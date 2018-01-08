@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import org.hibernate.annotations.UpdateTimestamp
 import java.util.*
 import javax.persistence.*
@@ -24,6 +25,7 @@ class Credential (
 
 
         @ManyToOne
+        @JsonBackReference
         @JoinColumn(name = "credential_owner")
         var owner: Subject,
 

@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: aofgo-backend
+  jpa:
+    database: HSQL
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  mail:
+    from: "DUMMY<example@example.com>"
+    host: localhost
+    protocol: smtps
+    port: 588
+    username: "DUMMY"
+    password: "DUMMY"
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.transport.protocol: smtps
+auth:
+  sessionTimeout: 1800

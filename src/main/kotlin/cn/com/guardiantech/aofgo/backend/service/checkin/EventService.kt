@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.*
+import kotlin.NoSuchElementException
 
 /**
  * Created by dedztbh on 1/6/18.
@@ -27,38 +28,53 @@ class EventService @Autowired constructor(
         private val mailService: EmailService
 ) {
 
-    fun removeEvent(eventID: String) = eventRepository.removeByEventId(eventID)
+    fun removeEvent(eventID: String) {
+        val linesChanged = eventRepository.removeByEventId(eventID)
+        if (linesChanged == 0L) {
+            throw NoSuchElementException("Failed to locate ActivityEvent(eventId=$eventID)")
+        }
+    }
 
     fun createEvent(request: EventRequest): ActivityEvent {
         return eventRepository.save(
                 ActivityEvent(
                         eventName = request.name,
                         eventTime = request.time ?: Date(),
-                        eventDescription = request.description ?: ""))
+                        eventDescription = request.description ?: "",
+                        eventStatus = request.status ?: EventStatus.FUTURE))
     }
 
     fun listAllEvents(pageable: Pageable): Page<ActivityEvent> =
             eventRepository.findAll(pageable)
 
+    /**
+     * @throws IllegalArgumentException No event status with name
+     */
     fun listEventsByStatus(status: String): Set<ActivityEvent> {
-        val statusNumber = status.toIntOrNull()
+        val upperCasedStatus= status.toUpperCase()
+        val statusNumber = upperCasedStatus.toIntOrNull()
         val statusEnum = if (statusNumber != null) {
             EventStatus.values().first {
                 it.status == statusNumber
             }
         } else {
-            //May Explode
-            EventStatus.valueOf(status)
+            EventStatus.valueOf(upperCasedStatus)
         }
         return eventRepository.findByEventStatus(statusEnum)
     }
 
-    //NSEE
+    /**
+     * @throws NoSuchElementException Cannot find event
+     */
     fun getEventById(id: String) = eventRepository.findByEventId(id).get()
 
     fun listAllEventsNoPage(): Page<ActivityEvent> =
             listAllEvents(PageRequest(0, Int.MAX_VALUE))
 
+    /**
+     * @throws NoSuchElementException Cannot find event
+     * @throws IllegalArgumentException
+     */
     fun editEvent(eventId: String, request: EventRequest): ActivityEvent {
         val eventToEdit = eventRepository.findByEventId(eventId).get()
         if (eventToEdit.eventStatus == EventStatus.COMPLETED) {
@@ -79,11 +95,14 @@ class EventService @Autowired constructor(
         return eventRepository.save(eventToEdit)
     }
 
+    /**
+     * @throws NoSuchElementException Cannot find event
+     * @throws IllegalArgumentException
+     */
     fun sendSummaryEmail(request: SendEmailRequest) {
         if (!isValidEmailAddress(request.address)) {
             throw IllegalArgumentException("Invalid email address")
         }
-        //NSEE
         val event = eventRepository.findByEventId(request.eventId).get()
         if (event.eventStatus.status < 2) {
             throw IllegalArgumentException("Only completed events is allowed to compile a result list")
