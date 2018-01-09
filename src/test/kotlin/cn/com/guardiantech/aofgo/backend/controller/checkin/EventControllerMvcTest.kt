@@ -114,18 +114,16 @@ class EventControllerMvcTest {
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andDo {
-                    println(it.response.contentAsString)
+                    println("Content: ${it.response.contentAsString}")
                 }
     }
 
     @Test
     fun listEventsByStatus() {
-        val boardingEvent = eventController.createEvent(
-                EventRequest(
-                        name = "まほう2",
-                        description = null,
-                        status = EventStatus.BOARDING,
-                        time = null
+        val boardingEvent = eventRepo.save(
+                ActivityEvent(
+                        eventName = "まほう2",
+                        eventStatus = EventStatus.BOARDING
                 )
         )
         mockMvc.perform(get("/checkin/event/list/future"))
@@ -154,17 +152,87 @@ class EventControllerMvcTest {
 
     @Test
     fun getEventById() {
+        val boardingEvent = eventRepo.save(
+                ActivityEvent(
+                        eventName = "まほう2",
+                        eventStatus = EventStatus.BOARDING
+                )
+        )
+        mockMvc.perform(get("/checkin/event/${boardingEvent.eventId}"))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.perform(get("/checkin/event/DNE"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
     @Test
     fun listAllEventsNoPage() {
+        mockMvc.perform(get("/checkin/event/listall"))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andDo {
+                    val contents = JSONObject(it.response.contentAsString).getJSONArray("content")
+                    assertEquals(1, contents.length())
+                }
     }
 
     @Test
     fun editEvent() {
+        var boardingEvent = eventRepo.save(
+                ActivityEvent(
+                        eventName = "まほう2",
+                        eventDescription = "Test1",
+                        eventTime = Date(0L),
+                        eventStatus = EventStatus.BOARDING
+                )
+        )
+        mockMvc.perform(post("/checkin/event/edit/${boardingEvent.eventId}")
+                .content(
+                        """
+                            {
+                                "name": "233",
+                                "description": "Tset2",
+                                "time": 1,
+                                "status": "FUTURE"
+                            }
+                        """.trimIndent()
+                )
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+        boardingEvent = eventRepo.findByEventId(boardingEvent.eventId).get()
+        assertEquals("233", boardingEvent.eventName)
+        assertEquals("Tset2", boardingEvent.eventDescription)
+        assertEquals(1000, boardingEvent.eventTime.time)
+        assertEquals(EventStatus.FUTURE, boardingEvent.eventStatus)
+
+        mockMvc.perform(post("/checkin/event/edit/${boardingEvent.eventId}")
+                .content(
+                        """
+                            {
+                                "description": "",
+                                "status": "COMPLETED"
+                            }
+                        """.trimIndent()
+                )
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+        boardingEvent = eventRepo.findByEventId(boardingEvent.eventId).get()
+        assertEquals("233", boardingEvent.eventName)
+        assertEquals("", boardingEvent.eventDescription)
+        assertEquals(1000, boardingEvent.eventTime.time)
+        assertEquals(EventStatus.COMPLETED, boardingEvent.eventStatus)
+
+        mockMvc.perform(post("/checkin/event/edit/${boardingEvent.eventId}")
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+
+        mockMvc.perform(post("/checkin/event/edit/DNE")
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
     @Test
     fun sendSummaryEmail() {
+        // Cannot test
     }
 }
