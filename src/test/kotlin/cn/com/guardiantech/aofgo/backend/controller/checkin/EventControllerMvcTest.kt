@@ -8,8 +8,7 @@ import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import org.json.JSONArray
 import org.json.JSONObject
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
