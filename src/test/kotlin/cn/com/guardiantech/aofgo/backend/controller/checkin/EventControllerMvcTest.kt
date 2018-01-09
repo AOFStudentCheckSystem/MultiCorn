@@ -7,7 +7,8 @@ import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import org.json.JSONObject
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,10 +24,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.*
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat
-import java.text.DateFormat
 
 
 @RunWith(SpringRunner::class)
@@ -64,6 +61,7 @@ class EventControllerMvcTest {
         )
         assertNotNull(event)
         assertNotNull(event.id)
+        assertEquals("Repository is not properly initialized", 1, eventRepo.count())
     }
 
     @Test
@@ -98,7 +96,7 @@ class EventControllerMvcTest {
                 .andExpect {
                     val obj = JSONObject(it.response.contentAsString)
                     assertEquals("Tset", obj.optString("eventName", null))
-                    val id= obj.optString("eventId", null)
+                    val id = obj.optString("eventId", null)
                     assertNotNull(id)
                     assertEquals("", obj.optString("eventDescription", null))
                     assertEquals(613006413000, eventRepo.findByEventId(id).get().eventTime.time)
