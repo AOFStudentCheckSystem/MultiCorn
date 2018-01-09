@@ -71,7 +71,8 @@ class EventService @Autowired constructor(
     fun listAllEventsNoPage(): Page<ActivityEvent> =
             listAllEvents(PageRequest(0, Int.MAX_VALUE))
 
-    /**
+    @Suppress("SENSELESS_COMPARISON")
+            /**
      * @throws NoSuchElementException Cannot find event
      * @throws IllegalArgumentException
      */
@@ -83,7 +84,7 @@ class EventService @Autowired constructor(
         if (request.time != null) {
             eventToEdit.eventTime = request.time
         }
-        if (request.name.isNotEmpty()) {
+        if (request.name != null && request.name.isNotEmpty()) {
             eventToEdit.eventName = request.name
         }
         if (request.description != null) {

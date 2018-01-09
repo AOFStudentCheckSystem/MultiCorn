@@ -70,12 +70,12 @@ class EventController @Autowired constructor(
 
     @RequestMapping(path = ["/edit/{eventId}"], method = [RequestMethod.POST])
     fun editEvent(@PathVariable("eventId") eventId: String,
-                  @RequestBody @Valid request: EventRequest): ActivityEvent = try {
+                  @RequestBody request: EventRequest): ActivityEvent = try {
         eventService.editEvent(eventId, request)
     } catch (e: IllegalArgumentException) {
         throw BadRequestException(e.message)
     } catch (e: NoSuchElementException) {
-        throw RepositoryException("Cannot find event")
+        throw NotFoundException("Cannot find event")
     }
 
     //TODO: Judgement and dealing with Student without account

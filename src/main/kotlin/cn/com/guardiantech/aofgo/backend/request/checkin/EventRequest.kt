@@ -14,7 +14,7 @@ import javax.validation.constraints.Size
 data class EventRequest(
         @NotNull
         @Size(min=1)
-        val name: String,
+        val name: String = "",
         val description: String?,
         val time: Date?,
         val status: EventStatus?
