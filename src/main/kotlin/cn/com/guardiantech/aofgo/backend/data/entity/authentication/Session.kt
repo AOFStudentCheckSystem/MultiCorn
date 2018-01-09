@@ -35,7 +35,7 @@ class Session(
         @Temporal(TemporalType.TIMESTAMP)
         var accessTimestamp: Date = Date()
 ) {
-    @JsonProperty("permission")
+    @JsonProperty("permissions")
     fun getPermissions(): Set<String> {
         return subject.allPermissions().map { it.permissionKey }.toSet()
     }

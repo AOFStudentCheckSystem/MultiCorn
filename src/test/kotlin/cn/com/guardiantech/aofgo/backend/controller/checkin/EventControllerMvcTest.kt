@@ -36,7 +36,6 @@ class EventControllerMvcTest {
 
     @Autowired private lateinit var mockMvc: MockMvc
 
-    @Autowired private lateinit var eventController: EventController
     @Autowired private lateinit var eventRepo: EventRepository
 
     private lateinit var event: ActivityEvent
@@ -51,12 +50,12 @@ class EventControllerMvcTest {
 
     @Before
     fun setUp() {
-        event = eventController.createEvent(
-                EventRequest(
-                        name = "まほう",
-                        description = "Mahou",
-                        status = EventStatus.FUTURE,
-                        time = Date()
+        event = eventRepo.save(
+                ActivityEvent(
+                        eventName = "まほう",
+                        eventDescription = "Mahou",
+                        eventStatus = EventStatus.FUTURE,
+                        eventTime = Date()
                 )
         )
         assertNotNull(event)

@@ -94,6 +94,9 @@ class AuthenticationControllerMvcTest {
                 .andDo {
                     val rootNode = ObjectMapper().readTree(it.response.contentAsString)
                     session = rootNode.get("sessionKey").textValue()
+
+                    // Assert permissions exists
+                    assertTrue("Json Key 'permissions' does not exist or failed to parse as Array", rootNode.get("permissions").isArray)
                 }
 
         assertNotEquals("", session) // Session Exists

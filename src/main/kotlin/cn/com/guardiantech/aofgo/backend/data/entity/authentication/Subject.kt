@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import javax.persistence.*
 
@@ -27,6 +28,7 @@ class Subject(
         val subjectAttachedInfo: String? = null,
 
         @ManyToMany(fetch = FetchType.EAGER)
+        @JsonIgnore
         @JoinTable(
                 name = "subject_roles",
                 joinColumns = [(JoinColumn(name = "subject_id", referencedColumnName = "subject_id", nullable = false))],
