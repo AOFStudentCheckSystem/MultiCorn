@@ -1,14 +1,14 @@
 <Configuration>
     <Appenders>
         <Console name="SysOut" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{HH:mm:ss}] [%logger{36}][%level]: %msg%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%logger{1}][%level]: %msg%n"/>
         </Console>
     </Appenders>
     <Loggers>
         <Logger name="org.springframework" level="WARN"/>
         <Logger name="org.hibernate" level="WArn"/>
         <Logger name="org.apache.tomcat" level="Warn"/>
-        <Root level="trace">
+        <Root level="debug">
             <AppenderRef ref="SysOut"/>
         </Root>
     </Loggers>

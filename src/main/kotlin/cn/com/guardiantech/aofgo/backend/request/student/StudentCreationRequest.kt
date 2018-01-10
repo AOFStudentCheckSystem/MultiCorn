@@ -2,6 +2,7 @@ package cn.com.guardiantech.aofgo.backend.request.student
 
 import cn.com.guardiantech.aofgo.backend.annotation.NoArg
 import cn.com.guardiantech.aofgo.backend.data.entity.Gender
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 
 @NoArg
