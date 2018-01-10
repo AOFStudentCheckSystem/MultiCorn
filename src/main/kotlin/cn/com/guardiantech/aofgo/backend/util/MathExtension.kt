@@ -7,7 +7,7 @@ fun Long.abs(): Long {
 }
 
 fun Int.unitDirection(): Int {
-    return if (this > 0) 1 else if (this < 0) -1 else 0
+    return this.toLong().unitDirection().toInt()
 }
 
 fun Long.unitDirection(): Long {
