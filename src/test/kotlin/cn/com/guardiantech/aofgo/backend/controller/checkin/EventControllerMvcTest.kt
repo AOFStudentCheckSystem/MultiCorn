@@ -68,7 +68,7 @@ class EventControllerMvcTest {
         val count = eventRepo.count()
         assert(count > 0)
         mockMvc
-                .perform(delete("/checkin/event/remove/${event.eventId}"))
+                .perform(delete("/checkin/event/${event.eventId}"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent)
         assertEquals(count - 1, eventRepo.count())
     }
@@ -78,7 +78,7 @@ class EventControllerMvcTest {
         val count = eventRepo.count()
         assert(count > 0)
         mockMvc
-                .perform(delete("/checkin/event/remove/-1"))
+                .perform(delete("/checkin/event/-1"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
         assertEquals(count, eventRepo.count())
     }
@@ -87,7 +87,7 @@ class EventControllerMvcTest {
     fun createEvent() {
         val count = eventRepo.count()
         mockMvc
-                .perform(post("/checkin/event/create")
+                .perform(put("/checkin/event/")
                         .content(eventCreationRawRequest)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                 )
@@ -184,7 +184,7 @@ class EventControllerMvcTest {
                         eventStatus = EventStatus.BOARDING
                 )
         )
-        mockMvc.perform(post("/checkin/event/edit/${boardingEvent.eventId}")
+        mockMvc.perform(post("/checkin/event/${boardingEvent.eventId}")
                 .content(
                         """
                             {
@@ -203,7 +203,7 @@ class EventControllerMvcTest {
         assertEquals(1000, boardingEvent.eventTime.time)
         assertEquals(EventStatus.FUTURE, boardingEvent.eventStatus)
 
-        mockMvc.perform(post("/checkin/event/edit/${boardingEvent.eventId}")
+        mockMvc.perform(post("/checkin/event/${boardingEvent.eventId}")
                 .content(
                         """
                             {
@@ -220,12 +220,12 @@ class EventControllerMvcTest {
         assertEquals(1000, boardingEvent.eventTime.time)
         assertEquals(EventStatus.COMPLETED, boardingEvent.eventStatus)
 
-        mockMvc.perform(post("/checkin/event/edit/${boardingEvent.eventId}")
+        mockMvc.perform(post("/checkin/event/${boardingEvent.eventId}")
                 .content("{}")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
 
-        mockMvc.perform(post("/checkin/event/edit/DNE")
+        mockMvc.perform(post("/checkin/event/DNE")
                 .content("{}")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
