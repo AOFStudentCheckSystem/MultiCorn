@@ -28,7 +28,7 @@ class EventController @Autowired constructor(
 ) {
     private val logger: Logger = LoggerFactory.getLogger(EventController::class.java)
 
-    @RequestMapping(path = ["/remove/{id}"], method = [RequestMethod.DELETE])
+    @RequestMapping(path = ["/{id}"], method = [RequestMethod.DELETE])
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun removeEvent(@PathVariable("id") eventID: String) {
         try {
@@ -38,7 +38,7 @@ class EventController @Autowired constructor(
         }
     }
 
-    @RequestMapping(path = ["/create"], method = [RequestMethod.POST])
+    @RequestMapping(path = ["/"], method = [RequestMethod.PUT])
     fun createEvent(@RequestBody @Valid request: EventRequest): ActivityEvent =
             eventService.createEvent(request)
 //            JSONObject().put("success",true).put("newEvent", JSONObject().put("eventId", evt.eventId)).encode()
@@ -68,7 +68,7 @@ class EventController @Autowired constructor(
     fun listAllEventsNoPage(): Page<ActivityEvent> =
             eventService.listAllEventsNoPage()
 
-    @RequestMapping(path = ["/edit/{eventId}"], method = [RequestMethod.POST])
+    @RequestMapping(path = ["/{eventId}"], method = [RequestMethod.POST])
     fun editEvent(@PathVariable("eventId") eventId: String,
                   @RequestBody request: EventRequest): ActivityEvent = try {
         eventService.editEvent(eventId, request)
