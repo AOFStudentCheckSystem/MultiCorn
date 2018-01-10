@@ -4,7 +4,7 @@ import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.exception.ControllerException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
-import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationRequest
+import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationWithNewAccountRequest
 import cn.com.guardiantech.aofgo.backend.service.AccountService
 import cn.com.guardiantech.aofgo.backend.service.StudentService
@@ -21,9 +21,9 @@ class StudentController @Autowired constructor(
 ) {
     @Require
     @PutMapping("/")
-    fun createStudent(@RequestBody @Valid studentCreationRequest: StudentCreationRequest): Student {
+    fun createStudent(@RequestBody @Valid studentRequest: StudentRequest): Student {
         try {
-            return studentService.createStudent(studentCreationRequest)
+            return studentService.createStudent(studentRequest)
         } catch (e: NoSuchElementException) {
             throw NotFoundException("Account Not Found")
         } catch (e: Throwable) {
@@ -55,4 +55,17 @@ class StudentController @Autowired constructor(
         } catch (e: Throwable) {
             throw RepositoryException("Failed to save student due to conflict")
         }
+
+    @Require
+    @PostMapping("/")
+    fun editStudent(@RequestBody @Valid request: StudentRequest) = try {
+        studentService.editStudent(request)
+    } catch (e: ControllerException) {
+        throw e
+    } catch (e: NoSuchElementException) {
+        throw NotFoundException("Student Not Found")
+    } catch (e: Throwable) {
+        throw RepositoryException("Failed to save student")
+    }
+
 }

@@ -5,6 +5,6 @@ import cn.com.guardiantech.aofgo.backend.request.account.AccountCreationRequest
 
 @NoArg
 data class StudentCreationWithNewAccountRequest(
-        val student: StudentCreationRequest,
+        val student: StudentRequest,
         val account: AccountCreationRequest
 )

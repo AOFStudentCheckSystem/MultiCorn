@@ -6,7 +6,7 @@ import java.util.*
 import javax.validation.constraints.NotNull
 
 @NoArg
-data class StudentCreationRequest(
+data class StudentRequest(
         @NotNull
         val idNumber: String,
         val cardSecret: String?,

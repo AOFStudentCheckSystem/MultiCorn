@@ -9,44 +9,44 @@ class Student(
         @Id
         @GeneratedValue
         @Column(name = "student_id")
-        val id: Long = -1,
+        var id: Long = -1,
 
         @Column(name = "id_number", unique = true)
-        val idNumber: String,
+        var idNumber: String,
 
         @Column(name = "card_secret", unique = true)
-        val cardSecret: String?,
+        var cardSecret: String?,
 
         @Column(name = "grade")
-        val grade: Int?,
+        var grade: Int?,
 
         @Column(name = "date_of_birth")
         @Temporal(TemporalType.TIMESTAMP)
-        val dateOfBirth: Date?,
+        var dateOfBirth: Date?,
 
         @Enumerated(EnumType.STRING)
         @Column(name = "gender")
-        val gender: Gender?,
+        var gender: Gender?,
 
         @Column(name = "dorm")
-        val dorm: String?,
+        var dorm: String?,
 
         @Column(name = "dorm_info")
-        val dormInfo: String?,
+        var dormInfo: String?,
 
         @OneToMany
         @JoinTable
-        val advisors: MutableSet<Account> = hashSetOf(),
+        var advisors: MutableSet<Account> = hashSetOf(),
 
         @OneToMany
         @JoinTable
-        val parents: MutableSet<Account> = hashSetOf(),
+        var parents: MutableSet<Account> = hashSetOf(),
 
         @OneToOne
         @JoinColumn
-        val account: Account?
+        var account: Account?
 
 //        @OneToMany
 //        @Column(name = "courses")
-//        val courses: MutableSet<Courses> = hashSetOf()
+//        var courses: MutableSet<Courses> = hashSetOf()
 )

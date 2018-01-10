@@ -2,9 +2,10 @@ package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import cn.com.guardiantech.aofgo.backend.exception.NotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
-import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationRequest
+import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationWithNewAccountRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -17,7 +18,7 @@ class StudentService @Autowired constructor(
     /**
      * Failed to save student due to conflict
      */
-    fun createStudent(request: StudentCreationRequest, savedAccount: Account? = null): Student {
+    fun createStudent(request: StudentRequest, savedAccount: Account? = null): Student {
         var theAccount: Account? = null
         if (savedAccount != null) {
             theAccount = savedAccount
@@ -53,5 +54,39 @@ class StudentService @Autowired constructor(
         } catch (e: Throwable) {
             throw RepositoryException("Cannot save account")
         })
+    }
+
+    /**
+     * @throws NoSuchElementException Student Not Found
+     * Failed to save student
+     */
+    fun editStudent(request: StudentRequest): Student {
+        val theStudent = studentRepo.findByIdNumber(request.idNumber).get()
+        if (request.cardSecret != null) {
+            theStudent.cardSecret = request.cardSecret
+        }
+        if (request.grade != null) {
+            theStudent.grade = request.grade
+        }
+        if (request.gender != null) {
+            theStudent.gender = request.gender
+        }
+        if (request.dateOfBirth != null) {
+            theStudent.dateOfBirth = request.dateOfBirth
+        }
+        if (request.dorm != null) {
+            theStudent.dorm = request.dorm
+        }
+        if (request.dormInfo != null) {
+            theStudent.dormInfo = request.dormInfo
+        }
+        if (request.accountId != null && request.accountId != theStudent.account?.id) {
+            theStudent.account = try {
+                accountService.getAccountById(request.accountId)
+            } catch (e: NoSuchElementException) {
+                throw NotFoundException("Account Not Found")
+            }
+        }
+        return studentRepo.save(theStudent)
     }
 }
