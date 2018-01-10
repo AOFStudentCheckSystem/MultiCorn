@@ -68,8 +68,8 @@ class EventService @Autowired constructor(
      */
     fun getEventById(id: String) = eventRepository.findByEventId(id).get()
 
-    fun listAllEventsNoPage(): Page<ActivityEvent> =
-            listAllEvents(PageRequest(0, Int.MAX_VALUE))
+    fun listAllEventsNoPage(): List<ActivityEvent> =
+            eventRepository.findAll()
 
     @Suppress("SENSELESS_COMPARISON")
             /**

@@ -169,7 +169,7 @@ class EventControllerMvcTest {
         mockMvc.perform(get("/checkin/event/listall"))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andDo {
-                    val contents = JSONObject(it.response.contentAsString).getJSONArray("content")
+                    val contents = JSONArray(it.response.contentAsString)
                     assertEquals(1, contents.length())
                 }
     }

@@ -65,7 +65,7 @@ class EventController @Autowired constructor(
             }
 
     @RequestMapping(path = ["/listall"], method = [RequestMethod.GET])
-    fun listAllEventsNoPage(): Page<ActivityEvent> =
+    fun listAllEventsNoPage(): List<ActivityEvent> =
             eventService.listAllEventsNoPage()
 
     @RequestMapping(path = ["/{eventId}"], method = [RequestMethod.POST])
