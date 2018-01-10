@@ -9,7 +9,6 @@ import javax.persistence.*
  * Project backend
  */
 @Entity
-@Table(name = "events")
 class ActivityEvent(
         @Id
         @GeneratedValue

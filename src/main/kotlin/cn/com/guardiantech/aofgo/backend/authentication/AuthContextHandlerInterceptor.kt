@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.authentication
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
+import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.service.AuthenticationService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -42,7 +43,7 @@ open class AuthContextHandlerInterceptor constructor(
                 if (authCtx.isAuthenticated()) {
 
                 } else {
-                    return false
+                    throw UnauthorizedException("FUCK YOU, go LOGIN")
                 }
             }
         }
