@@ -8,6 +8,7 @@ import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationWithNewAccountRequest
 import cn.com.guardiantech.aofgo.backend.service.AccountService
 import cn.com.guardiantech.aofgo.backend.service.StudentService
+import com.fasterxml.jackson.databind.ObjectMapper
 import javassist.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -16,19 +17,16 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/student")
 class StudentController @Autowired constructor(
-        val studentService: StudentService,
-        val accountService: AccountService
+        val studentService: StudentService
 ) {
     @Require
-    @PutMapping("/")
-    fun createStudent(@RequestBody @Valid studentRequest: StudentRequest): Student {
-        try {
-            return studentService.createStudent(studentRequest)
-        } catch (e: NoSuchElementException) {
-            throw NotFoundException("Account Not Found")
-        } catch (e: Throwable) {
-            throw RepositoryException("Failed to save student due to conflict")
-        }
+    @PutMapping("/create/")
+    fun createStudent(@RequestBody @Valid studentRequest: StudentRequest): Student = try {
+        studentService.createStudent(studentRequest)
+    } catch (e: NoSuchElementException) {
+        throw NotFoundException("Account Not Found")
+    } catch (e: Throwable) {
+        throw RepositoryException("Failed to save student due to conflict")
     }
 
     @Require
@@ -48,13 +46,13 @@ class StudentController @Autowired constructor(
     @Require
     @PutMapping("/account")
     fun createStudentWithNewAccount(@RequestBody @Valid request: StudentCreationWithNewAccountRequest): Student =
-        try {
-            studentService.createStudentWithNewAccount(request)
-        } catch (e: ControllerException) {
-            throw e
-        } catch (e: Throwable) {
-            throw RepositoryException("Failed to save student due to conflict")
-        }
+            try {
+                studentService.createStudentWithNewAccount(request)
+            } catch (e: ControllerException) {
+                throw e
+            } catch (e: Throwable) {
+                throw RepositoryException("Failed to save student due to conflict")
+            }
 
     @Require
     @PostMapping("/")
