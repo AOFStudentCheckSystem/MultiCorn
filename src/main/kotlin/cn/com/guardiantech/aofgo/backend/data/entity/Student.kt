@@ -15,24 +15,24 @@ class Student(
         val idNumber: String,
 
         @Column(name = "card_secret", unique = true)
-        val cardSecret: String,
+        val cardSecret: String?,
 
         @Column(name = "grade")
-        val grade: Int,
+        val grade: Int?,
 
         @Column(name = "date_of_birth")
         @Temporal(TemporalType.TIMESTAMP)
-        val dateOfBirth: Date,
+        val dateOfBirth: Date?,
 
         @Enumerated(EnumType.STRING)
         @Column(name = "gender")
-        val gender: Gender,
+        val gender: Gender?,
 
         @Column(name = "dorm")
-        val dorm: String,
+        val dorm: String?,
 
         @Column(name = "dorm_info")
-        val dormInfo: String,
+        val dormInfo: String?,
 
         @OneToMany
         @JoinTable

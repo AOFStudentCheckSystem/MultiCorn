@@ -14,11 +14,13 @@ class StudentService @Autowired constructor(
         private val studentRepo: StudentRepository,
         private val accountRepo: AccountRepository
 ) {
-
+    /**
+     * @throws NoSuchElementException Invalid Account
+     * Failed to save student due to conflict
+     */
     fun createStudent(studentCreationRequest: StudentCreationRequest): Student {
         var theAccount: Account? = null
         if (studentCreationRequest.accountId != null) {
-            // NoSuchElementException: Invalid Account
             theAccount = accountRepo.findById(studentCreationRequest.accountId).get()
         }
         return studentRepo.save(Student(
@@ -35,5 +37,12 @@ class StudentService @Autowired constructor(
 
     fun listAllStudents(): List<Student> {
         return studentRepo.findAll().toList()
+    }
+
+    /**
+     * @throws NoSuchElementException Student Not Found
+     */
+    fun getStudentByIdNumber(id: String): Student {
+        return studentRepo.findByIdNumber(id).get()
     }
 }
