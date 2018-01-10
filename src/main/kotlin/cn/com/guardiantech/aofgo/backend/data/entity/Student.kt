@@ -4,6 +4,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["id_number"]), UniqueConstraint(columnNames = ["card_secret"])])
 class Student(
         @Id
         @GeneratedValue
