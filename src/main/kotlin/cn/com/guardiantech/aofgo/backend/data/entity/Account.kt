@@ -11,7 +11,7 @@ class Account(
 
         @OneToOne
         @JoinColumn(name = "subject", unique = true)
-        val subject: Subject,
+        val subject: Subject? = null,
 
         @Column(name = "first_name")
         val firstName: String,
@@ -23,7 +23,7 @@ class Account(
         val email: String,
 
         @Column(name = "phone")
-        val phone: String,
+        val phone: String?,
 
         @Enumerated(EnumType.STRING)
         @Column(name = "account_type")
