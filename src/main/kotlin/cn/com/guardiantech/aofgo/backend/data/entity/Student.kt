@@ -10,10 +10,10 @@ class Student(
         @Column(name = "student_id")
         val id: Long = -1,
 
-        @Column(name = "id_number")
+        @Column(name = "id_number", unique = true)
         val idNumber: String,
 
-        @Column(name = "card_secret")
+        @Column(name = "card_secret", unique = true)
         val cardSecret: String,
 
         @Column(name = "grade")
