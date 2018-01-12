@@ -2,7 +2,7 @@ package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
-import cn.com.guardiantech.aofgo.backend.exception.NotFoundException
+import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
@@ -84,7 +84,7 @@ class StudentService @Autowired constructor(
             theStudent.account = try {
                 accountService.getAccountById(request.accountId)
             } catch (e: NoSuchElementException) {
-                throw NotFoundException("Account Not Found")
+                throw EntityNotFoundException("Account Not Found")
             }
         }
         return studentRepo.save(theStudent)

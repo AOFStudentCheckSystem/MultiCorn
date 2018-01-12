@@ -2,7 +2,7 @@ package cn.com.guardiantech.aofgo.backend.controller.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
-import cn.com.guardiantech.aofgo.backend.exception.NotFoundException
+import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.SendEmailRequest
@@ -10,7 +10,6 @@ import cn.com.guardiantech.aofgo.backend.service.checkin.EventService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -61,7 +60,7 @@ class EventController @Autowired constructor(
             try {
                 eventService.getEventById(id)
             } catch (e: NoSuchElementException) {
-                throw NotFoundException("Cannot find event")
+                throw EntityNotFoundException("Cannot find event")
             }
 
     @RequestMapping(path = ["/listall"], method = [RequestMethod.GET])
@@ -75,7 +74,7 @@ class EventController @Autowired constructor(
     } catch (e: IllegalArgumentException) {
         throw BadRequestException(e.message)
     } catch (e: NoSuchElementException) {
-        throw NotFoundException("Cannot find event")
+        throw EntityNotFoundException("Cannot find event")
     }
 
     //TODO: Judgement and dealing with Student without account

@@ -15,24 +15,24 @@ class Student(
         var idNumber: String,
 
         @Column(name = "card_secret", unique = true)
-        var cardSecret: String?,
+        var cardSecret: String? = null,
 
         @Column(name = "grade")
-        var grade: Int?,
+        var grade: Int? = null,
 
         @Column(name = "date_of_birth")
         @Temporal(TemporalType.TIMESTAMP)
-        var dateOfBirth: Date?,
+        var dateOfBirth: Date? = null,
 
         @Enumerated(EnumType.STRING)
         @Column(name = "gender")
-        var gender: Gender?,
+        var gender: Gender? = null,
 
         @Column(name = "dorm")
-        var dorm: String?,
+        var dorm: String? = null,
 
         @Column(name = "dorm_info")
-        var dormInfo: String?,
+        var dormInfo: String? = null,
 
         @OneToMany
         @JoinTable
@@ -44,7 +44,7 @@ class Student(
 
         @OneToOne
         @JoinColumn
-        var account: Account?
+        var account: Account? = null
 
 //        @OneToMany
 //        @Column(name = "courses")

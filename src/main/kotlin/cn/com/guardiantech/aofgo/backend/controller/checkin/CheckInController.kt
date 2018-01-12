@@ -2,15 +2,13 @@ package cn.com.guardiantech.aofgo.backend.controller.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEventRecord
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
-import cn.com.guardiantech.aofgo.backend.exception.NotFoundException
-import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
+import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionResponse
 import cn.com.guardiantech.aofgo.backend.service.checkin.CheckInService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import kotlin.NoSuchElementException
@@ -33,13 +31,13 @@ class CheckInController @Autowired constructor(
     } catch (e: IllegalArgumentException) {
         throw BadRequestException(e.message)
     } catch (e: NoSuchElementException) {
-        throw NotFoundException("Event or student not found")
+        throw EntityNotFoundException("Event or student not found")
     }
 
     @RequestMapping(path = ["/record/{eventId}"], method = [RequestMethod.GET])
     fun getRecordForEvent(@PathVariable("eventId") eventId: String): List<ActivityEventRecord> = try {
         checkInService.getRecordForEvent(eventId)
     } catch (e: NoSuchElementException) {
-        throw NotFoundException("Event not found")
+        throw EntityNotFoundException("Event not found")
     }
 }
