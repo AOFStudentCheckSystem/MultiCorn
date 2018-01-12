@@ -67,10 +67,10 @@ class EventController @Autowired constructor(
     fun listAllEventsNoPage(): List<ActivityEvent> =
             eventService.listAllEventsNoPage()
 
-    @RequestMapping(path = ["/{eventId}"], method = [RequestMethod.POST])
-    fun editEvent(@PathVariable("eventId") eventId: String,
-                  @RequestBody request: EventRequest): ActivityEvent = try {
-        eventService.editEvent(eventId, request)
+    @RequestMapping(path = ["/"], method = [RequestMethod.POST])
+    fun editEvent(@RequestBody request: EventRequest): ActivityEvent = try {
+        if (request.eventId == null) throw BadRequestException("You no send eventId!")
+        eventService.editEvent(request.eventId, request)
     } catch (e: IllegalArgumentException) {
         throw BadRequestException(e.message)
     } catch (e: NoSuchElementException) {

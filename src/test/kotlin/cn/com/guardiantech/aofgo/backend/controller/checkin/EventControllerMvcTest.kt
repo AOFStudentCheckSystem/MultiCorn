@@ -184,10 +184,11 @@ class EventControllerMvcTest {
                         eventStatus = EventStatus.BOARDING
                 )
         )
-        mockMvc.perform(post("/checkin/event/${boardingEvent.eventId}")
+        mockMvc.perform(post("/checkin/event/")
                 .content(
                         """
                             {
+                                "eventId": "${boardingEvent.eventId}",
                                 "name": "233",
                                 "description": "Tset2",
                                 "time": 1,
@@ -203,10 +204,11 @@ class EventControllerMvcTest {
         assertEquals(1000, boardingEvent.eventTime.time)
         assertEquals(EventStatus.FUTURE, boardingEvent.eventStatus)
 
-        mockMvc.perform(post("/checkin/event/${boardingEvent.eventId}")
+        mockMvc.perform(post("/checkin/event/")
                 .content(
                         """
                             {
+                                "eventId": "${boardingEvent.eventId}",
                                 "description": "",
                                 "status": "COMPLETED"
                             }
@@ -220,13 +222,18 @@ class EventControllerMvcTest {
         assertEquals(1000, boardingEvent.eventTime.time)
         assertEquals(EventStatus.COMPLETED, boardingEvent.eventStatus)
 
-        mockMvc.perform(post("/checkin/event/${boardingEvent.eventId}")
+        mockMvc.perform(post("/checkin/event/")
                 .content("{}")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
 
-        mockMvc.perform(post("/checkin/event/DNE")
-                .content("{}")
+        mockMvc.perform(post("/checkin/event/")
+                .content("{\"eventId\": \"${boardingEvent.eventId}\"}")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+
+        mockMvc.perform(post("/checkin/event/")
+                .content("{\"eventId\": \"DNE\"}")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
