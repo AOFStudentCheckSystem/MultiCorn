@@ -206,5 +206,8 @@ class StudentControllerMvcTest {
                 }
     }
 
+    @Test
+    fun editStudentTest() {
 
+    }
 }
