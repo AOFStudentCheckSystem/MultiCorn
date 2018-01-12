@@ -137,6 +137,60 @@ class StudentControllerMvcTest {
     }
 
     @Test
+    fun createStudentWithAccountTest() {
+        mockMvc.perform(put("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                        """{
+                                "idNumber": "123456A",
+                                "cardSecret": null,
+                                "grade": 10,
+                                "gender": "FEMALE",
+                                "dateOfBirth": 612939600,
+                                "dorm": "ELE",
+                                "dormInfo": "DNE",
+                                "account": {
+                                    "firstName": "fn",
+                                    "lastName": "ln",
+                                    "email": "a@b.c",
+                                    "type": "OTHER",
+                                    "preferredName": "pn"
+                                }
+                        }""".trimIndent()
+                ))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect {
+                    assertEquals(1L, accountRepo.count())
+                    assertEquals(1L, studentRepo.count())
+                    assertEquals(studentRepo.findAll().first().idNumber,
+                            JSONObject(it.response.contentAsString).getString("idNumber"))
+                }
+
+        mockMvc.perform(put("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                        """{
+                                "idNumber": "123456ABB",
+                                "cardSecret": null,
+                                "grade": 10,
+                                "gender": "FEMALE",
+                                "dateOfBirth": 612939600,
+                                "dorm": "ELE",
+                                "dormInfo": "DNE"
+                        }""".trimIndent()
+                ))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+    }
+
+    @Test
     fun listAllStudentTest() {
         val stu = initStudent()
         mockMvc.perform(get("/student/listall")
@@ -168,45 +222,6 @@ class StudentControllerMvcTest {
                                     .getString("idNumber"))
                 }
     }
-
-    // Todo merge with create student and according to the modified API
-
-//    @Test
-//    fun createStudentWithAccountTest() {
-//        mockMvc.perform(put("/student/account")
-//                .with({
-//                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
-//                    it
-//                })
-//                .contentType(MediaType.APPLICATION_JSON_UTF8)
-//                .content(
-//                        """{
-//                            "student": {
-//                                "idNumber": "123456A",
-//                                "cardSecret": null,
-//                                "grade": 10,
-//                                "gender": "FEMALE",
-//                                "dateOfBirth": 612939600,
-//                                "dorm": "ELE",
-//                                "dormInfo": "DNE"
-//                            },
-//                            "account": {
-//                            "firstName": "fn",
-//                            "lastName": "ln",
-//                            "email": "a@b.c",
-//                            "type": "OTHER",
-//                            "preferredName": "pn"
-//                            }
-//                        }""".trimIndent()
-//                ))
-//                .andExpect(MockMvcResultMatchers.status().isOk)
-//                .andExpect {
-//                    assertEquals(1L, accountRepo.count())
-//                    assertEquals(1L, studentRepo.count())
-//                    assertEquals(studentRepo.findAll().first().idNumber,
-//                            JSONObject(it.response.contentAsString).getString("idNumber"))
-//                }
-//    }
 
     @Test
     fun editStudentTest() {

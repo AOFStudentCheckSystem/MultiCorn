@@ -6,7 +6,6 @@ import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.ControllerException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
-import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationWithNewAccountRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import javassist.NotFoundException
@@ -25,6 +24,8 @@ class StudentController @Autowired constructor(
         studentService.createStudent(studentRequest)
     } catch (e: NoSuchElementException) {
         throw EntityNotFoundException("Account Not Found")
+    } catch (e: IllegalArgumentException) {
+        throw BadRequestException(e.message)
     } catch (e: Throwable) {
         throw RepositoryException("Failed to save student due to conflict")
     }
