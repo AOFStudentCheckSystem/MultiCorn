@@ -9,6 +9,8 @@ import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationWithNewA
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class StudentService @Autowired constructor(
@@ -18,13 +20,18 @@ class StudentService @Autowired constructor(
     /**
      * Failed to save student due to conflict
      */
-    fun createStudent(request: StudentRequest, savedAccount: Account? = null): Student {
-        var theAccount: Account? = null
-        if (savedAccount != null) {
-            theAccount = savedAccount
-        } else if (request.accountId != null) {
-            theAccount = accountService.getAccountById(request.accountId)
+    @Transactional(propagation = Propagation.MANDATORY)
+    fun createStudent(request: StudentRequest): Student {
+        val theAccount: Account = if (request.accountId != null) {
+            accountService.getAccountById(request.accountId)
+        } else {
+            if (request.account != null) {
+                accountService.createAccount(request.account)
+            } else {
+                throw IllegalArgumentException("No account is provided with the student.")
+            }
         }
+
         return studentRepo.save(Student(
                 idNumber = request.idNumber,
                 cardSecret = request.cardSecret,
@@ -46,14 +53,6 @@ class StudentService @Autowired constructor(
      */
     fun getStudentByIdNumber(id: String): Student {
         return studentRepo.findByIdNumber(id).get()
-    }
-
-    fun createStudentWithNewAccount(request: StudentCreationWithNewAccountRequest): Student {
-        return createStudent(request.student, try {
-            accountService.createAccount(request.account)
-        } catch (e: Throwable) {
-            throw RepositoryException("Cannot save account")
-        })
     }
 
     /**

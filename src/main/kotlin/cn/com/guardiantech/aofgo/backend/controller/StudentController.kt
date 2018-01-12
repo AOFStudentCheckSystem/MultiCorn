@@ -43,16 +43,6 @@ class StudentController @Autowired constructor(
         throw NotFoundException("Student Not Found")
     }
 
-    @Require
-    @PutMapping("/account")
-    fun createStudentWithNewAccount(@RequestBody @Valid request: StudentCreationWithNewAccountRequest): Student =
-            try {
-                studentService.createStudentWithNewAccount(request)
-            } catch (e: ControllerException) {
-                throw e
-            } catch (e: Throwable) {
-                throw RepositoryException("Failed to save student due to conflict")
-            }
 
     @Require
     @PostMapping("/")
