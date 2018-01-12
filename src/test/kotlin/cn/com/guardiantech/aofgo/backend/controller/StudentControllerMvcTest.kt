@@ -69,7 +69,7 @@ class StudentControllerMvcTest {
     @Test
     fun createStudentTest() {
         val account = initAccount()
-        mockMvc.perform(put("/student/create/")
+        mockMvc.perform(put("/student/")
                 .with({
                     it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
                     it
@@ -94,7 +94,7 @@ class StudentControllerMvcTest {
                             JSONObject(it.response.contentAsString).getString("idNumber"))
                 }
 
-        mockMvc.perform(put("/student/create/")
+        mockMvc.perform(put("/student/")
                 .with({
                     it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
                     it
@@ -115,7 +115,7 @@ class StudentControllerMvcTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
 
         val account2 = initAccount()
-        mockMvc.perform(put("/student/create/")
+        mockMvc.perform(put("/student/")
                 .with({
                     it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
                     it
@@ -208,6 +208,91 @@ class StudentControllerMvcTest {
 
     @Test
     fun editStudentTest() {
+        var student = studentRepo.save(
+                Student(
+                        idNumber = "まほう",
+                        cardSecret = "very fast",
+                        account = initAccount()
+                )
+        )
+        var origIdNum = student.idNumber
+        mockMvc.perform(post("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .content(
+                        """
+                            {
+                                "idNumber": "まほう",
+                                "cardSecret": "very slow",
+                                "dorm": "T"
+                            }
+                        """.trimIndent()
+                )
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+        student = studentRepo.findByIdNumber(student.idNumber).get()
+        assertEquals(origIdNum, student.idNumber)
+        origIdNum = student.idNumber
+        assertEquals("very slow", student.cardSecret)
+        assertEquals("T", student.dorm)
 
+        val newAccount = initAccount()
+        mockMvc.perform(post("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .content(
+                        """
+                            {
+                                "idNumber": "まほう",
+                                "cardSecret": "",
+                                "dorm": null,
+                                "accountId": ${newAccount.id}
+                            }
+                        """.trimIndent()
+                )
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+        student = studentRepo.findByIdNumber(student.idNumber).get()
+        assertEquals(origIdNum, student.idNumber)
+        assertEquals("", student.cardSecret)
+        assertEquals("T", student.dorm)
+
+        mockMvc.perform(post("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+
+        mockMvc.perform(post("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .content("{\"idNumber\": \"DNE\"}")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isNotFound)
+
+        mockMvc.perform(post("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .content(
+                        """
+                            {
+                                "idNumber": "まほう",
+                                "accountId": -1
+                            }
+                        """.trimIndent()
+                )
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 }

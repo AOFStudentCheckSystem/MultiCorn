@@ -2,11 +2,12 @@ package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.ControllerException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
-import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationWithNewAccountRequest
+import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import javassist.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +20,7 @@ class StudentController @Autowired constructor(
         val studentService: StudentService
 ) {
     @Require
-    @PutMapping("/create/")
+    @PutMapping("/")
     fun createStudent(@RequestBody @Valid studentRequest: StudentRequest): Student = try {
         studentService.createStudent(studentRequest)
     } catch (e: NoSuchElementException) {
@@ -56,11 +57,12 @@ class StudentController @Autowired constructor(
     @Require
     @PostMapping("/")
     fun editStudent(@RequestBody @Valid request: StudentRequest) = try {
+        if (request.idNumber == null) throw BadRequestException("You no send idNumber!")
         studentService.editStudent(request)
     } catch (e: ControllerException) {
         throw e
     } catch (e: NoSuchElementException) {
-        throw NotFoundException("Student Not Found")
+        throw EntityNotFoundException("Student Not Found")
     } catch (e: Throwable) {
         throw RepositoryException("Failed to save student")
     }
