@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.authentication
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
+import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.service.AuthenticationService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -42,7 +43,7 @@ open class AuthContextHandlerInterceptor constructor(
                 if (authCtx.isAuthenticated()) {
 
                 } else {
-                    return false
+                    throw UnauthorizedException("FUCK YOU, go LOGIN")
                 }
             }
         }
@@ -64,11 +65,11 @@ open class AuthContextHandlerInterceptor constructor(
 
     override fun postHandle(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, modelAndView: ModelAndView?) {
         AuthContext.clear()
-        logger.debug("Clearing AuthContext")
+        logger.trace("Clearing AuthContext")
     }
 
     override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, ex: Exception?) {
         AuthContext.clear()
-        logger.debug("Clearing AuthContext")
+        logger.trace("Clearing AuthContext")
     }
 }

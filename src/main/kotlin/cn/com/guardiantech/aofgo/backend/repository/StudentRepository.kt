@@ -6,4 +6,5 @@ import java.util.*
 
 interface StudentRepository : CrudRepository<Student, Long> {
     fun findById(id: Long): Optional<Student>
+    fun findByIdNumber(idNumber: String): Optional<Student>
 }

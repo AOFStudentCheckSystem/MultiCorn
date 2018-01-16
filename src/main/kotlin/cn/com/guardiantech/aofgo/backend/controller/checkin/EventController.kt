@@ -2,7 +2,7 @@ package cn.com.guardiantech.aofgo.backend.controller.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
-import cn.com.guardiantech.aofgo.backend.exception.NotFoundException
+import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.SendEmailRequest
@@ -10,7 +10,6 @@ import cn.com.guardiantech.aofgo.backend.service.checkin.EventService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -28,7 +27,7 @@ class EventController @Autowired constructor(
 ) {
     private val logger: Logger = LoggerFactory.getLogger(EventController::class.java)
 
-    @RequestMapping(path = ["/remove/{id}"], method = [RequestMethod.DELETE])
+    @RequestMapping(path = ["/{id}"], method = [RequestMethod.DELETE])
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun removeEvent(@PathVariable("id") eventID: String) {
         try {
@@ -38,7 +37,7 @@ class EventController @Autowired constructor(
         }
     }
 
-    @RequestMapping(path = ["/create"], method = [RequestMethod.POST])
+    @RequestMapping(path = ["/"], method = [RequestMethod.PUT])
     fun createEvent(@RequestBody @Valid request: EventRequest): ActivityEvent =
             eventService.createEvent(request)
 //            JSONObject().put("success",true).put("newEvent", JSONObject().put("eventId", evt.eventId)).encode()
@@ -61,21 +60,21 @@ class EventController @Autowired constructor(
             try {
                 eventService.getEventById(id)
             } catch (e: NoSuchElementException) {
-                throw NotFoundException("Cannot find event")
+                throw EntityNotFoundException("Cannot find event")
             }
 
     @RequestMapping(path = ["/listall"], method = [RequestMethod.GET])
-    fun listAllEventsNoPage(): Page<ActivityEvent> =
+    fun listAllEventsNoPage(): List<ActivityEvent> =
             eventService.listAllEventsNoPage()
 
-    @RequestMapping(path = ["/edit/{eventId}"], method = [RequestMethod.POST])
-    fun editEvent(@PathVariable("eventId") eventId: String,
-                  @RequestBody request: EventRequest): ActivityEvent = try {
-        eventService.editEvent(eventId, request)
+    @RequestMapping(path = ["/"], method = [RequestMethod.POST])
+    fun editEvent(@RequestBody request: EventRequest): ActivityEvent = try {
+        if (request.eventId == null) throw BadRequestException("You no send eventId!")
+        eventService.editEvent(request.eventId, request)
     } catch (e: IllegalArgumentException) {
         throw BadRequestException(e.message)
     } catch (e: NoSuchElementException) {
-        throw NotFoundException("Cannot find event")
+        throw EntityNotFoundException("Cannot find event")
     }
 
     //TODO: Judgement and dealing with Student without account

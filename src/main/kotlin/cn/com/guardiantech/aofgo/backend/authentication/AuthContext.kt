@@ -1,7 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.authentication
 
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
-import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 
 /**
  * Created by dummy on 4/28/17.

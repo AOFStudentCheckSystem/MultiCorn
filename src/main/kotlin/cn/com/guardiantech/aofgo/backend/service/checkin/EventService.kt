@@ -10,7 +10,6 @@ import cn.com.guardiantech.aofgo.backend.service.checkin.mail.MailTemplateFactor
 import cn.com.guardiantech.aofgo.backend.util.isValidEmailAddress
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.*
@@ -68,8 +67,8 @@ class EventService @Autowired constructor(
      */
     fun getEventById(id: String) = eventRepository.findByEventId(id).get()
 
-    fun listAllEventsNoPage(): Page<ActivityEvent> =
-            listAllEvents(PageRequest(0, Int.MAX_VALUE))
+    fun listAllEventsNoPage(): List<ActivityEvent> =
+            eventRepository.findAll()
 
     @Suppress("SENSELESS_COMPARISON")
             /**

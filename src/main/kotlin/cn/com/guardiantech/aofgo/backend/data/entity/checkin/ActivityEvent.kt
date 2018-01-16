@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.checkin
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.*
 import javax.persistence.*
 
@@ -9,10 +10,10 @@ import javax.persistence.*
  * Project backend
  */
 @Entity
-@Table(name = "events")
 class ActivityEvent(
         @Id
         @GeneratedValue
+        @JsonIgnore
         var id: Int = 0,
 
         @Column(unique = true)

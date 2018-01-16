@@ -4,48 +4,49 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["id_number"]), UniqueConstraint(columnNames = ["card_secret"])])
 class Student(
         @Id
         @GeneratedValue
         @Column(name = "student_id")
-        val id: Long = -1,
+        var id: Long = -1,
 
-        @Column(name = "id_number")
-        val idNumber: String,
+        @Column(name = "id_number", unique = true)
+        var idNumber: String,
 
-        @Column(name = "card_secret")
-        val cardSecret: String,
+        @Column(name = "card_secret", unique = true)
+        var cardSecret: String? = null,
 
         @Column(name = "grade")
-        val grade: Int,
+        var grade: Int? = null,
 
         @Column(name = "date_of_birth")
         @Temporal(TemporalType.TIMESTAMP)
-        val dateOfBirth: Date,
+        var dateOfBirth: Date? = null,
 
         @Enumerated(EnumType.STRING)
         @Column(name = "gender")
-        val gender: Gender,
+        var gender: Gender? = null,
 
         @Column(name = "dorm")
-        val dorm: String,
+        var dorm: String? = null,
 
         @Column(name = "dorm_info")
-        val dormInfo: String,
+        var dormInfo: String? = null,
 
         @OneToMany
         @JoinTable
-        val advisors: MutableSet<Account> = hashSetOf(),
+        var advisors: MutableSet<Account> = hashSetOf(),
 
         @OneToMany
         @JoinTable
-        val parents: MutableSet<Account> = hashSetOf(),
+        var parents: MutableSet<Account> = hashSetOf(),
 
         @OneToOne
         @JoinColumn
-        val account: Account?
+        var account: Account? = null
 
 //        @OneToMany
 //        @Column(name = "courses")
-//        val courses: MutableSet<Courses> = hashSetOf()
+//        var courses: MutableSet<Courses> = hashSetOf()
 )

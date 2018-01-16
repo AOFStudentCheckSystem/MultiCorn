@@ -68,7 +68,7 @@ class EventControllerMvcTest {
         val count = eventRepo.count()
         assert(count > 0)
         mockMvc
-                .perform(delete("/checkin/event/remove/${event.eventId}"))
+                .perform(delete("/checkin/event/${event.eventId}"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent)
         assertEquals(count - 1, eventRepo.count())
     }
@@ -78,7 +78,7 @@ class EventControllerMvcTest {
         val count = eventRepo.count()
         assert(count > 0)
         mockMvc
-                .perform(delete("/checkin/event/remove/-1"))
+                .perform(delete("/checkin/event/-1"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
         assertEquals(count, eventRepo.count())
     }
@@ -87,7 +87,7 @@ class EventControllerMvcTest {
     fun createEvent() {
         val count = eventRepo.count()
         mockMvc
-                .perform(post("/checkin/event/create")
+                .perform(put("/checkin/event/")
                         .content(eventCreationRawRequest)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                 )
@@ -160,6 +160,7 @@ class EventControllerMvcTest {
         )
         mockMvc.perform(get("/checkin/event/${boardingEvent.eventId}"))
                 .andExpect(MockMvcResultMatchers.status().isOk)
+                .andDo { assertEquals(-1L, JSONObject(it.response.contentAsString).optLong("id", -1L)) }
         mockMvc.perform(get("/checkin/event/DNE"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
@@ -169,7 +170,7 @@ class EventControllerMvcTest {
         mockMvc.perform(get("/checkin/event/listall"))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andDo {
-                    val contents = JSONObject(it.response.contentAsString).getJSONArray("content")
+                    val contents = JSONArray(it.response.contentAsString)
                     assertEquals(1, contents.length())
                 }
     }
@@ -184,10 +185,11 @@ class EventControllerMvcTest {
                         eventStatus = EventStatus.BOARDING
                 )
         )
-        mockMvc.perform(post("/checkin/event/edit/${boardingEvent.eventId}")
+        mockMvc.perform(post("/checkin/event/")
                 .content(
                         """
                             {
+                                "eventId": "${boardingEvent.eventId}",
                                 "name": "233",
                                 "description": "Tset2",
                                 "time": 1,
@@ -203,10 +205,11 @@ class EventControllerMvcTest {
         assertEquals(1000, boardingEvent.eventTime.time)
         assertEquals(EventStatus.FUTURE, boardingEvent.eventStatus)
 
-        mockMvc.perform(post("/checkin/event/edit/${boardingEvent.eventId}")
+        mockMvc.perform(post("/checkin/event/")
                 .content(
                         """
                             {
+                                "eventId": "${boardingEvent.eventId}",
                                 "description": "",
                                 "status": "COMPLETED"
                             }
@@ -220,13 +223,18 @@ class EventControllerMvcTest {
         assertEquals(1000, boardingEvent.eventTime.time)
         assertEquals(EventStatus.COMPLETED, boardingEvent.eventStatus)
 
-        mockMvc.perform(post("/checkin/event/edit/${boardingEvent.eventId}")
+        mockMvc.perform(post("/checkin/event/")
                 .content("{}")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
 
-        mockMvc.perform(post("/checkin/event/edit/DNE")
-                .content("{}")
+        mockMvc.perform(post("/checkin/event/")
+                .content("{\"eventId\": \"${boardingEvent.eventId}\"}")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+
+        mockMvc.perform(post("/checkin/event/")
+                .content("{\"eventId\": \"DNE\"}")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
