@@ -10,7 +10,7 @@ import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRe
 import cn.com.guardiantech.aofgo.backend.request.authentication.CredentialRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.PrincipalRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
-import cn.com.guardiantech.aofgo.backend.service.AuthenticationService
+import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.springframework.beans.factory.annotation.Autowired

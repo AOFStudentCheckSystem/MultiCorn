@@ -1,4 +1,4 @@
-package cn.com.guardiantech.aofgo.backend.service
+package cn.com.guardiantech.aofgo.backend.service.auth
 
 import cn.com.guardiantech.aofgo.backend.authentication.AuthenticationMechanism
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Credential

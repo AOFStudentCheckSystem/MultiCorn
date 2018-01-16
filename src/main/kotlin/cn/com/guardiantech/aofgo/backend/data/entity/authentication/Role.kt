@@ -12,7 +12,7 @@ class Role(
         @Column(name = "role_name", unique = true)
         val roleName: String,
 
-        @ManyToMany(fetch = FetchType.EAGER)
+        @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.MERGE, CascadeType.PERSIST])
         @JoinTable(
                 name = "roles_permissions",
                 joinColumns = [(JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false))],

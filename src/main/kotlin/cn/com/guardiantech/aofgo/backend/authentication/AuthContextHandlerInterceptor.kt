@@ -2,7 +2,7 @@ package cn.com.guardiantech.aofgo.backend.authentication
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
-import cn.com.guardiantech.aofgo.backend.service.AuthenticationService
+import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.method.HandlerMethod

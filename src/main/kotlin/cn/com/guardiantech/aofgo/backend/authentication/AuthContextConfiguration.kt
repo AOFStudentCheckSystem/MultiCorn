@@ -1,6 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.authentication
 
-import cn.com.guardiantech.aofgo.backend.service.AuthenticationService
+import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
