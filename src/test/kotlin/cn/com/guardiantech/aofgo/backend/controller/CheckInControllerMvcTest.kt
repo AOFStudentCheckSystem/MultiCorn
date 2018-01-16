@@ -10,9 +10,6 @@ import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRecordRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
-import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionRequest
-import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionResponse
-import cn.com.guardiantech.aofgo.backend.request.checkin.RecordToUpload
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -26,12 +23,11 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.*
 import org.json.JSONArray
 import org.json.JSONObject
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 /**
  * Created by calvinx on 2018/01/08.
@@ -108,10 +104,59 @@ class CheckInControllerMvcTest {
                 .andExpect {
                     var response = JSONObject(it.response.contentAsString)
                     assertEquals(response.getString("targetEvent"), event.eventId)
-                    //TODO
+                    assertEquals(response.getInt("totalRecordsReceived"), 1)
+                    assertEquals(response.getInt("validRecords"), 1)
+                    assertEquals(response.getInt("effectiveRecords"), 1)
                 }
 
         assertNotNull(eventRecordRepository.count())
         assertEquals(1, 1)
+    }
+
+    @Test
+    fun retrieveRecord() {
+        mockMvc.perform(
+                put("/checkin/checkin/submit/")
+                        .content(checkInRawRequest)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        )
+                .andDo {
+                    var response1 = JSONObject(it.response.contentAsString)
+                    var eventId = response1.getString("targetEvent")
+                    mockMvc.perform(
+                            get("/checkin/checkin/record/${eventId}")
+                    )
+                            .andExpect {
+                                var response = JSONArray(it.response.contentAsString)
+                                var allTheShit = response.getJSONObject(0)
+                                var studentResponse = allTheShit.getJSONObject("student")
+                                var eventResponse = allTheShit.getJSONObject("event")
+                                assertEquals(studentResponse.getString("idNumber"), student.idNumber)
+                                assertEquals(studentResponse.getInt("grade"), student.grade)
+                                assertEquals(eventResponse.getString("eventName"), event.eventName)
+                            }
+                }
+    }
+
+    @Test
+    fun checkInPastEvent() {
+        event.eventStatus = EventStatus.COMPLETED
+
+        mockMvc.perform(
+                put("/checkin/checkin/submit")
+                        .content(checkInRawRequest)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        )
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+    }
+
+    @Test
+    fun stupidRequest() {
+        mockMvc.perform(
+                put("/checkin/checkin/submit")
+                        .content("I am not JSON")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        )
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 }
