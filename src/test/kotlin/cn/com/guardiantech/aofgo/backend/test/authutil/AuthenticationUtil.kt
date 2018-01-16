@@ -3,15 +3,16 @@ package cn.com.guardiantech.aofgo.backend.test.authutil
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.CredentialType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.PrincipalType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
-import cn.com.guardiantech.aofgo.backend.repository.CredentialRepository
-import cn.com.guardiantech.aofgo.backend.repository.PrincipalRepository
-import cn.com.guardiantech.aofgo.backend.repository.SubjectRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.CredentialRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.PrincipalRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.CredentialRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.PrincipalRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
 import cn.com.guardiantech.aofgo.backend.service.AuthenticationService
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

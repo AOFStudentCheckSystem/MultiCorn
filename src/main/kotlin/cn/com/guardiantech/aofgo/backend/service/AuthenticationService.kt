@@ -6,10 +6,10 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Principal
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
-import cn.com.guardiantech.aofgo.backend.repository.CredentialRepository
-import cn.com.guardiantech.aofgo.backend.repository.PrincipalRepository
-import cn.com.guardiantech.aofgo.backend.repository.SessionRepository
-import cn.com.guardiantech.aofgo.backend.repository.SubjectRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.CredentialRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.PrincipalRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.SessionRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
 import cn.com.guardiantech.aofgo.backend.util.SessionUtil
