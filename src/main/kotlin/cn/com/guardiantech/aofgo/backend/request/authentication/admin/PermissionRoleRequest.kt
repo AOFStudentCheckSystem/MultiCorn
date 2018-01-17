@@ -1,4 +1,9 @@
 package cn.com.guardiantech.aofgo.backend.request.authentication.admin
 
-class PermissionRoleRequest {
+import cn.com.guardiantech.aofgo.backend.annotation.NoArg
+
+@NoArg
+class PermissionRoleRequest (
+
+){
 }

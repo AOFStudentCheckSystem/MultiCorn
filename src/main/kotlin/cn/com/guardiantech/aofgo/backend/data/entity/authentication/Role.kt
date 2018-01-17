@@ -3,6 +3,7 @@ package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 import javax.persistence.*
 
 @Entity
+@Table(uniqueConstraints = [(UniqueConstraint(columnNames = ["role_name"]))])
 class Role(
         @Id
         @GeneratedValue
