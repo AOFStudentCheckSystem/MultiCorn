@@ -22,7 +22,7 @@ class AuthorizationService @Autowired constructor(
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     fun createPermission(permissionKey: String): Permission {
         try {
             return permissionRepository.save(
@@ -33,7 +33,7 @@ class AuthorizationService @Autowired constructor(
         }
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Transactional
     fun removePermission(permissionKey: String) {
         val pFind = permissionRepository.findByPermissionKey(permissionKey)
         if (pFind.isPresent) {
@@ -74,7 +74,7 @@ class AuthorizationService @Autowired constructor(
         return role
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Transactional
     fun removeRole(roleName: String) {
         val roleFind = roleRepository.findByRoleName(roleName)
 
@@ -95,7 +95,7 @@ class AuthorizationService @Autowired constructor(
         }
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Transactional
     fun addPermissionToRole(roleName: String, permissions_in: Set<String>): Role {
         val roleFind = roleRepository.findByRoleName(roleName)
 
