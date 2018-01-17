@@ -68,7 +68,31 @@ class StudentControllerMvcTest {
 
     @Test
     fun createStudentTest() {
+        mockMvc.perform(put("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                        """{
+                        "idNumber": "123456A",
+                        "cardSecret": null,
+                        "grade": 10,
+                        "gender": "FEMALE",
+                        "dateOfBirth": 612939600,
+                        "dorm": "ELE",
+                        "dormInfo": "DNE",
+                        "accountId": null
+                    }""".trimIndent()
+                ))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+                .andExpect {
+                    assertEquals(0L, studentRepo.count())
+                }
+
         val account = initAccount()
+
         mockMvc.perform(put("/student/")
                 .with({
                     it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
