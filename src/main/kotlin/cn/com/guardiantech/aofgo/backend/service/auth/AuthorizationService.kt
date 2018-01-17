@@ -5,6 +5,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Role
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.auth.PermissionRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
+import cn.com.guardiantech.aofgo.backend.request.authentication.admin.RolePermissionRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
@@ -32,6 +33,7 @@ class AuthorizationService @Autowired constructor(
         }
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     fun removePermission(permissionKey: String) {
         val pFind = permissionRepository.findByPermissionKey(permissionKey)
         if (pFind.isPresent) {
@@ -42,7 +44,7 @@ class AuthorizationService @Autowired constructor(
     }
 
     fun listAllPermissionAsString(): List<String> =
-        permissionRepository.findAllByOrderByPermissionKeyDesc().map {
+            permissionRepository.findAllByOrderByPermissionKeyAsc().map {
             it.permissionKey
         }
 
@@ -70,5 +72,48 @@ class AuthorizationService @Autowired constructor(
         }
 
         return role
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    fun removeRole(roleName: String) {
+        val roleFind = roleRepository.findByRoleName(roleName)
+
+        if (roleFind.isPresent) {
+            try {
+                roleRepository.delete(roleFind.get())
+            } catch (e: Throwable) {
+                throw IllegalStateException("Selected role is currently being used by one or more user. Can not be deleted.")
+            }
+        } else {
+            throw IllegalArgumentException("Role (roleName = $roleName) was not found on the server.")
+        }
+    }
+
+    fun listAllRolesAsString(): List<String> {
+        return roleRepository.findAllByOrderByRoleNameAsc().map {
+            it.roleName
+        }
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    fun addPermissionToRole(roleName: String, permissions_in: Set<String>): Role {
+        val roleFind = roleRepository.findByRoleName(roleName)
+
+        if (!roleFind.isPresent) {
+            throw IllegalArgumentException("Failed to find Role(roleName = $roleName)")
+        }
+
+        val permissions: List<Permission> = permissions_in.map {
+            permissionRepository.findByPermissionKey(it).get()  // TODO: Maybe exception handling when not found? IDK for now
+        }
+
+
+        val role = roleFind.get()
+
+        permissions.forEach {
+            role.permissions.add(it)
+        }
+
+        return roleRepository.save(role)
     }
 }

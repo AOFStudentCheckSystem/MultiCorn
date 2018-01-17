@@ -7,5 +7,5 @@ import java.util.*
 interface PermissionRepository : CrudRepository<Permission, Long> {
     fun findById(id: Long): Optional<Permission>
     fun findByPermissionKey(permission: String): Optional<Permission>
-    fun findAllByOrderByPermissionKeyDesc(): List<Permission>
+    fun findAllByOrderByPermissionKeyAsc(): List<Permission>
 }

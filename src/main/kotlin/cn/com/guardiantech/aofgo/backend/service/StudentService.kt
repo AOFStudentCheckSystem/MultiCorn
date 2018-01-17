@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
+import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
@@ -26,6 +27,7 @@ class StudentService @Autowired constructor(
             accountService.getAccountById(request.accountId)
         } else {
             if (request.account != null) {
+                request.account.type = AccountType.STUDENT
                 accountService.createAccount(request.account)
             } else {
                 throw IllegalArgumentException("No account is provided with the student.")

@@ -27,7 +27,7 @@ class AccountService @Autowired constructor(
                         lastName = request.lastName,
                         email = request.email,
                         phone = request.phone,
-                        type = request.type,
+                        type = request.type!!,
                         preferredName = request.preferredName
                 )
         )

@@ -1,5 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity

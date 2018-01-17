@@ -9,7 +9,7 @@ data class AccountCreationRequest(
         val lastName: String,
         val email: String,
         val phone: String?,
-        val type: AccountType,
+        var type: AccountType?,
         val preferredName: String,
         val subjectId: Long?
 )

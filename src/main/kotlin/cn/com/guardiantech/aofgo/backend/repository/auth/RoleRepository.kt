@@ -6,5 +6,7 @@ import java.util.*
 
 interface RoleRepository : CrudRepository<Role, Long> {
     fun findById(id: Long): Optional<Role>
+    fun findByRoleName(name: String): Optional<Role>
+    fun findAllByOrderByRoleNameAsc(): List<Role>
 }
 
