@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
+@Table(uniqueConstraints = [(UniqueConstraint(columnNames = ["permission_key"]))])
 class Permission(
         @Id
         @GeneratedValue

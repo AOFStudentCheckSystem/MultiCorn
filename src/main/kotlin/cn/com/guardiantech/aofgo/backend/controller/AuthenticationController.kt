@@ -7,7 +7,7 @@ import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
-import cn.com.guardiantech.aofgo.backend.service.AuthenticationService
+import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
