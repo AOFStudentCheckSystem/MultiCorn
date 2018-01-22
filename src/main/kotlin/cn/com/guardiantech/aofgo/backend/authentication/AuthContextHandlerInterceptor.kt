@@ -34,14 +34,14 @@ open class AuthContextHandlerInterceptor constructor(
         val authCtx = AuthContext.currentContext
 
         if (handler is HandlerMethod) {
-            if (checkRequire(handler)) {
+            if (checkRequireExists(handler)) {
 
-                // This should be guaranteed, as checkRequire has already checked the preconditions
+                // This should be guaranteed, as checkRequireExists() has already checked the preconditions
                 val require = getNearestRequire(handler)!!
 
-                // Todo implement permission check
                 if (authCtx.isAuthenticated()) {
-
+                    // TODO uncomment this line to enable Authorization
+//                    authenticationService.verifySessionPermission(authHeader, require.permissions)
                 } else {
                     throw UnauthorizedException("FUCK YOU, go LOGIN")
                 }
@@ -50,7 +50,7 @@ open class AuthContextHandlerInterceptor constructor(
         return true
     }
 
-    private fun checkRequire(handlerMethod: HandlerMethod): Boolean {
+    private fun checkRequireExists(handlerMethod: HandlerMethod): Boolean {
         return handlerMethod.hasMethodAnnotation(Require::class.java) || handlerMethod.method.declaringClass.isAnnotationPresent(Require::class.java)
     }
 

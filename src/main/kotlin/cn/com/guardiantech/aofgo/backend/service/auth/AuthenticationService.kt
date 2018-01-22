@@ -1,17 +1,16 @@
 package cn.com.guardiantech.aofgo.backend.service.auth
 
 import cn.com.guardiantech.aofgo.backend.authentication.AuthenticationMechanism
+import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Credential
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Principal
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
-import cn.com.guardiantech.aofgo.backend.repository.auth.CredentialRepository
-import cn.com.guardiantech.aofgo.backend.repository.auth.PrincipalRepository
-import cn.com.guardiantech.aofgo.backend.repository.auth.SessionRepository
-import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.*
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
+import cn.com.guardiantech.aofgo.backend.service.AccountService
 import cn.com.guardiantech.aofgo.backend.util.SessionUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -29,7 +28,8 @@ class AuthenticationService @Autowired constructor(
         private val principalRepo: PrincipalRepository,
         private val credentialRepo: CredentialRepository,
         private val sessionRepo: SessionRepository,
-        private val authenticationMechanism: AuthenticationMechanism
+        private val authenticationMechanism: AuthenticationMechanism,
+        private val accountRepository: AccountRepository
 ) {
 
     @PersistenceContext
@@ -43,7 +43,7 @@ class AuthenticationService @Autowired constructor(
      */
     @Transactional
     @Modifying
-    fun register(registerRequest: RegisterRequest): Subject {
+    fun register(registerRequest: RegisterRequest): Account {
         val newSubject = subjectRepo.save(Subject(
                 subjectAttachedInfo = registerRequest.subjectAttachedInfo))
 
@@ -59,8 +59,11 @@ class AuthenticationService @Autowired constructor(
                 secret = processedSecret,
                 owner = newSubject
         ))
+        val account = accountRepository.save(Account(
+                subject = newSubject)
+        )
         entityManager.refresh(newSubject)
-        return newSubject
+        return account
     }
 
     fun authenticate(authRequest: AuthenticationRequest): Session {
@@ -100,5 +103,15 @@ class AuthenticationService @Autowired constructor(
             }
         }
         return null
+    }
+
+    fun verifySessionPermission(sessionKey: String, permission: Array<String>): Boolean {
+        val sessionNullable = this.authenticateSession(sessionKey)
+        return sessionNullable?.let { session ->
+            val perms = session.getPermissions()
+            return@let permission.all {
+                perms.contains(it)
+            }
+        } ?: false
     }
 }

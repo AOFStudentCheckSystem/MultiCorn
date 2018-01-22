@@ -16,8 +16,9 @@ class Subject(
         @Id
         @GeneratedValue
         @Column(name = "subject_id", unique = true)
-        @JsonIgnore
+        @get:JsonView(SubjectView.BriefView::class)
         val id: Long = -1,
+
 
         @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
         @JsonManagedReference
@@ -26,7 +27,7 @@ class Subject(
 
         @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
         @JsonManagedReference
-        @get:JsonView(SubjectView.FullView::class)
+        @get:JsonView(SubjectView.AdminView::class)
         val credentials: MutableSet<Credential> = hashSetOf(),
 
         @Lob
@@ -53,7 +54,7 @@ class Subject(
     }
 
     @JsonProperty("allPermissions")
-    @JsonView(SubjectView.AdminView::class)
+    @JsonView(SubjectView.BriefView::class)
     fun allPermissions(): Set<Permission> {
         return roles.fold(hashSetOf(), { sum, r ->
             sum.addAll(r.permissions)

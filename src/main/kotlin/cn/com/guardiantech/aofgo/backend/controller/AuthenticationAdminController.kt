@@ -1,11 +1,13 @@
 package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
+import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Permission
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Role
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.jsonview.SubjectView
+import cn.com.guardiantech.aofgo.backend.repository.auth.AccountPageableRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectPageableRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
 import cn.com.guardiantech.aofgo.backend.request.authentication.admin.PermissionRequest
@@ -27,7 +29,8 @@ import org.springframework.web.bind.annotation.*
 class AuthenticationAdminController @Autowired constructor(
         private val authorizationService: AuthorizationService,
         private val roleRepository: RoleRepository,
-        private val subjectRepository: SubjectPageableRepository
+        private val subjectRepository: SubjectPageableRepository,
+        private val accountPageableRepository: AccountPageableRepository
 ) {
 
     @PutMapping("/permission")
@@ -121,11 +124,9 @@ class AuthenticationAdminController @Autowired constructor(
     @DeleteMapping("/subject/role")
     fun removeRoleFromSubject(@RequestBody subjectRoleRequest: SubjectRoleRequest): Subject {
         val roles: MutableSet<String> = subjectRoleRequest.roles.orEmpty().toMutableSet()
-
         subjectRoleRequest.role?.let {
             roles.add(it)
         }
-
         try {
             return authorizationService.removeRoleFromSubject(subjectRoleRequest.subjectId, roles)
         } catch (e: NoSuchElementException) {
@@ -137,5 +138,11 @@ class AuthenticationAdminController @Autowired constructor(
     @JsonView(SubjectView.BriefView::class)
     fun listAllSubjects(p: Pageable): Page<Subject> {
         return subjectRepository.findAll(p)
+    }
+
+    @GetMapping("/account")
+    @JsonView(SubjectView.BriefView::class)
+    fun listAllAccounts(p: Pageable): Page<Account> {
+        return accountPageableRepository.findAll(p)
     }
 }
