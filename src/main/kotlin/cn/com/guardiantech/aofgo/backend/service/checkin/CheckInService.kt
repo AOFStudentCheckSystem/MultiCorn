@@ -11,6 +11,7 @@ import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionRespon
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import unitDirection
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Created by dedztbh on 1/6/18.
@@ -28,6 +29,7 @@ class CheckInService @Autowired constructor(
      * @throws IllegalArgumentException
      * @throws NoSuchElementException Event or student not found
      */
+    @Transactional
     fun checkInSubmission(request: CheckInSubmissionRequest): CheckInSubmissionResponse {
         val event = eventRepository.findByEventId(request.targetEvent).get()
         if (event.eventStatus.status > 1) {

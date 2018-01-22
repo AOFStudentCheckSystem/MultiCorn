@@ -38,10 +38,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @Import(BackendApplicationTestConfiguration::class)
 @AutoConfigureMockMvc
 class StudentControllerMvcTest {
-    @Autowired private lateinit var mockMvc: MockMvc
-    @Autowired private lateinit var studentRepo: StudentRepository
-    @Autowired private lateinit var accountRepo: AccountRepository
-    @Autowired private lateinit var authenticationUtil: AuthenticationUtil
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+    @Autowired
+    private lateinit var studentRepo: StudentRepository
+    @Autowired
+    private lateinit var accountRepo: AccountRepository
+    @Autowired
+    private lateinit var authenticationUtil: AuthenticationUtil
 
     @Before
     fun initialize() {
@@ -62,7 +66,7 @@ class StudentControllerMvcTest {
 
     fun initStudent(): Student = studentRepo.save(
             Student(
-                idNumber = "12345AB"
+                    idNumber = "12345AB"
             )
     )
 
@@ -100,7 +104,7 @@ class StudentControllerMvcTest {
                 })
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(
-                """{
+                        """{
                         "idNumber": "123456A",
                         "cardSecret": null,
                         "grade": 10,
@@ -335,5 +339,71 @@ class StudentControllerMvcTest {
                 )
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
+
+    @Test
+    fun unbindStudentCardTest() {
+        val student = studentRepo.save(
+                Student(
+                        idNumber = "12345AB",
+                        cardSecret = "NOT REALLY",
+                        account = initAccount()
+                )
+        )
+
+        mockMvc.perform(delete("/student/card/${student.idNumber}")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+
+        assertEquals(null, studentRepo.findById(student.id).get().cardSecret)
+    }
+
+    @Test
+    fun editStudentCardTest() {
+        val student = studentRepo.save(
+                Student(
+                        idNumber = "12345AB",
+                        account = initAccount()
+                )
+        )
+
+        mockMvc.perform(put("/student/card")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                        """
+                            {
+                                "idNumber": "${student.idNumber}",
+                                "cardSecret": "very fast"
+                            }
+                        """.trimIndent()))
+                .andDo {
+                    println("req bod len: ${it.request.contentLength}")
+                }
+                .andExpect(MockMvcResultMatchers.status().isOk)
+
+        assertEquals("very fast", studentRepo.findById(student.id).get().cardSecret)
+
+        mockMvc.perform(put("/student/card")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                """{
+                    "idNumber": "${student.idNumber}",
+                    "cardSecret": "very slow"
+                }""".trimIndent()
+                ))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+
+        assertEquals("very slow", studentRepo.findById(student.id).get().cardSecret)
     }
 }

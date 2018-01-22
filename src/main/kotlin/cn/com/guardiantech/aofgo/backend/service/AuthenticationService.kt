@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthenticationService @Autowired constructor(
@@ -63,6 +63,7 @@ class AuthenticationService @Autowired constructor(
         return newSubject
     }
 
+    @Transactional
     fun authenticate(authRequest: AuthenticationRequest): Session {
         //NoSuchElementException
         val principal = principalRepo.findByTypeAndIdentification(
@@ -84,6 +85,7 @@ class AuthenticationService @Autowired constructor(
         }
     }
 
+    @Transactional
     fun authenticateSession(session: String): Session? {
         val sessionFind = sessionRepo.findBySessionKey(session)
 

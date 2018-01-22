@@ -6,6 +6,7 @@ import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.ControllerException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
+import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import javassist.NotFoundException
@@ -21,7 +22,6 @@ class StudentController @Autowired constructor(
         val studentService: StudentService
 ) {
     private val logger: Logger = LoggerFactory.getLogger(StudentController::class.java)
-
 
     @Require
     @PutMapping("/")
@@ -58,6 +58,26 @@ class StudentController @Autowired constructor(
         studentService.editStudent(request)
     } catch (e: ControllerException) {
         throw e
+    } catch (e: NoSuchElementException) {
+        throw EntityNotFoundException("Student Not Found")
+    } catch (e: Throwable) {
+        throw RepositoryException("Failed to save student")
+    }
+
+    @Require
+    @DeleteMapping("/card/{idNumber}")
+    fun unbindStudentCard(@PathVariable idNumber: String): Student = try {
+        studentService.editStudentCardSecret(idNumber, null)
+    } catch (e: NoSuchElementException) {
+        throw EntityNotFoundException("Student Not Found")
+    } catch (e: Throwable) {
+        throw RepositoryException("Failed to save student")
+    }
+
+    @Require
+    @PutMapping("/card")
+    fun editStudentCard(@RequestBody @Valid request: StudentEditCardSecretRequest): Student = try {
+        studentService.editStudentCardSecret(request.idNumber, request.cardSecret)
     } catch (e: NoSuchElementException) {
         throw EntityNotFoundException("Student Not Found")
     } catch (e: Throwable) {
