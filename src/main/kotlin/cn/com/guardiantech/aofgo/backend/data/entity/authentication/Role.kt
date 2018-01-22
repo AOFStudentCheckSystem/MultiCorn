@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
@@ -20,5 +21,6 @@ class Role(
                 name = "roles_permissions",
                 joinColumns = [(JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false))],
                 inverseJoinColumns = [(JoinColumn(name = "permission_id", referencedColumnName = "permission_id", nullable = false))])
-        val permissions: MutableSet<Permission> = hashSetOf()
+        @OrderBy("permission_key ASC")
+        val permissions: MutableList<Permission> = arrayListOf()
 )

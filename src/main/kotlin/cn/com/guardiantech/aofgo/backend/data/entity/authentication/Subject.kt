@@ -1,7 +1,10 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
+import cn.com.guardiantech.aofgo.backend.jsonview.SubjectView
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonView
 import javax.persistence.*
 
 /**
@@ -13,18 +16,22 @@ class Subject(
         @Id
         @GeneratedValue
         @Column(name = "subject_id", unique = true)
+        @JsonIgnore
         val id: Long = -1,
 
         @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
         @JsonManagedReference
+        @get:JsonView(SubjectView.AuthenticationView::class)
         val principals: MutableSet<Principal> = hashSetOf(),
 
         @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
         @JsonManagedReference
+        @get:JsonView(SubjectView.FullView::class)
         val credentials: MutableSet<Credential> = hashSetOf(),
 
         @Lob
         @Column(nullable = true)
+        @get:JsonView(SubjectView.AuthenticationView::class)
         val subjectAttachedInfo: String? = null,
 
         @ManyToMany(fetch = FetchType.EAGER)
@@ -45,6 +52,8 @@ class Subject(
         credentials.add(c)
     }
 
+    @JsonProperty("allPermissions")
+    @JsonView(SubjectView.AdminView::class)
     fun allPermissions(): Set<Permission> {
         return roles.fold(hashSetOf(), { sum, r ->
             sum.addAll(r.permissions)

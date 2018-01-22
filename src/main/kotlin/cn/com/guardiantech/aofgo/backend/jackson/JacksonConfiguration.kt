@@ -1,7 +1,9 @@
 package cn.com.guardiantech.aofgo.backend.jackson
 
+import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Permission
 import cn.com.guardiantech.aofgo.backend.jackson.deserializer.DateDeserializer
 import cn.com.guardiantech.aofgo.backend.jackson.serializer.DateSerializer
+import cn.com.guardiantech.aofgo.backend.jackson.serializer.PermissionSerializer
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import org.springframework.context.annotation.Configuration
@@ -30,8 +32,12 @@ class JacksonConfiguration: WebMvcConfigurerAdapter() {
         val mapper = ObjectMapper()
         val module = SimpleModule()
 
+        // Date (DE)Serialization
         module.addDeserializer(Date::class.java, DateDeserializer())
         module.addSerializer(Date::class.java, DateSerializer())
+
+        // Permission Serialization
+        module.addSerializer(Permission::class.java, PermissionSerializer())
 
         mapper.registerModule(module)
         return mapper
