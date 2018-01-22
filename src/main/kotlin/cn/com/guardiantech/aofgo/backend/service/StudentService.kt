@@ -18,7 +18,7 @@ class StudentService @Autowired constructor(
     /**
      * Failed to save student due to conflict
      */
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Transactional
     fun createStudent(request: StudentRequest): Student {
         val theAccount: Account = if (request.accountId != null) {
             accountService.getAccountById(request.accountId)
