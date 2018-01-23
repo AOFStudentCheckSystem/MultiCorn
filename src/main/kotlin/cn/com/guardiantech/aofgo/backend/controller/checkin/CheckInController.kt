@@ -28,6 +28,7 @@ class CheckInController @Autowired constructor(
     fun checkInSubmission(@RequestBody @Valid request: CheckInSubmissionRequest): CheckInSubmissionResponse = try {
         checkInService.checkInSubmission(request)
     } catch (e: IllegalArgumentException) {
+        logger.error("An unknown error has occoured", e)
         throw BadRequestException(e.message)
     } catch (e: NoSuchElementException) {
         throw EntityNotFoundException("Event or student not found")
