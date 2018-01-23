@@ -4,13 +4,10 @@ import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
-import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
-import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationWithNewAccountRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 @Service
@@ -61,6 +58,7 @@ class StudentService @Autowired constructor(
      * @throws NoSuchElementException Student Not Found
      * Failed to save student
      */
+    @Transactional
     fun editStudent(request: StudentRequest): Student {
         val theStudent = studentRepo.findByIdNumber(request.idNumber).get()
         if (request.cardSecret != null) {
@@ -90,4 +88,15 @@ class StudentService @Autowired constructor(
         }
         return studentRepo.save(theStudent)
     }
+
+    /**
+     * @throws NoSuchElementException Student Not Found
+     * Failed to save student
+     */
+    @Transactional
+    fun editStudentCardSecret(idNumber: String, cardSecret: String?): Student =
+            studentRepo.findByIdNumber(idNumber).get().let {
+                it.cardSecret = cardSecret
+                studentRepo.save(it)
+            }
 }

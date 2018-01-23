@@ -1,6 +1,9 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
 
 @Entity
 @Table(uniqueConstraints = [(UniqueConstraint(columnNames = ["permission_key"]))])

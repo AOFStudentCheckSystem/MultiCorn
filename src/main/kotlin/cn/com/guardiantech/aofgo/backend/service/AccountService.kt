@@ -5,6 +5,7 @@ import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.request.account.AccountCreationRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AccountService @Autowired constructor(
@@ -20,6 +21,7 @@ class AccountService @Autowired constructor(
     /**
      * Cannot save account
      */
+    @Transactional
     fun createAccount(request: AccountCreationRequest): Account {
         return accountRepo.save(
                 Account(

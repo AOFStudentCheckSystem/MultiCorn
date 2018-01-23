@@ -160,6 +160,7 @@ class EventControllerMvcTest {
         )
         mockMvc.perform(get("/checkin/event/${boardingEvent.eventId}"))
                 .andExpect(MockMvcResultMatchers.status().isOk)
+                .andDo { assertEquals(-1L, JSONObject(it.response.contentAsString).optLong("id", -1L)) }
         mockMvc.perform(get("/checkin/event/DNE"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
     }

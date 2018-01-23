@@ -1,6 +1,5 @@
 package cn.com.guardiantech.aofgo.backend.data.entity
 
-import org.hibernate.secure.spi.GrantedPermission
 import java.util.*
 import javax.persistence.*
 

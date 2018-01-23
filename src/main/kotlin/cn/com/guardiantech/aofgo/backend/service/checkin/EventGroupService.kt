@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PathVariable
 import java.util.*
 
@@ -27,6 +28,7 @@ class EventGroupService @Autowired constructor(
     /**
      * @throws NoSuchElementException Group not found
      */
+    @Transactional
     fun createGroup(request: GroupRequest) {
         val events: MutableSet<ActivityEvent> = hashSetOf()
         request.groupItems.forEach {
@@ -38,6 +40,7 @@ class EventGroupService @Autowired constructor(
     /**
      * @throws NoSuchElementException Group or event not found
      */
+    @Transactional
     fun addEventToGroup(request: CREventToGroupRequest, groupId: Long) {
         val targetGroup = eventGroupRepo.findById(groupId).get()
         val targetEvent = eventRepo.findByEventId(request.eventId).get()
@@ -48,6 +51,7 @@ class EventGroupService @Autowired constructor(
     /**
      * @throws NoSuchElementException Group or event not found
      */
+    @Transactional
     fun removeEventFromGroup(request: CREventToGroupRequest, groupId: Long) {
         val targetGroup = eventGroupRepo.findById(groupId).get()
         val targetEvent = eventRepo.findByEventId(request.eventId).get()
@@ -58,6 +62,7 @@ class EventGroupService @Autowired constructor(
     /**
      * @throws NoSuchElementException Group or event not found
      */
+    @Transactional
     fun setEventToGroup(items: Array<Long>, groupId: Long) {
         val targetGroup = eventGroupRepo.findById(groupId).get()
         val events: MutableList<ActivityEvent> = arrayListOf()
@@ -72,12 +77,14 @@ class EventGroupService @Autowired constructor(
     /**
      * @throws NoSuchElementException group not found
      */
+    @Transactional
     fun updateEventTitle(request: GroupRequest, groupId: Long) {
         val targetGroup = eventGroupRepo.findById(groupId).get()
         targetGroup.name = request.name
         eventGroupRepo.save(targetGroup)
     }
 
+    @Transactional
     fun removeEventGroupById(id: Long): Long =
             eventGroupRepo.removeById(id)
 
