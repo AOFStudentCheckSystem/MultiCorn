@@ -56,7 +56,7 @@ class StudentControllerMvcTest {
             Account(
                     firstName = "fn",
                     lastName = "ln",
-                    email = "a@b.c",
+                    email = null,
                     phone = null,
                     type = AccountType.STUDENT,
                     preferredName = "pn"
@@ -165,6 +165,8 @@ class StudentControllerMvcTest {
 
     @Test
     fun createStudentWithAccountTest() {
+        assertEquals(1L, accountRepo.count())
+        assertEquals(0L, studentRepo.count())
         mockMvc.perform(put("/student/")
                 .with({
                     it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
@@ -191,7 +193,7 @@ class StudentControllerMvcTest {
                 ))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect {
-                    assertEquals(1L, accountRepo.count())
+                    assertEquals(2L, accountRepo.count())
                     assertEquals(1L, studentRepo.count())
                     assertEquals(studentRepo.findAll().first().idNumber,
                             JSONObject(it.response.contentAsString).getString("idNumber"))
