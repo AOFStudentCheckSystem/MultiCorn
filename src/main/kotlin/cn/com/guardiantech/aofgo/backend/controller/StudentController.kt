@@ -8,7 +8,6 @@ import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
-import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationWithNewAccountRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import javassist.NotFoundException
 import org.slf4j.Logger

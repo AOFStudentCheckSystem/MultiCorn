@@ -34,10 +34,11 @@ class JacksonConfiguration: WebMvcConfigurerAdapter() {
 
         // Date (DE)Serialization
         module.addDeserializer(Date::class.java, DateDeserializer())
-        module.addSerializer(Date::class.java, DateSerializer())
+//        module.addDeserializer(RecordToUpload::class.java, RecordToUploadDeserializer())
 
         // Permission Serialization
         module.addSerializer(Permission::class.java, PermissionSerializer())
+        module.addSerializer(Date::class.java, DateSerializer())
 
         mapper.registerModule(module)
         return mapper

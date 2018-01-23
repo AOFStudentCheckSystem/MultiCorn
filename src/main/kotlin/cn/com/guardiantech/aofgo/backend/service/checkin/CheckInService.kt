@@ -60,6 +60,7 @@ class CheckInService @Autowired constructor(
             }
             if (targetEventRecord.checkInTime.abs() <= recordTimestamp.abs()) {
                 effectiveUpdate++
+                println(recordNewStatus.unitDirection())
                 targetEventRecord.checkInTime = recordNewStatus.unitDirection() * recordTimestamp
             }
             eventRecordRepository.save(targetEventRecord)
