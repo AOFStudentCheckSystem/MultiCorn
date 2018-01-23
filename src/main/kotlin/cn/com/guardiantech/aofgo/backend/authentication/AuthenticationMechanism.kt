@@ -3,6 +3,7 @@ package cn.com.guardiantech.aofgo.backend.authentication
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Credential
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.CredentialType
 import org.apache.commons.codec.binary.Hex
+import org.mindrot.jbcrypt.BCrypt
 import org.springframework.stereotype.Component
 import java.security.MessageDigest
 
@@ -15,7 +16,7 @@ class AuthenticationMechanism {
 
     fun encryptCredentialSecret(type: CredentialType, raw: String): String = when (type) {
         CredentialType.PASSWORD -> {
-            computeSHA256String(raw)
+            BCrypt.hashpw(raw, BCrypt.gensalt())
         }
         else -> raw
     }
@@ -23,7 +24,7 @@ class AuthenticationMechanism {
     fun verifyCredentialSecret(credential: Credential, attempt: String): Boolean = when (credential.type) {
 
         CredentialType.PASSWORD -> {
-            credential.secret == computeSHA256String(attempt)
+            BCrypt.checkpw(attempt, credential.secret)
         }
 
         else -> false
