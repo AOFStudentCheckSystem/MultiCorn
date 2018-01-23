@@ -41,6 +41,7 @@ class JacksonConfiguration: WebMvcConfigurerAdapter() {
         module.addSerializer(Date::class.java, DateSerializer())
 
         mapper.registerModule(module)
+//        mapper.registerModule(KotlinModule())
         return mapper
     }
 }

@@ -1,37 +1,51 @@
 package cn.com.guardiantech.aofgo.backend.controller.checkin
 
-import cn.com.guardiantech.aofgo.backend.BackendApplication
-import cn.com.guardiantech.aofgo.backend.BackendApplicationTestConfiguration
-import com.fasterxml.jackson.databind.ObjectMapper
+import cn.com.guardiantech.aofgo.backend.request.checkin.RecordToUpload
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
-import org.springframework.data.web.config.EnableSpringDataWebSupport
+import org.springframework.boot.test.autoconfigure.json.JsonTest
+import org.springframework.boot.test.json.JacksonTester
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = [BackendApplication::class])
-@DataJpaTest
-@Import(BackendApplicationTestConfiguration::class)
-@AutoConfigureMockMvc
-@EnableSpringDataWebSupport
+@JsonTest
 class RecordToUploadSerializationTest {
 
     @Autowired
-    lateinit var objectMapper: ObjectMapper
+    lateinit var jacksonTest: JacksonTester<RecordToUpload>
 
     @Before
     fun preTest() {
-        assertNotNull(this.objectMapper)
+        assertNotNull(jacksonTest)
     }
 
-    fun test() {
-//        objectMapper.readvalue
+    @Test
+    fun testDeserialization() {
+        val jsonWithStatus = """
+            {
+            "timestamp": 123456789,
+            "studentId": "123456798",
+            "status": 1
+            }
+        """.trimIndent()
+        val resultWithStatus = jacksonTest.parseObject(jsonWithStatus)
+        assertNotNull(resultWithStatus)
+        assertEquals(123456789, resultWithStatus.timestamp)
+        assertEquals(1, resultWithStatus.status)
+
+        val jsonWithOutStatus = """
+            {
+            "timestamp": 123456789,
+            "studentId": "123456798"
+            }
+        """.trimIndent()
+        val resultWithOutStatus = jacksonTest.parseObject(jsonWithOutStatus)
+        assertNotNull(resultWithOutStatus)
+        assertEquals(123456789, resultWithOutStatus.timestamp)
+        assertEquals(1, resultWithOutStatus.status)
     }
 
 }

@@ -58,7 +58,6 @@ noArg {
 sourceCompatibility = 1.8
 
 ext {
-	springCloudVersion = 'Edgware.RELEASE'
     log4j2Version = '2.8.2'
     slf4jVersion = '1.7.25'
     mysql_version = '6.0.6'
@@ -78,8 +77,11 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-mail')
 
     // Kotlin Language Libraries
-	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
+	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
 	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    compile ("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0") {
+        exclude group: 'org.jetbrains.kotlin'
+    }
     compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
 
     compile group: 'com.google.guava', name: 'guava', version: '23.0'
@@ -125,10 +127,4 @@ processResources {
     } else {
         println("Building DEBUG")
     }
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
 }
