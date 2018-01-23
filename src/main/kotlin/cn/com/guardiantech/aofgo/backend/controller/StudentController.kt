@@ -9,6 +9,8 @@ import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentCreationWithNewAccountRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import javassist.NotFoundException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -18,6 +20,8 @@ import javax.validation.Valid
 class StudentController @Autowired constructor(
         val studentService: StudentService
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(StudentController::class.java)
+
     @Require
     @PutMapping("/")
     fun createStudent(@RequestBody @Valid studentRequest: StudentRequest): Student = try {
@@ -25,6 +29,7 @@ class StudentController @Autowired constructor(
     } catch (e: NoSuchElementException) {
         throw EntityNotFoundException("Account Not Found")
     } catch (e: Throwable) {
+        logger.error("Student Saving Error:", e)
         throw RepositoryException("Failed to save student due to conflict")
     }
 

@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import com.fasterxml.jackson.annotation.JsonBackReference
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
@@ -28,6 +29,7 @@ class ActivityEventRecord(
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(optional = false)
     @JoinColumn(name = "event")
+    @JsonBackReference
     lateinit var event: ActivityEvent
 
     override fun equals(other: Any?): Boolean {
