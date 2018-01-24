@@ -1,5 +1,9 @@
 server:
   port: 9080
+#management:
+#  context-path: /spring-manage
+#  security:
+#    enabled: false
 spring:
   application:
     name: aofgo-backend
@@ -22,7 +26,7 @@ spring:
     platform: mysql
   mail:
     from: "AOF Activity Sign-up<signups@233.com.hk>"
-    host: hn2.guardiantech.com.cn
+    host: mail.codetector.cn
     protocol: smtps
     port: 587
     username: ${smtpusr:signups@233.com.hk}

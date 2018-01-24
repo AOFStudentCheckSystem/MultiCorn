@@ -5,12 +5,14 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+        jcenter()
 	}
 	dependencies {
 		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
         classpath("org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}")
 		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'com.bmuschko:gradle-docker-plugin:3.0.11'
 //        classpath 'org.springframework:springloaded:1.2.6.RELEASE'
     }
 }
@@ -23,6 +25,8 @@ apply plugin: 'kotlin-spring'
 apply plugin: "kotlin-noarg"
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
 //apply plugin: 'idea'
 
 //idea {
@@ -31,9 +35,8 @@ apply plugin: 'org.springframework.boot'
 //        outputDir = file("$buildDir/classes/main/")
 //    }
 //}
-
 group = 'cn.com.guardiantech.aofgo'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = 1.8
 compileKotlin {
 	kotlinOptions.jvmTarget = "1.8"
@@ -72,6 +75,7 @@ configurations.all {
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
+//    compile("org.springframework.boot:spring-boot-starter-actuator")
 	compile('org.springframework.boot:spring-boot-starter-validation')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-mail')
@@ -120,6 +124,41 @@ compileTestKotlin {
 task copyLibraries(type: Copy) {
     from configurations.runtime
     into("$buildDir/out/std/libs")
+}
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+if (hasProperty("code_dockerUser") && hasProperty("code_dockerPass")) {
+    docker {
+        registryCredentials {
+            url = "https://docker.codetector.cn"
+            username = "$code_dockerUser"
+            password = "$code_dockerPass"
+        }
+    }
+}
+
+task createDockerfile(type: Dockerfile) {
+    group = 'Docker'
+    dependsOn build
+    destFile = project.file('build/docker/Dockerfile')
+    from 'java:8'
+    addFile('libs/' + jar.archiveName, '/app.jar')
+    entryPoint("sh", "-c", "java \$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar")
+}
+
+task buildImage(type: DockerBuildImage) {
+    group = 'Docker'
+    dependsOn createDockerfile
+    dockerFile = createDockerfile.destFile
+    inputDir = project.buildDir
+    tag = getProperty("dockerImageName")
+}
+
+task pushImage(type: DockerPushImage) {
+    imageName = getProperty("dockerImageName")
 }
 
 processResources {
