@@ -10,17 +10,16 @@ import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.repository.auth.*
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
-import cn.com.guardiantech.aofgo.backend.service.AccountService
 import cn.com.guardiantech.aofgo.backend.util.SessionUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthenticationService @Autowired constructor(
@@ -115,5 +114,16 @@ class AuthenticationService @Autowired constructor(
                 perms.contains(it)
             }
         } ?: false
+    }
+
+    /**
+     * @throws NoSuchElementException
+     * @throws Throwable
+     */
+    @Transactional
+    fun invalidateSession(sessionKey: String) {
+        sessionRepo.findBySessionKey(sessionKey).orElseGet { null }?.let { session ->
+            sessionRepo.delete(session)
+        }
     }
 }

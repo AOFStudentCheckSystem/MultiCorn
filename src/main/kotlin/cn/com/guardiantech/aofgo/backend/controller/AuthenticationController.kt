@@ -12,6 +12,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -60,6 +61,14 @@ class AuthenticationController @Autowired constructor(
                 }
                 throw UnauthorizedException()
             }
+        }
+    }
+
+    @GetMapping(path = ["/signOut"])
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun signOut(authContext: AuthContext) {
+        authContext.session?.let { session ->
+            authenticationService.invalidateSession(session.sessionKey)
         }
     }
 }
