@@ -43,6 +43,6 @@ class Session(
     @JsonProperty("isAuthenticated")
     fun isAuthenticated(): Boolean = authenticatedFactors.isNotEmpty()
 
-    @JsonProperty("isAuthorized")
+    @JsonProperty("isFullyAuthenticated")
     fun isAuthorized(): Boolean = isAuthenticated() // TODO Change when Implement MFA
 }
