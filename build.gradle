@@ -144,17 +144,28 @@ task createDockerfile(type: Dockerfile) {
     group = 'Docker'
     dependsOn build
     destFile = project.file('build/docker/Dockerfile')
+    if (destFile.exists()) {
+        destFile.delete()
+    }
     from 'java:8'
     addFile('libs/' + jar.archiveName, '/app.jar')
-    entryPoint("sh", "-c", "java \$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar")
+    addFile('wait.dms', '/wait')
+    runCommand('chmod +x /wait')
+    defaultCommand("/wait && sh -c \"java \$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar\"")
+}
+
+task copyDockerWaitBinary(type: Copy) {
+    from 'docker-files/wait.dms'
+    into 'build/wait.dms'
 }
 
 task buildImage(type: DockerBuildImage) {
     group = 'Docker'
+    dependsOn copyDockerWaitBinary
     dependsOn createDockerfile
     dockerFile = createDockerfile.destFile
     inputDir = project.buildDir
-    tag = getProperty("dockerImageName")
+    tags.add(getProperty("dockerImageName") as String)
 }
 
 task pushImage(type: DockerPushImage) {
