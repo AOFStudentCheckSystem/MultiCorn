@@ -151,7 +151,7 @@ task createDockerfile(type: Dockerfile) {
     addFile('libs/' + jar.archiveName, '/app.jar')
     addFile('docker/wait.dms', '/wait')
     runCommand('chmod +x /wait')
-    defaultCommand("/wait && java \$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar")
+    defaultCommand("bash", "-c", "/wait && java \$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar")
 }
 
 task copyDockerWaitBinary(type: Copy) {
