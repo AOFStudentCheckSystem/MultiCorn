@@ -16,7 +16,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL57InnoDBDialect
   datasource:
-    url: jdbc:mysql://${dbaddr:localhost}:${dbport:3306}/${dbname:aofgo}?useUnicode=yes&characterEncoding=UTF-8&useSSL=${useSSL:false}
+    url: jdbc:mysql://${dbaddr:mysql}:${dbport:3306}/${dbname:aofgo}?useUnicode=yes&characterEncoding=UTF-8&useSSL=${useSSL:false}
     username: ${dbuser}
     password: ${dbpass}
     dbcp2:
