@@ -26,7 +26,6 @@ class AuthContextConfiguration: WebMvcConfigurerAdapter(), ApplicationContextAwa
 
     override fun setApplicationContext(applicationContext: ApplicationContext) {
         applicationContext.beanDefinitionNames.forEach { bName ->
-            logger.info("BEAN: $bName")
             val obj: Any = applicationContext.getBean(bName)
 
             var clazz: Class<*> = obj.javaClass
