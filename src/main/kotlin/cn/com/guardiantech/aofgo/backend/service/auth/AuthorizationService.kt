@@ -83,7 +83,12 @@ class AuthorizationService @Autowired constructor(
     fun removePermission(permissionKey: String) {
         val pFind = permissionRepository.findByPermissionKey(permissionKey)
         if (pFind.isPresent) {
-            permissionRepository.delete(pFind.get())
+            val perm = pFind.get()
+            if (perm.permissionType != PermissionType.SYSTEM) {
+                permissionRepository.delete(perm)
+            } else {
+                throw IllegalArgumentException("System Permission can not be removed.")
+            }
         } else {
             throw EntityNotFoundException("Failed to find Permission(permissionKey = $permissionKey), aborting.")
         }
