@@ -6,10 +6,10 @@ import javax.validation.constraints.NotNull
 
 @NoArg
 data class RegisterRequest(
-        @NotNull
+        @field:NotNull
         val principal: PrincipalRequest,
-        @NotNull
+        @field:NotNull
         val credential: CredentialRequest,
-        @JsonProperty(defaultValue = "")
+        @field:JsonProperty(defaultValue = "")
         val subjectAttachedInfo: String
 )

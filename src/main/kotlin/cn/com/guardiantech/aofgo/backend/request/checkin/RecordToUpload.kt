@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull
  */
 @NoArg
 data class RecordToUpload(
-        @NotNull
+        @field:NotNull
         val timestamp: Long,
         val status: Int = 1,
-        @NotNull
+        @field:NotNull
         val studentId: String
 )

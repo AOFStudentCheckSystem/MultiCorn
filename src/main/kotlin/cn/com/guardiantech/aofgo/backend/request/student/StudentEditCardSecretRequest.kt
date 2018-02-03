@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull
  */
 @NoArg
 data class StudentEditCardSecretRequest(
-        @NotNull
+        @field:NotNull
         val idNumber: String,
         val cardSecret: String?
 )

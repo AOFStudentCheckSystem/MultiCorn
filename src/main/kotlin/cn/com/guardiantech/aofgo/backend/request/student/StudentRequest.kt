@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull
 
 @NoArg
 data class StudentRequest(
-        @NotNull
+        @field:NotNull
         val idNumber: String,
         val cardSecret: String?,
         val grade: Int?,

@@ -86,6 +86,16 @@ class EventControllerMvcTest {
     @Test
     fun createEvent() {
         val count = eventRepo.count()
+
+        mockMvc.perform(put("/checkin/event/")
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+        )
+                .andDo {
+                    println("AAA: ${it.response.contentAsString}")
+                }
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+
         mockMvc
                 .perform(put("/checkin/event/")
                         .content(eventCreationRawRequest)

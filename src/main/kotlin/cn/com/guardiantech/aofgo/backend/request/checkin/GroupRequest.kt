@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull
  */
 @NoArg
 class GroupRequest(
-        @NotNull
+        @field:NotNull
         val name: String,
         val groupItems: Array<String> = arrayOf()
 )

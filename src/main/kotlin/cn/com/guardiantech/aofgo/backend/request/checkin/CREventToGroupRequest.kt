@@ -9,6 +9,6 @@ import javax.validation.constraints.NotNull
  */
 @NoArg
 class CREventToGroupRequest(
-        @NotNull
+        @field:NotNull
         val eventId: String
 )
