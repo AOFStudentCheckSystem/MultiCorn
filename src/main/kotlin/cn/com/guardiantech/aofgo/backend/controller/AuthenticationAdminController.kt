@@ -43,7 +43,7 @@ class AuthenticationAdminController @Autowired constructor(
         }
     }
 
-    @DeleteMapping("/permission/:permissionKey")
+    @DeleteMapping("/permission/{permissionKey}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun removePermission(@PathVariable("permissionKey") key: String) {
         authorizationService.removePermission(key)
@@ -59,7 +59,7 @@ class AuthenticationAdminController @Autowired constructor(
         return authorizationService.createRole(roleName = roleRequest.roleName, permissions_in = roleRequest.permissions ?: setOf())
     }
 
-    @DeleteMapping("/role/:roleName")
+    @DeleteMapping("/role/{roleName}")
     fun deleteRole(@PathVariable("roleName") roleName: String) {
         // TODO: Handle Exceptions
         authorizationService.removeRole(roleName = roleName)
