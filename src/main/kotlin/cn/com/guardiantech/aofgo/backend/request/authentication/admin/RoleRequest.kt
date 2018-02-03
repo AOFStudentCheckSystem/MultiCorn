@@ -8,5 +8,4 @@ class RoleRequest (
         @NotNull
         val roleName: String,
         val permissions: Set<String>? = null
-){
-}
+)
