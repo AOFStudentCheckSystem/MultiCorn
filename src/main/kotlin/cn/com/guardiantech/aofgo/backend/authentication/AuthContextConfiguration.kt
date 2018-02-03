@@ -2,6 +2,7 @@ package cn.com.guardiantech.aofgo.backend.authentication
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
+import cn.com.guardiantech.aofgo.backend.service.auth.AuthorizationService
 import org.slf4j.LoggerFactory
 import org.springframework.aop.support.AopUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,12 +18,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 class AuthContextConfiguration: WebMvcConfigurerAdapter(), ApplicationContextAware {
 
+    @Autowired lateinit var authorizationService:AuthorizationService
+
     companion object {
         private val logger = LoggerFactory.getLogger(AuthContextConfiguration::class.java)
     }
 
     override fun setApplicationContext(applicationContext: ApplicationContext) {
         applicationContext.beanDefinitionNames.forEach { bName ->
+            logger.info("BEAN: $bName")
             val obj: Any = applicationContext.getBean(bName)
 
             var clazz: Class<*> = obj.javaClass
@@ -45,6 +49,7 @@ class AuthContextConfiguration: WebMvcConfigurerAdapter(), ApplicationContextAwa
         }
 
         logger.info("Detected Permissions: ${SharedAuthConfiguration.declaredPermissions}")
+        authorizationService.initializePermissions()
     }
 
     @Autowired

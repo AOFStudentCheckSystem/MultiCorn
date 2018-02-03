@@ -32,7 +32,6 @@ class AuthorizationService @Autowired constructor(
         private val logger = LoggerFactory.getLogger(AuthorizationService::class.java)
     }
 
-    @PostConstruct
     fun initializePermissions() {
         val permissions = HashSet(SharedAuthConfiguration.declaredPermissions)
         var repoPermissions = permissionRepository.findByPermissionType(PermissionType.SYSTEM)
