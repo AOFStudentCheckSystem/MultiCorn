@@ -18,14 +18,4 @@ class CorsConfiguration : WebMvcConfigurerAdapter() {
                 .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE")
 //        super.addCorsMappings(registry)
     }
-
-    @Bean
-    fun tomcatEmbeddedServletContainerFactory(): TomcatEmbeddedServletContainerFactory {
-        return object : TomcatEmbeddedServletContainerFactory() {
-           override fun customizeConnector(connector: Connector) {
-                super.customizeConnector(connector)
-                connector.parseBodyMethods = "POST,PUT,DELETE"
-            }
-        }
-    }
 }

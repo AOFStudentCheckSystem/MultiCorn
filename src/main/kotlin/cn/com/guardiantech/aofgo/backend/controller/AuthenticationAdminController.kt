@@ -42,10 +42,10 @@ class AuthenticationAdminController @Autowired constructor(
         }
     }
 
-    @DeleteMapping("/permission")
+    @PostMapping("/permission/delete/:permissionKey")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun removePermission(@RequestBody permissionRequest: PermissionRequest) {
-        authorizationService.removePermission(permissionRequest.permissionKey)
+    fun removePermission(@PathVariable("permissionKey") key: String) {
+        authorizationService.removePermission(key)
     }
 
     @GetMapping("/permission")
@@ -58,10 +58,10 @@ class AuthenticationAdminController @Autowired constructor(
         return authorizationService.createRole(roleName = roleRequest.roleName, permissions_in = roleRequest.permissions ?: setOf())
     }
 
-    @DeleteMapping("/role")
-    fun deleteRole(@RequestBody roleRequest: RoleRequest) {
+    @DeleteMapping("/role/delete/:roleName")
+    fun deleteRole(@PathVariable("roleName") roleName: String) {
         // TODO: Handle Exceptions
-        authorizationService.removeRole(roleName = roleRequest.roleName)
+        authorizationService.removeRole(roleName = roleName)
     }
 
     @GetMapping("/role")
@@ -96,7 +96,7 @@ class AuthenticationAdminController @Autowired constructor(
         }
     }
 
-    @DeleteMapping("/role/permission")
+    @PostMapping("/role/permission/remove")
     fun removePermission(@RequestBody rolePermRequest: RolePermissionRequest): Role {
         val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
         try {
@@ -121,7 +121,7 @@ class AuthenticationAdminController @Autowired constructor(
         }
     }
 
-    @DeleteMapping("/subject/role")
+    @PatchMapping("/subject/role")
     fun removeRoleFromSubject(@RequestBody subjectRoleRequest: SubjectRoleRequest): Subject {
         val roles: MutableSet<String> = subjectRoleRequest.roles.orEmpty().toMutableSet()
         subjectRoleRequest.role?.let {
