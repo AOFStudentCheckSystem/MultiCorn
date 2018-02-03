@@ -1,17 +1,21 @@
 package cn.com.guardiantech.aofgo.backend.service.auth
 
+import cn.com.guardiantech.aofgo.backend.authentication.SharedAuthConfiguration
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Permission
+import cn.com.guardiantech.aofgo.backend.data.entity.authentication.PermissionType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Role
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.auth.PermissionRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import javax.annotation.PostConstruct
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -24,13 +28,54 @@ class AuthorizationService @Autowired constructor(
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
+    companion object {
+        private val logger = LoggerFactory.getLogger(AuthorizationService::class.java)
+    }
+
+    @PostConstruct
+    fun initializePermissions() {
+        val permissions = HashSet(SharedAuthConfiguration.declaredPermissions)
+        var repoPermissions = permissionRepository.findByPermissionType(PermissionType.SYSTEM)
+        val removalQueue = repoPermissions.filter {
+            !permissions.contains(it.permissionKey)
+        }
+        removalQueue.forEach {
+            try {
+                permissionRepository.delete(it)
+            } catch (e: Throwable) {
+                logger.error("Failed to remove SYSTEM permission (${it.permissionKey})", e)
+            }
+        }
+        repoPermissions = permissionRepository.findByPermissionType(PermissionType.SYSTEM)
+        repoPermissions.forEach {
+            permissions.remove(it.permissionKey)
+        }
+        permissions.forEach { permissionString ->
+            val find = permissionRepository.findByPermissionKey(permissionString)
+            if (find.isPresent) {
+                val p = find.get()
+                if (p.permissionType == PermissionType.USER) {
+                    p.permissionType = PermissionType.SYSTEM
+                    permissionRepository.save(p)
+                } else {
+                    logger.warn("Warning: Unexpected permission state.")
+                }
+            } else {
+                this.createPermission(permissionString)
+            }
+        }
+    }
+
     @Transactional
-    fun createPermission(permissionKey: String): Permission {
+    fun createPermission(permissionKey: String, type: PermissionType = PermissionType.USER): Permission {
         try {
             return permissionRepository.save(
-                    Permission(permissionKey = permissionKey)
+                    Permission(permissionKey = permissionKey, permissionType = type)
             )
         } catch (e: DataIntegrityViolationException) {
+            if (type == PermissionType.SYSTEM) {
+                logger.error("Failed creating system permission `$permissionKey`", e)
+            }
             throw IllegalArgumentException("Invalid or Duplicate permissionKey found. Aborting.")
         }
     }
