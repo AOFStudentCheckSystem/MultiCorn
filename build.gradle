@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		kotlinVersion = '1.2.20'
+		kotlinVersion = '1.2.21'
 		springBootVersion = '1.5.9.RELEASE'
 	}
 	repositories {
@@ -144,17 +144,28 @@ task createDockerfile(type: Dockerfile) {
     group = 'Docker'
     dependsOn build
     destFile = project.file('build/docker/Dockerfile')
+    if (destFile.exists()) {
+        destFile.delete()
+    }
     from 'java:8'
     addFile('libs/' + jar.archiveName, '/app.jar')
-    entryPoint("sh", "-c", "java \$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar")
+    addFile('docker/wait.dms', '/wait')
+    runCommand('chmod +x /wait')
+    defaultCommand("bash", "-c", "/wait && java \$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar")
+}
+
+task copyDockerWaitBinary(type: Copy) {
+    from 'docker-files/wait.dms'
+    into 'build/docker'
 }
 
 task buildImage(type: DockerBuildImage) {
     group = 'Docker'
+    dependsOn copyDockerWaitBinary
     dependsOn createDockerfile
     dockerFile = createDockerfile.destFile
     inputDir = project.buildDir
-    tag = getProperty("dockerImageName")
+    tags.add(getProperty("dockerImageName") as String)
 }
 
 task pushImage(type: DockerPushImage) {
