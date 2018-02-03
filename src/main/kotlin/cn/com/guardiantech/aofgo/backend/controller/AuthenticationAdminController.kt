@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/auth/admin")
-@Require
+@Require(["SYSTEM_ADMIN"])
 class AuthenticationAdminController @Autowired constructor(
         private val authorizationService: AuthorizationService,
         private val roleRepository: RoleRepository,

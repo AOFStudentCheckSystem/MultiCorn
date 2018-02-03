@@ -29,6 +29,11 @@ class AuthContextConfiguration: WebMvcConfigurerAdapter(), ApplicationContextAwa
             if (AopUtils.isAopProxy(obj)) {
                 clazz = AopUtils.getTargetClass(obj)
             }
+            if (clazz.isAnnotationPresent(Require::class.java)) {
+                (clazz.getAnnotation(Require::class.java) as Require).permissions.forEach {
+                    SharedAuthConfiguration.declaredPermissions.add(it)
+                }
+            }
             clazz.declaredMethods.forEach { m ->
                 if (m.isAnnotationPresent(Require::class.java)) {
                     val require = m.getAnnotation(Require::class.java) as Require
