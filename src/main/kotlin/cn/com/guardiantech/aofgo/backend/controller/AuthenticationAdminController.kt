@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 
 @RestController
@@ -34,7 +35,7 @@ class AuthenticationAdminController @Autowired constructor(
 ) {
 
     @PutMapping("/permission")
-    fun addPermission(@RequestBody permissionRequest: PermissionRequest): Permission {
+    fun addPermission(@RequestBody @Valid permissionRequest: PermissionRequest): Permission {
         try {
             return authorizationService.createPermission(permissionRequest.permissionKey)
         } catch (e: IllegalArgumentException) {
@@ -54,7 +55,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PutMapping("/role")
-    fun createRole(@RequestBody roleRequest: RoleRequest): Role {
+    fun createRole(@RequestBody @Valid roleRequest: RoleRequest): Role {
         return authorizationService.createRole(roleName = roleRequest.roleName, permissions_in = roleRequest.permissions ?: setOf())
     }
 
@@ -75,7 +76,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PostMapping("/role/permission")
-    fun setPermission(@RequestBody rolePermRequest: RolePermissionRequest): Role {
+    fun setPermission(@RequestBody @Valid rolePermRequest: RolePermissionRequest): Role {
         val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
         try {
             return authorizationService.modifyRole(roleName = rolePermRequest.roleName, permissions = permissions)
@@ -85,7 +86,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PutMapping("/role/permission")
-    fun addPermission(@RequestBody rolePermRequest: RolePermissionRequest): Role {
+    fun addPermission(@RequestBody @Valid rolePermRequest: RolePermissionRequest): Role {
 
         val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
 
@@ -97,7 +98,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PostMapping("/role/permission/remove")
-    fun removePermission(@RequestBody rolePermRequest: RolePermissionRequest): Role {
+    fun removePermission(@RequestBody @Valid rolePermRequest: RolePermissionRequest): Role {
         val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
         try {
             return authorizationService.removePermissionFromRole(rolePermRequest.roleName, permissions)
@@ -107,7 +108,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PutMapping("/subject/role")
-    fun attachRoleToSubject(@RequestBody subjectRoleRequest: SubjectRoleRequest): Subject {
+    fun attachRoleToSubject(@RequestBody @Valid subjectRoleRequest: SubjectRoleRequest): Subject {
         val roles: MutableSet<String> = subjectRoleRequest.roles.orEmpty().toMutableSet()
 
         subjectRoleRequest.role?.let {
@@ -122,7 +123,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PatchMapping("/subject/role")
-    fun removeRoleFromSubject(@RequestBody subjectRoleRequest: SubjectRoleRequest): Subject {
+    fun removeRoleFromSubject(@RequestBody @Valid subjectRoleRequest: SubjectRoleRequest): Subject {
         val roles: MutableSet<String> = subjectRoleRequest.roles.orEmpty().toMutableSet()
         subjectRoleRequest.role?.let {
             roles.add(it)
