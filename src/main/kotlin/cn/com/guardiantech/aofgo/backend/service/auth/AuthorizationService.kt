@@ -9,6 +9,7 @@ import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.auth.PermissionRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
+import cn.com.guardiantech.aofgo.backend.request.authentication.admin.RolePermissionRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
@@ -144,6 +145,25 @@ class AuthorizationService @Autowired constructor(
         return roleRepository.findAllByOrderByRoleNameAsc().map {
             it.roleName
         }
+    }
+
+    @Transactional
+    fun modifyRole(roleName: String, permissions: Set<String>): Role {
+        val roleFind = roleRepository.findByRoleName(roleName)
+
+        if (!roleFind.isPresent) {
+            throw IllegalArgumentException("Failed to find Role(roleName = $roleName)")
+        }
+        val role = roleFind.get()
+        val rolePermissions = role.permissions.map { it.permissionKey }
+
+        val permissionToAdd = permissions.filter { !rolePermissions.contains(it) }.toSet()
+        val permissionToRemove = rolePermissions.filter { !permissions.contains(it) }.toSet()
+
+        this.removePermissionFromRole(roleName, permissionToRemove)
+        this.addPermissionToRole(roleName, permissionToAdd)
+
+        return roleRepository.save(role)
     }
 
     @Transactional

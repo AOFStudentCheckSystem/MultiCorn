@@ -13,5 +13,14 @@ class RolePermissionRequest(
 
         val permissions: List<String>?,
         val permission: String?
-){
+) {
+    fun combinedPermissions(): MutableSet<String> {
+        val permissions: MutableSet<String> = this.permissions.orEmpty().toMutableSet()
+        this.permission?.let {
+            if (!permissions.contains(it)) {
+                permissions.add(it)
+            }
+        }
+        return permissions
+    }
 }

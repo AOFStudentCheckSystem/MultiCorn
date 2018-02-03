@@ -74,19 +74,23 @@ class AuthenticationAdminController @Autowired constructor(
         return roleRepository.findAllByOrderByRoleNameAsc()
     }
 
+    @PostMapping("/role/permission")
+    fun setPermission(@RequestBody rolePermRequest: RolePermissionRequest): Role {
+        val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
+        try {
+            return authorizationService.modifyRole(roleName = rolePermRequest.roleName, permissions = permissions)
+        } catch (e: NoSuchElementException) {
+            throw BadRequestException("One or more requested permission was not found on the server.")
+        }
+    }
+
     @PutMapping("/role/permission")
     fun addPermission(@RequestBody rolePermRequest: RolePermissionRequest): Role {
 
-        val permissions: MutableSet<String> = rolePermRequest.permissions.orEmpty().toMutableSet()
-
-        rolePermRequest.permission?.let {
-            if (!permissions.contains(it)) {
-                permissions.add(it)
-            }
-        }
+        val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
 
         try {
-            return authorizationService.addPermissionToRole(roleName = rolePermRequest.roleName, permissions_in = permissions) // TODO: Not use request object in service
+            return authorizationService.addPermissionToRole(roleName = rolePermRequest.roleName, permissions_in = permissions)
         } catch (e: NoSuchElementException) {
             throw BadRequestException("One or more requested permission was not found on the server.")
         }
@@ -94,11 +98,7 @@ class AuthenticationAdminController @Autowired constructor(
 
     @DeleteMapping("/role/permission")
     fun removePermission(@RequestBody rolePermRequest: RolePermissionRequest): Role {
-        val permissions: MutableSet<String> = rolePermRequest.permissions.orEmpty().toMutableSet()
-
-        rolePermRequest.permission?.let {
-            permissions.add(it)
-        }
+        val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
         try {
             return authorizationService.removePermissionFromRole(rolePermRequest.roleName, permissions)
         } catch (e: NoSuchElementException) {
