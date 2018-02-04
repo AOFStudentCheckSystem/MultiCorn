@@ -150,6 +150,12 @@ class AuthenticationAdminController @Autowired constructor(
         return accountPageableRepository.findAll(p)
     }
 
+    @GetMapping("/account-auth")
+    @JsonView(SubjectView.AuthenticationView::class)
+    fun listAllAccountsAdminView(p: Pageable): Page<Account> {
+        return accountPageableRepository.findAll(p)
+    }
+
     @PutMapping("/account")
     @JsonView(SubjectView.AdminView::class)
     fun createAccountWithSubject(@RequestBody @Valid accountRequest: AccountCreationRequest): Account =
