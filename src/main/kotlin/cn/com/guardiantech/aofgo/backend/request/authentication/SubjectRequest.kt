@@ -12,5 +12,5 @@ data class SubjectRequest(
         val credential: CredentialRequest,
         @field:JsonProperty(defaultValue = "")
         val subjectAttachedInfo: String,
-        val roles: Set<String>
+        val roles: Set<String> = setOf()
 )
