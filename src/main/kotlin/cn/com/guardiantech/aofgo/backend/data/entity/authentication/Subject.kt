@@ -36,7 +36,7 @@ class Subject(
         val subjectAttachedInfo: String? = null,
 
         @ManyToMany(fetch = FetchType.EAGER)
-        @JsonIgnore
+        @get:JsonView(SubjectView.AdminView::class)
         @JoinTable(
                 name = "subject_roles",
                 joinColumns = [(JoinColumn(name = "subject_id", referencedColumnName = "subject_id", nullable = false))],
