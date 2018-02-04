@@ -6,7 +6,7 @@ import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -29,7 +29,7 @@ class AuthenticationController @Autowired constructor(
     private val logger: Logger = LoggerFactory.getLogger(AuthenticationController::class.java)
 
     @PostMapping(path = ["/register"])
-    fun register(@Valid @RequestBody registerRequest: RegisterRequest) = try {
+    fun register(@Valid @RequestBody registerRequest: SubjectRequest) = try {
         authenticationService.register(registerRequest)
     } catch (e: Throwable) {
         when (e) {

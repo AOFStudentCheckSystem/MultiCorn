@@ -10,10 +10,12 @@ import cn.com.guardiantech.aofgo.backend.jsonview.SubjectView
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountPageableRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectPageableRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
+import cn.com.guardiantech.aofgo.backend.request.account.AccountCreationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.admin.PermissionRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.admin.RolePermissionRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.admin.RoleRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.admin.SubjectRoleRequest
+import cn.com.guardiantech.aofgo.backend.service.AccountService
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthorizationService
 import com.fasterxml.jackson.annotation.JsonView
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,7 +33,8 @@ class AuthenticationAdminController @Autowired constructor(
         private val authorizationService: AuthorizationService,
         private val roleRepository: RoleRepository,
         private val subjectRepository: SubjectPageableRepository,
-        private val accountPageableRepository: AccountPageableRepository
+        private val accountPageableRepository: AccountPageableRepository,
+        private val accountService: AccountService
 ) {
 
     @PutMapping("/permission")
@@ -146,4 +149,14 @@ class AuthenticationAdminController @Autowired constructor(
     fun listAllAccounts(p: Pageable): Page<Account> {
         return accountPageableRepository.findAll(p)
     }
+
+    @PutMapping("/account")
+    @JsonView(SubjectView.AdminView::class)
+    fun createAccountWithSubject(@RequestBody @Valid accountRequest: AccountCreationRequest): Account =
+        try {
+            accountService.createAccount(accountRequest)
+        } catch (e: Throwable) {
+            //TODO: Finish Exception Handle
+            throw BadRequestException("naive request")
+        }
 }
