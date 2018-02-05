@@ -5,7 +5,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
 import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 
 @NoArg
-data class AccountCreationRequest(
+data class AccountRequest(
         val firstName: String,
         val lastName: String,
         val email: String?,
@@ -13,5 +13,6 @@ data class AccountCreationRequest(
         var type: AccountType?,
         val preferredName: String,
         val subjectId: Long?,
-        val subject: SubjectRequest?
+        val subject: SubjectRequest?,
+        val id: Long?
 )

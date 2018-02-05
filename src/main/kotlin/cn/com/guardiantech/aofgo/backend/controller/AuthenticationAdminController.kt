@@ -10,11 +10,8 @@ import cn.com.guardiantech.aofgo.backend.jsonview.SubjectView
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountPageableRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectPageableRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
-import cn.com.guardiantech.aofgo.backend.request.account.AccountCreationRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.admin.PermissionRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.admin.RolePermissionRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.admin.RoleRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.admin.SubjectRoleRequest
+import cn.com.guardiantech.aofgo.backend.request.account.AccountRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.admin.*
 import cn.com.guardiantech.aofgo.backend.service.AccountService
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthorizationService
 import com.fasterxml.jackson.annotation.JsonView
@@ -158,11 +155,31 @@ class AuthenticationAdminController @Autowired constructor(
 
     @PutMapping("/account")
     @JsonView(SubjectView.AdminView::class)
-    fun createAccountWithSubject(@RequestBody @Valid accountRequest: AccountCreationRequest): Account =
+    fun createAccountWithSubject(@RequestBody @Valid accountRequest: AccountRequest): Account =
         try {
             accountService.createAccount(accountRequest)
         } catch (e: Throwable) {
             //TODO: Finish Exception Handle
             throw BadRequestException("naive request")
         }
+
+    @PostMapping("/subject")
+    @JsonView(SubjectView.AdminView::class)
+    fun editSubjectSetRole(@RequestBody @Valid subjectEditRequest: SubjectEditRequest): Subject =
+        try {
+            authorizationService.editSubjectSetRole(subjectEditRequest)
+        } catch (e: Throwable) {
+            //TODO: Finish Exception Handle
+            throw BadRequestException("naive request")
+        }
+
+    @PostMapping("/account")
+    @JsonView(SubjectView.BriefView::class)
+    fun editAccount(@RequestBody @Valid accountRequest: AccountRequest): Account =
+            try {
+                if (accountRequest.id === null) throw BadRequestException("naive request")
+                authorizationService.editAccount(accountRequest)
+            } catch (e: Throwable) {
+                throw BadRequestException("naive request")
+            }
 }

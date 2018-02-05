@@ -8,7 +8,6 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.repository.auth.*
-import cn.com.guardiantech.aofgo.backend.request.account.AccountCreationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.util.SessionUtil

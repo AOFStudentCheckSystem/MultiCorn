@@ -14,21 +14,21 @@ class Account(
         val subject: Subject? = null,
 
         @Column(name = "first_name")
-        val firstName: String = "unknown",
+        var firstName: String = "unknown",
 
         @Column(name = "last_name")
-        val lastName: String = "unknown",
+        var lastName: String = "unknown",
 
         @Column(name = "email", unique = true)
-        val email: String? = null,
+        var email: String? = null,
 
         @Column(name = "phone")
-        val phone: String? = null,
+        var phone: String? = null,
 
         @Enumerated(EnumType.STRING)
         @Column(name = "account_type")
-        val type: AccountType = AccountType.OTHER,
+        var type: AccountType = AccountType.OTHER,
 
         @Column(name = "preferred_name")
-        val preferredName: String = firstName
+        var preferredName: String = firstName
 )

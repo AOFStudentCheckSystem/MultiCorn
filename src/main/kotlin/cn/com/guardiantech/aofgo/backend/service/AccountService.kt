@@ -4,7 +4,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
-import cn.com.guardiantech.aofgo.backend.request.account.AccountCreationRequest
+import cn.com.guardiantech.aofgo.backend.request.account.AccountRequest
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -28,7 +28,7 @@ class AccountService @Autowired constructor(
      * @throws NoSuchElementException Subject Not Found
      */
     @Transactional
-    fun createAccount(accountRequest: AccountCreationRequest): Account {
+    fun createAccount(accountRequest: AccountRequest): Account {
         val subject: Subject? = when {
             accountRequest.subject !== null ->
                 authService.registerSubject(accountRequest.subject)
