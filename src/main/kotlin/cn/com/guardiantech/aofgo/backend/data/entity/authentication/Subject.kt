@@ -33,7 +33,7 @@ class Subject(
         @Lob
         @Column(nullable = true)
         @get:JsonView(SubjectView.AuthenticationView::class)
-        val subjectAttachedInfo: String? = null,
+        var subjectAttachedInfo: String? = null,
 
         @ManyToMany(fetch = FetchType.EAGER)
         @get:JsonView(SubjectView.AdminView::class)

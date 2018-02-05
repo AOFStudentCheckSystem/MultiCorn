@@ -260,7 +260,7 @@ class AuthorizationService @Autowired constructor(
 
     @Transactional
     fun editSubjectSetRole(request: SubjectEditRequest): Subject {
-        val subject = subjectRepository.findById(request.id).get()
+        var subject = subjectRepository.findById(request.id).get()
         if (request.roles !== null) {
             val subjectRoles = subject.roles.map { it.roleName }
 
@@ -271,8 +271,9 @@ class AuthorizationService @Autowired constructor(
             addRoleToSubject(subject.id, rolesToAdd)
         }
         if (request.subjectAttachedInfo !== null) {
-            subject.subjectAttachedInfo
-            subjectRepository.save(subject)
+            //TODO: Failed to set value see #AOFGO-80
+            subject.subjectAttachedInfo = request.subjectAttachedInfo
+            subject = subjectRepository.save(subject)
         }
         entityManager.refresh(subject)
         return subject
@@ -288,10 +289,16 @@ class AuthorizationService @Autowired constructor(
         request.phone?.let { account.phone = it }
         request.type?.let { account.type = it }
         request.preferredName?.let { account.preferredName = it }
-        account.subject?.let {
+        if (account.subject === null) {
             val subject: Subject? = when {
-                request.subject !== null ->
-                    authService.registerSubject(request.subject)
+                request.subject !== null -> {
+                    val subject = authService.registerSubject(request.subject)
+                    editSubjectSetRole(SubjectEditRequest(
+                            id = subject.id,
+                            subjectAttachedInfo = request.subject.subjectAttachedInfo,
+                            roles = request.subject.roles
+                    ))
+                }
                 request.subjectId !== null ->
                     subjectRepository.findById(request.subjectId).get()
                 else -> null
