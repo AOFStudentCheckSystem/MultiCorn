@@ -2,7 +2,6 @@ package cn.com.guardiantech.aofgo.backend.service.auth
 
 import cn.com.guardiantech.aofgo.backend.authentication.SharedAuthConfiguration
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
-import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Permission
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.PermissionType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Role
@@ -13,7 +12,6 @@ import cn.com.guardiantech.aofgo.backend.repository.auth.PermissionRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
 import cn.com.guardiantech.aofgo.backend.request.account.AccountRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.admin.SubjectEditRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,7 +27,8 @@ class AuthorizationService @Autowired constructor(
         private val permissionRepository: PermissionRepository,
         private val roleRepository: RoleRepository,
         private val subjectRepository: SubjectRepository,
-        private val accountRepository: AccountRepository
+        private val accountRepository: AccountRepository,
+        private val authService: AuthenticationService
 ) {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
@@ -289,6 +288,16 @@ class AuthorizationService @Autowired constructor(
         request.phone?.let { account.phone = it }
         request.type?.let { account.type = it }
         request.preferredName?.let { account.preferredName = it }
+        account.subject?.let {
+            val subject: Subject? = when {
+                request.subject !== null ->
+                    authService.registerSubject(request.subject)
+                request.subjectId !== null ->
+                    subjectRepository.findById(request.subjectId).get()
+                else -> null
+            }
+            account.subject = subject
+        }
         return accountRepository.save(account)
     }
 }

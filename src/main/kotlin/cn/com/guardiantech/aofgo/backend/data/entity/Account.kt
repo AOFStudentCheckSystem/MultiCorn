@@ -11,7 +11,7 @@ class Account(
 
         @OneToOne
         @JoinColumn(name = "subject", unique = true)
-        val subject: Subject? = null,
+        var subject: Subject? = null,
 
         @Column(name = "first_name")
         var firstName: String = "unknown",
