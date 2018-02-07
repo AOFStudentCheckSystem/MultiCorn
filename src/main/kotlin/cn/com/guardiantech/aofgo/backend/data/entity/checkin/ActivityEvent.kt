@@ -1,7 +1,9 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.checkin
 
+import cn.com.guardiantech.aofgo.backend.jsonview.EventView
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.fasterxml.jackson.annotation.JsonView
 import java.util.*
 import javax.persistence.*
 
@@ -33,9 +35,11 @@ class ActivityEvent(
         @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.ALL))
         @Column(nullable = false)
         @JsonManagedReference
+        @JsonView(EventView.EventRecordView::class)
         var records: MutableSet<ActivityEventRecord> = hashSetOf(),
 
         @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
+        @JsonView(EventView.EventGroupView::class)
         var eventGroups: Set<EventGroup>? = null
 ) {
     override fun equals(other: Any?): Boolean {
