@@ -1,22 +1,24 @@
 package cn.com.guardiantech.aofgo.backend.service.auth
 
 import cn.com.guardiantech.aofgo.backend.authentication.SharedAuthConfiguration
+import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Permission
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.PermissionType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Role
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
+import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.PermissionRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
-import cn.com.guardiantech.aofgo.backend.request.authentication.admin.RolePermissionRequest
+import cn.com.guardiantech.aofgo.backend.request.account.AccountRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.admin.SubjectEditRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import javax.annotation.PostConstruct
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -24,7 +26,9 @@ import javax.persistence.PersistenceContext
 class AuthorizationService @Autowired constructor(
         private val permissionRepository: PermissionRepository,
         private val roleRepository: RoleRepository,
-        private val subjectRepository: SubjectRepository
+        private val subjectRepository: SubjectRepository,
+        private val accountRepository: AccountRepository,
+        private val authService: AuthenticationService
 ) {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
@@ -252,5 +256,55 @@ class AuthorizationService @Autowired constructor(
         }
 
         return subjectRepository.save(subject)
+    }
+
+    @Transactional
+    fun editSubjectSetRole(request: SubjectEditRequest): Subject {
+        var subject = subjectRepository.findById(request.id).get()
+        if (request.roles !== null) {
+            val subjectRoles = subject.roles.map { it.roleName }
+
+            val rolesToAdd = request.roles.filter { !subjectRoles.contains(it) }.toSet()
+            val rolesToDelete = subjectRoles.filter { !request.roles.contains(it) }.toSet()
+
+            removeRoleFromSubject(subject.id, rolesToDelete)
+            addRoleToSubject(subject.id, rolesToAdd)
+        }
+        if (request.subjectAttachedInfo !== null) {
+            //TODO: Failed to set value see #AOFGO-80
+            subject.subjectAttachedInfo = request.subjectAttachedInfo
+            subject = subjectRepository.save(subject)
+        }
+        entityManager.refresh(subject)
+        return subject
+    }
+
+    @Transactional
+    fun editAccount(request: AccountRequest): Account {
+        request.id!!
+        val account = accountRepository.findById(request.id).get()
+        request.firstName?.let { account.firstName = it }
+        request.lastName?.let { account.lastName = it }
+        request.email?.let { account.email = it }
+        request.phone?.let { account.phone = it }
+        request.type?.let { account.type = it }
+        request.preferredName?.let { account.preferredName = it }
+        if (account.subject === null) {
+            val subject: Subject? = when {
+                request.subject !== null -> {
+                    val subject = authService.registerSubject(request.subject)
+                    editSubjectSetRole(SubjectEditRequest(
+                            id = subject.id,
+                            subjectAttachedInfo = request.subject.subjectAttachedInfo,
+                            roles = request.subject.roles
+                    ))
+                }
+                request.subjectId !== null ->
+                    subjectRepository.findById(request.subjectId).get()
+                else -> null
+            }
+            account.subject = subject
+        }
+        return accountRepository.save(account)
     }
 }

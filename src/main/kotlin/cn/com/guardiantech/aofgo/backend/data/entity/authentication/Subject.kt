@@ -33,10 +33,10 @@ class Subject(
         @Lob
         @Column(nullable = true)
         @get:JsonView(SubjectView.AuthenticationView::class)
-        val subjectAttachedInfo: String? = null,
+        var subjectAttachedInfo: String? = null,
 
         @ManyToMany(fetch = FetchType.EAGER)
-        @JsonIgnore
+        @get:JsonView(SubjectView.AdminView::class)
         @JoinTable(
                 name = "subject_roles",
                 joinColumns = [(JoinColumn(name = "subject_id", referencedColumnName = "subject_id", nullable = false))],

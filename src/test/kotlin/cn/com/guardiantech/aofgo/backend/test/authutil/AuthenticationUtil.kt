@@ -9,7 +9,7 @@ import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.CredentialRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.PrincipalRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -32,7 +32,7 @@ class AuthenticationUtil @Autowired constructor(
         assertEquals("Non Empty Repository (Principal)", 0, principalRepository.count())
 
         authService.register(
-                RegisterRequest(
+                SubjectRequest(
                         principal = PrincipalRequest(
                                 type = PrincipalType.USERNAME,
                                 identification = "magic"

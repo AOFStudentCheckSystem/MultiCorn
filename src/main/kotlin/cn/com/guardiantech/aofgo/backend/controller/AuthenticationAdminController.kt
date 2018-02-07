@@ -10,10 +10,9 @@ import cn.com.guardiantech.aofgo.backend.jsonview.SubjectView
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountPageableRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectPageableRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
-import cn.com.guardiantech.aofgo.backend.request.authentication.admin.PermissionRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.admin.RolePermissionRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.admin.RoleRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.admin.SubjectRoleRequest
+import cn.com.guardiantech.aofgo.backend.request.account.AccountRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.admin.*
+import cn.com.guardiantech.aofgo.backend.service.AccountService
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthorizationService
 import com.fasterxml.jackson.annotation.JsonView
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,7 +30,8 @@ class AuthenticationAdminController @Autowired constructor(
         private val authorizationService: AuthorizationService,
         private val roleRepository: RoleRepository,
         private val subjectRepository: SubjectPageableRepository,
-        private val accountPageableRepository: AccountPageableRepository
+        private val accountPageableRepository: AccountPageableRepository,
+        private val accountService: AccountService
 ) {
 
     @PutMapping("/permission")
@@ -146,4 +146,40 @@ class AuthenticationAdminController @Autowired constructor(
     fun listAllAccounts(p: Pageable): Page<Account> {
         return accountPageableRepository.findAll(p)
     }
+
+    @GetMapping("/account-admin")
+    @JsonView(SubjectView.AdminView::class)
+    fun listAllAccountsAdminView(p: Pageable): Page<Account> {
+        return accountPageableRepository.findAll(p)
+    }
+
+    @PutMapping("/account")
+    @JsonView(SubjectView.AdminView::class)
+    fun createAccountWithSubject(@RequestBody @Valid accountRequest: AccountRequest): Account =
+        try {
+            accountService.createAccount(accountRequest)
+        } catch (e: Throwable) {
+            //TODO: Finish Exception Handle
+            throw BadRequestException("naive request")
+        }
+
+    @PostMapping("/subject")
+    @JsonView(SubjectView.AdminView::class)
+    fun editSubjectSetRole(@RequestBody @Valid subjectEditRequest: SubjectEditRequest): Subject =
+        try {
+            authorizationService.editSubjectSetRole(subjectEditRequest)
+        } catch (e: Throwable) {
+            //TODO: Finish Exception Handle
+            throw BadRequestException("naive request")
+        }
+
+    @PostMapping("/account")
+    @JsonView(SubjectView.BriefView::class)
+    fun editAccount(@RequestBody @Valid accountRequest: AccountRequest): Account =
+            try {
+                if (accountRequest.id === null) throw BadRequestException("naive request")
+                authorizationService.editAccount(accountRequest)
+            } catch (e: Throwable) {
+                throw BadRequestException("naive request")
+            }
 }

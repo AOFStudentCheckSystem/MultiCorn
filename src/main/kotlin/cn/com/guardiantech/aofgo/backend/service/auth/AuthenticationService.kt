@@ -9,7 +9,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.repository.auth.*
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.util.SessionUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -37,12 +37,22 @@ class AuthenticationService @Autowired constructor(
     @Value("\${auth.sessionTimeout}")
     private var sessionTimeout: Int = 60
 
+    @Transactional
+    @Modifying
+    fun register(registerRequest: SubjectRequest): Account {
+        val newSubject = registerSubject(registerRequest)
+        val account = accountRepository.save(Account(
+                subject = newSubject)
+        )
+        entityManager.refresh(newSubject)
+        return account
+    }
+
     /**
      * @throws DataIntegrityViolationException Duplicate principal
      */
     @Transactional
-    @Modifying
-    fun register(registerRequest: RegisterRequest): Account {
+    fun registerSubject(registerRequest: SubjectRequest): Subject {
         val newSubject = subjectRepo.save(Subject(
                 subjectAttachedInfo = registerRequest.subjectAttachedInfo))
 
@@ -58,11 +68,8 @@ class AuthenticationService @Autowired constructor(
                 secret = processedSecret,
                 owner = newSubject
         ))
-        val account = accountRepository.save(Account(
-                subject = newSubject)
-        )
         entityManager.refresh(newSubject)
-        return account
+        return newSubject
     }
 
     @Transactional
