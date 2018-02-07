@@ -35,11 +35,11 @@ class ActivityEvent(
         @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.ALL))
         @Column(nullable = false)
         @JsonManagedReference
-        @JsonView(EventView.EventRecordView::class)
+        @get:JsonView(EventView.EventRecordView::class)
         var records: MutableSet<ActivityEventRecord> = hashSetOf(),
 
         @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
-        @JsonView(EventView.EventGroupView::class)
+        @get:JsonView(EventView.EventGroupView::class)
         var eventGroups: Set<EventGroup>? = null
 ) {
     override fun equals(other: Any?): Boolean {
