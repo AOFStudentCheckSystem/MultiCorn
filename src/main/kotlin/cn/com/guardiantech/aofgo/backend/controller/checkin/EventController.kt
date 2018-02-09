@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.controller.checkin
 
+import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
@@ -29,6 +30,7 @@ class EventController @Autowired constructor(
 
     @RequestMapping(path = ["/{id}"], method = [RequestMethod.DELETE])
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Require(["EVENT_WRITE"])
     fun removeEvent(@PathVariable("id") eventID: String) {
         try {
             eventService.removeEvent(eventID)
@@ -38,6 +40,7 @@ class EventController @Autowired constructor(
     }
 
     @RequestMapping(path = ["/"], method = [RequestMethod.PUT])
+    @Require(["EVENT_WRITE"])
     fun createEvent(@RequestBody @Valid request: EventRequest): ActivityEvent =
             eventService.createEvent(request)
 //            JSONObject().put("success",true).put("newEvent", JSONObject().put("eventId", evt.eventId)).encode()
@@ -68,6 +71,7 @@ class EventController @Autowired constructor(
             eventService.listAllEventsNoPage()
 
     @RequestMapping(path = ["/"], method = [RequestMethod.POST])
+    @Require(["EVENT_WRITE"])
     fun editEvent(@RequestBody request: EventRequest): ActivityEvent = try {
         if (request.eventId == null) throw BadRequestException("You no send eventId!")
         eventService.editEvent(request.eventId, request)
@@ -79,6 +83,7 @@ class EventController @Autowired constructor(
 
     //TODO: Judgement and dealing with Student without account
     @RequestMapping(path = ["/sendmail"], method = [RequestMethod.POST])
+    @Require(["SEND_EMAIL"])
     fun sendSummaryEmail(@RequestBody @Valid request: SendEmailRequest) = try {
         eventService.sendSummaryEmail(request)
     } catch (e: IllegalArgumentException) {

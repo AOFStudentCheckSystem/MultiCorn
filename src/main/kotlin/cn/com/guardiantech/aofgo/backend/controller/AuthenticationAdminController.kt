@@ -35,6 +35,7 @@ class AuthenticationAdminController @Autowired constructor(
 ) {
 
     @PutMapping("/permission")
+    @Require(["PERMISSION_WRITE"])
     fun addPermission(@RequestBody @Valid permissionRequest: PermissionRequest): Permission {
         try {
             return authorizationService.createPermission(permissionRequest.permissionKey)
@@ -44,38 +45,45 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @DeleteMapping("/permission/{permissionKey}")
+    @Require(["PERMISSION_WRITE"])
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun removePermission(@PathVariable("permissionKey") key: String) {
         authorizationService.removePermission(key)
     }
 
     @GetMapping("/permission")
+    @Require(["PERMISSION_READ"])
     fun listAllPermission(): List<String> {
         return authorizationService.listAllPermissionAsString()
     }
 
     @PutMapping("/role")
+    @Require(["ROLE_WRITE"])
     fun createRole(@RequestBody @Valid roleRequest: RoleRequest): Role {
         return authorizationService.createRole(roleName = roleRequest.roleName, permissions_in = roleRequest.permissions ?: setOf())
     }
 
     @DeleteMapping("/role/{roleName}")
+    @Require(["ROLE_WRITE"])
     fun deleteRole(@PathVariable("roleName") roleName: String) {
         // TODO: Handle Exceptions
         authorizationService.removeRole(roleName = roleName)
     }
 
     @GetMapping("/role")
+    @Require(["ROLE_READ"])
     fun listAllRolesString(): List<String> {
         return authorizationService.listAllRolesAsString()
     }
 
     @GetMapping("/role-all")
+    @Require(["ROLE_READ"])
     fun listAllRoles(): List<Role> {
         return roleRepository.findAllByOrderByRoleNameAsc()
     }
 
     @PostMapping("/role/permission")
+    @Require(["ROLE_WRITE"])
     fun setPermission(@RequestBody @Valid rolePermRequest: RolePermissionRequest): Role {
         val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
         try {
@@ -86,6 +94,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PutMapping("/role/permission")
+    @Require(["ROLE_WRITE"])
     fun addPermission(@RequestBody @Valid rolePermRequest: RolePermissionRequest): Role {
 
         val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
@@ -98,6 +107,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PostMapping("/role/permission/remove")
+    @Require(["ROLE_WRITE"])
     fun removePermission(@RequestBody @Valid rolePermRequest: RolePermissionRequest): Role {
         val permissions: MutableSet<String> = rolePermRequest.combinedPermissions()
         try {
@@ -108,6 +118,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PutMapping("/subject/role")
+    @Require(["SUBJECT_WRITE"])
     fun attachRoleToSubject(@RequestBody @Valid subjectRoleRequest: SubjectRoleRequest): Subject {
         val roles: MutableSet<String> = subjectRoleRequest.roles.orEmpty().toMutableSet()
 
@@ -123,6 +134,7 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @PatchMapping("/subject/role")
+    @Require(["SUBJECT_WRITE"])
     fun removeRoleFromSubject(@RequestBody @Valid subjectRoleRequest: SubjectRoleRequest): Subject {
         val roles: MutableSet<String> = subjectRoleRequest.roles.orEmpty().toMutableSet()
         subjectRoleRequest.role?.let {
@@ -136,24 +148,28 @@ class AuthenticationAdminController @Autowired constructor(
     }
 
     @GetMapping("/subject")
+    @Require(["SUBJECT_READ"])
     @JsonView(SubjectView.BriefView::class)
     fun listAllSubjects(p: Pageable): Page<Subject> {
         return subjectRepository.findAll(p)
     }
 
     @GetMapping("/account")
+    @Require(["ACCOUNT_READ"])
     @JsonView(SubjectView.BriefView::class)
     fun listAllAccounts(p: Pageable): Page<Account> {
         return accountPageableRepository.findAll(p)
     }
 
     @GetMapping("/account-admin")
+    @Require(["ACCOUNT_READ"])
     @JsonView(SubjectView.AdminView::class)
     fun listAllAccountsAdminView(p: Pageable): Page<Account> {
         return accountPageableRepository.findAll(p)
     }
 
     @PutMapping("/account")
+    @Require(["ACCOUNT_WRITE", "SUBJECT_WRITE"])
     @JsonView(SubjectView.AdminView::class)
     fun createAccountWithSubject(@RequestBody @Valid accountRequest: AccountRequest): Account =
         try {
@@ -164,6 +180,7 @@ class AuthenticationAdminController @Autowired constructor(
         }
 
     @PostMapping("/subject")
+    @Require(["SUBJECT_WRITE"])
     @JsonView(SubjectView.AdminView::class)
     fun editSubjectSetRole(@RequestBody @Valid subjectEditRequest: SubjectEditRequest): Subject =
         try {
@@ -175,6 +192,7 @@ class AuthenticationAdminController @Autowired constructor(
 
     @PostMapping("/account")
     @JsonView(SubjectView.BriefView::class)
+    @Require(["ACCOUNT_WRITE", "SUBJECT_WRITE"])
     fun editAccount(@RequestBody @Valid accountRequest: AccountRequest): Account =
             try {
                 if (accountRequest.id === null) throw BadRequestException("naive request")

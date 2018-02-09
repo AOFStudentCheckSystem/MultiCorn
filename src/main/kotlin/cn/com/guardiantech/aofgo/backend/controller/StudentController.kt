@@ -23,7 +23,7 @@ class StudentController @Autowired constructor(
 ) {
     private val logger: Logger = LoggerFactory.getLogger(StudentController::class.java)
 
-    @Require
+    @Require(["STUDENT_WRITE"])
     @PutMapping("/")
     fun createStudent(@RequestBody @Valid studentRequest: StudentRequest): Student = try {
         studentService.createStudent(studentRequest)
@@ -36,13 +36,13 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student due to conflict")
     }
 
-    @Require
+    @Require(["STUDENT_READ"])
     @GetMapping("/listall")
     fun listAllStudent(): List<Student> {
         return studentService.listAllStudents()
     }
 
-    @Require
+    @Require(["STUDENT_READ"])
     @GetMapping("/{id}")
     fun getStudentByIdNumber(@PathVariable id: String): Student = try {
         studentService.getStudentByIdNumber(id)
@@ -51,7 +51,7 @@ class StudentController @Autowired constructor(
     }
 
 
-    @Require
+    @Require(["STUDENT_WRITE"])
     @PostMapping("/")
     fun editStudent(@RequestBody @Valid request: StudentRequest) = try {
         if (request.idNumber == null) throw BadRequestException("You no send idNumber!")
@@ -65,7 +65,7 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student")
     }
 
-    @Require
+    @Require(["STUDENT_WRITE"])
     @DeleteMapping("/card/{idNumber}")
     fun unbindStudentCard(@PathVariable idNumber: String): Student = try {
         studentService.editStudentCardSecret(idNumber, null)
@@ -75,7 +75,7 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student")
     }
 
-    @Require
+    @Require(["STUDENT_WRITE"])
     @PutMapping("/card")
     fun editStudentCard(@RequestBody @Valid request: StudentEditCardSecretRequest): Student = try {
         studentService.editStudentCardSecret(request.idNumber, request.cardSecret)

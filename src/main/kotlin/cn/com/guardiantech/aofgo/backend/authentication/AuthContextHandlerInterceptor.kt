@@ -37,11 +37,13 @@ open class AuthContextHandlerInterceptor constructor(
             if (checkRequireExists(handler)) {
 
                 // This should be guaranteed, as checkRequireExists() has already checked the preconditions
-                val require = getNearestRequire(handler)!!
+                //val require = getNearestRequire(handler)!!
+
+                val permissions = getMergedPermissions(handler)
 
                 if (authCtx.isAuthenticated()) {
                     // TODO uncomment this line to enable Authorization
-//                    authenticationService.verifySessionPermission(authHeader, require.permissions)
+                    authenticationService.verifySessionPermission(authHeader, permissions)
                 } else {
                     throw UnauthorizedException("FUCK YOU, go LOGIN")
                 }
@@ -62,6 +64,20 @@ open class AuthContextHandlerInterceptor constructor(
         }
         return null
     }
+
+    private fun getMergedPermissions(handlerMethod: HandlerMethod): Array<String> {
+        if (handlerMethod.hasMethodAnnotation(Require::class.java)) {
+            val permissions = handlerMethod.getMethodAnnotation(Require::class.java).permissions.toMutableSet()
+            if (handlerMethod.method.declaringClass.isAnnotationPresent(Require::class.java)) {
+                permissions.addAll(handlerMethod.method.declaringClass.getDeclaredAnnotation(Require::class.java).permissions)
+            }
+            return permissions.toTypedArray()
+        } else if (handlerMethod.method.declaringClass.isAnnotationPresent(Require::class.java)) {
+            return handlerMethod.method.declaringClass.getDeclaredAnnotation(Require::class.java).permissions
+        }
+        return arrayOf()
+    }
+
 
     override fun postHandle(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, modelAndView: ModelAndView?) {
         AuthContext.clear()

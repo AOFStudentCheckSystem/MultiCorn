@@ -22,7 +22,8 @@ import javax.validation.Valid
  */
 @RestController
 @RequestMapping("/auth")
-class AuthenticationController @Autowired constructor(
+class
+AuthenticationController @Autowired constructor(
         private val authenticationService: AuthenticationService
 ) {
 
