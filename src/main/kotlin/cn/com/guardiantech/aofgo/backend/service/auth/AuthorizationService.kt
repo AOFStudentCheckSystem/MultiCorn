@@ -1,6 +1,5 @@
 package cn.com.guardiantech.aofgo.backend.service.auth
 
-import cn.com.guardiantech.aofgo.backend.authentication.SharedAuthConfiguration
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Permission
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.PermissionType
@@ -37,8 +36,8 @@ class AuthorizationService @Autowired constructor(
         private val logger = LoggerFactory.getLogger(AuthorizationService::class.java)
     }
 
-    fun initializePermissions() {
-        val permissions = HashSet(SharedAuthConfiguration.declaredPermissions)
+    fun initializePermissions(declaredPermissions: Set<String>) {
+        val permissions = HashSet(declaredPermissions)
         var repoPermissions = permissionRepository.findByPermissionType(PermissionType.SYSTEM)
         val removalQueue = repoPermissions.filter {
             !permissions.contains(it.permissionKey)
@@ -68,6 +67,18 @@ class AuthorizationService @Autowired constructor(
                 this.createPermission(permissionString)
             }
         }
+
+        var role = this.roleRepository.findByRoleName("SYSADMIN").orElseGet {
+            this.createRole("SYSADMIN")
+        }
+
+        val allPerms = this.permissionRepository.findAllByOrderByPermissionKeyAsc()
+        allPerms.forEach {
+            if (!role.permissions.contains(it)) {
+                role.permissions.add(it)
+            }
+        }
+        roleRepository.save(role)
     }
 
     @Transactional
@@ -283,12 +294,12 @@ class AuthorizationService @Autowired constructor(
     fun editAccount(request: AccountRequest): Account {
         request.id!!
         val account = accountRepository.findById(request.id).get()
-        request.firstName?.let { account.firstName = it }
-        request.lastName?.let { account.lastName = it }
+        request.firstName.let { account.firstName = it }
+        request.lastName.let { account.lastName = it }
         request.email?.let { account.email = it }
         request.phone?.let { account.phone = it }
         request.type?.let { account.type = it }
-        request.preferredName?.let { account.preferredName = it }
+        request.preferredName.let { account.preferredName = it }
         if (account.subject === null) {
             val subject: Subject? = when {
                 request.subject !== null -> {

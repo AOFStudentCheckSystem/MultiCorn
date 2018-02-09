@@ -54,7 +54,6 @@ class StudentController @Autowired constructor(
     @Require(["STUDENT_WRITE"])
     @PostMapping("/")
     fun editStudent(@RequestBody @Valid request: StudentRequest) = try {
-        if (request.idNumber == null) throw BadRequestException("You no send idNumber!")
         studentService.editStudent(request)
     } catch (e: ControllerException) {
         throw e

@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 open class AuthContextHandlerInterceptor constructor(
-        private val authenticationService: AuthenticationService
+        private val authenticationService: AuthenticationService,
+        var disableAuth: Boolean = false
 ): HandlerInterceptor {
 
     private val logger: Logger = LoggerFactory.getLogger(AuthContextHandlerInterceptor::class.java)
@@ -43,7 +44,9 @@ open class AuthContextHandlerInterceptor constructor(
 
                 if (authCtx.isAuthenticated()) {
                     // TODO uncomment this line to enable Authorization
-                    authenticationService.verifySessionPermission(authHeader, permissions)
+                    if (!disableAuth) {
+                        authenticationService.verifySessionPermission(authHeader, permissions)
+                    }
                 } else {
                     throw UnauthorizedException("FUCK YOU, go LOGIN")
                 }
