@@ -8,7 +8,6 @@ import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
 import cn.com.guardiantech.aofgo.backend.test.authutil.AuthenticationUtil
 import org.junit.Assert.*
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,14 +47,14 @@ class AuthenticationAdminControllerTest {
 
     @Before
     fun initialize() {
-        Assert.assertNotNull(mockMvc)
+        assertNotNull(mockMvc)
         authUtil.prepare()
     }
 
     @Test
     fun editSubjectSetRole() {
         val newSubjectId = subjectRepository.save(Subject()).id
-        val newRoleId = roleRepository.save(Role(roleName = "nnp")).id
+        roleRepository.save(Role(roleName = "nnp")).id
 
         mockMvc
                 .perform(MockMvcRequestBuilders.post("/auth/admin/subject")
@@ -74,7 +73,7 @@ class AuthenticationAdminControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk)
         val s = subjectRepository.findById(newSubjectId).get()
         assertEquals("nil", s.subjectAttachedInfo)
-        assertEquals(1L, s.roles)
+        assertEquals(1, s.roles.size)
         assertEquals("nnp", s.roles.first().roleName)
     }
 }

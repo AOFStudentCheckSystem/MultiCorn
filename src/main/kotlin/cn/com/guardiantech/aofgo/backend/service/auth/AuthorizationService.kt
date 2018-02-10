@@ -288,7 +288,7 @@ class AuthorizationService @Autowired constructor(
             subject.subjectAttachedInfo = request.subjectAttachedInfo
             subject = subjectRepository.save(subject)
         }
-        entityManager.refresh(subject)
+//        entityManager.refresh(subject)
         return subject
     }
 

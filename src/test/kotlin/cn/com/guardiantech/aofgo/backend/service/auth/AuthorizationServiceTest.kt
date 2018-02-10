@@ -49,7 +49,7 @@ class AuthorizationServiceTest {
         )
         val s = subjectRepository.findById(newSubjectId).get()
         assertEquals("nil", s.subjectAttachedInfo)
-        assertEquals(1L, s.roles)
+        assertEquals(1, s.roles.size)
         assertEquals("nnp", s.roles.first().roleName)
     }
 }
