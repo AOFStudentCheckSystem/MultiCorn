@@ -10,6 +10,7 @@ import javax.persistence.*
 class Role(
         @Id
         @GeneratedValue
+        @JsonIgnore
         @Column(name = "role_id")
         val id: Long = -1,
 

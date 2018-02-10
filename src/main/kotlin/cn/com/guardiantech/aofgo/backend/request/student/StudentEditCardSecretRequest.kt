@@ -11,5 +11,6 @@ import javax.validation.constraints.NotNull
 data class StudentEditCardSecretRequest(
         @field:NotNull
         val idNumber: String,
+        @field:NotNull
         val cardSecret: String?
 )

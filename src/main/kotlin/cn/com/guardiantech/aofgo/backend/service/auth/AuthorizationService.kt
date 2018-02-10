@@ -278,8 +278,10 @@ class AuthorizationService @Autowired constructor(
             val rolesToAdd = request.roles.filter { !subjectRoles.contains(it) }.toSet()
             val rolesToDelete = subjectRoles.filter { !request.roles.contains(it) }.toSet()
 
-            removeRoleFromSubject(subject.id, rolesToDelete)
-            addRoleToSubject(subject.id, rolesToAdd)
+            if (rolesToDelete.isNotEmpty())
+                removeRoleFromSubject(subject.id, rolesToDelete)
+            if (rolesToAdd.isNotEmpty())
+                addRoleToSubject(subject.id, rolesToAdd)
         }
         if (request.subjectAttachedInfo !== null) {
             //TODO: Failed to set value see #AOFGO-80
