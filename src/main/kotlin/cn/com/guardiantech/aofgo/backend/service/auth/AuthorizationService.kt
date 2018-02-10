@@ -68,7 +68,7 @@ class AuthorizationService @Autowired constructor(
             }
         }
 
-        var role = this.roleRepository.findByRoleName("SYSADMIN").orElseGet {
+        val role = this.roleRepository.findByRoleName("SYSADMIN").orElseGet {
             this.createRole("SYSADMIN")
         }
 
