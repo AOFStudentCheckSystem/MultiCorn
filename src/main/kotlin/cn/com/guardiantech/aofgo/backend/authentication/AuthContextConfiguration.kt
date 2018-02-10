@@ -3,7 +3,6 @@ package cn.com.guardiantech.aofgo.backend.authentication
 import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthorizationService
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.slf4j.LoggerFactory
 import org.springframework.aop.support.AopUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -60,7 +59,7 @@ class AuthContextConfiguration: WebMvcConfigurerAdapter(), ApplicationContextAwa
     private lateinit var authContextHandlerInterceptor:AuthContextHandlerInterceptor
 
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
-        argumentResolvers.add(AuthContextMethodArugmentResolver())
+        argumentResolvers.add(AuthContextMethodArgumentResolver())
     }
 
     override fun addInterceptors(registry: InterceptorRegistry?) {

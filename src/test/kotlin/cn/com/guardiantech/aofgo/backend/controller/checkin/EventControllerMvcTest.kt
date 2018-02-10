@@ -6,6 +6,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
+import cn.com.guardiantech.aofgo.backend.test.authutil.AuthenticationUtil
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert.*
@@ -48,6 +49,9 @@ class EventControllerMvcTest {
                             }
                         """.trimIndent()
 
+    @Autowired
+    private lateinit var authenticationUtil: AuthenticationUtil
+
     @Before
     fun setUp() {
         event = eventRepo.save(
@@ -61,6 +65,7 @@ class EventControllerMvcTest {
         assertNotNull(event)
         assertNotNull(event.id)
         assertEquals("Repository is not properly initialized", 1, eventRepo.count())
+        authenticationUtil.prepare()
     }
 
     @Test
@@ -68,7 +73,11 @@ class EventControllerMvcTest {
         val count = eventRepo.count()
         assert(count > 0)
         mockMvc
-                .perform(delete("/checkin/event/${event.eventId}"))
+                .perform(delete("/checkin/event/${event.eventId}")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isNoContent)
         assertEquals(count - 1, eventRepo.count())
     }
@@ -78,7 +87,11 @@ class EventControllerMvcTest {
         val count = eventRepo.count()
         assert(count > 0)
         mockMvc
-                .perform(delete("/checkin/event/-1"))
+                .perform(delete("/checkin/event/-1")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
         assertEquals(count, eventRepo.count())
     }
@@ -90,6 +103,10 @@ class EventControllerMvcTest {
         mockMvc.perform(put("/checkin/event/")
                 .content("{}")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
         )
                 .andDo {
                     println("AAA: ${it.response.contentAsString}")
@@ -100,6 +117,10 @@ class EventControllerMvcTest {
                 .perform(put("/checkin/event/")
                         .content(eventCreationRawRequest)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .with({
+                            it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                            it
+                        })
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect {
@@ -121,6 +142,10 @@ class EventControllerMvcTest {
                 .perform(get("/checkin/event/list")
                         .content(eventCreationRawRequest)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .with({
+                            it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                            it
+                        })
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andDo {
@@ -136,27 +161,43 @@ class EventControllerMvcTest {
                         eventStatus = EventStatus.BOARDING
                 )
         )
-        mockMvc.perform(get("/checkin/event/list/future"))
+        mockMvc.perform(get("/checkin/event/list/future")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andDo {
                     val arr = JSONArray(it.response.contentAsString)
                     assertEquals(1, arr.length())
                     assertNotEquals(boardingEvent.eventId, arr.getJSONObject(0).getString("eventId"))
                 }
-        mockMvc.perform(get("/checkin/event/list/1"))
+        mockMvc.perform(get("/checkin/event/list/1")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andDo {
                     val arr = JSONArray(it.response.contentAsString)
                     assertEquals(1, arr.length())
                     assertEquals(boardingEvent.eventId, arr.getJSONObject(0).getString("eventId"))
                 }
-        mockMvc.perform(get("/checkin/event/list/COMPLETED"))
+        mockMvc.perform(get("/checkin/event/list/COMPLETED")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andDo {
                     val arr = JSONArray(it.response.contentAsString)
                     assertEquals(0, arr.length())
                 }
-        mockMvc.perform(get("/checkin/event/list/MAHOU"))
+        mockMvc.perform(get("/checkin/event/list/MAHOU")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 
@@ -168,16 +209,28 @@ class EventControllerMvcTest {
                         eventStatus = EventStatus.BOARDING
                 )
         )
-        mockMvc.perform(get("/checkin/event/${boardingEvent.eventId}"))
+        mockMvc.perform(get("/checkin/event/${boardingEvent.eventId}")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andDo { assertEquals(-1L, JSONObject(it.response.contentAsString).optLong("id", -1L)) }
-        mockMvc.perform(get("/checkin/event/DNE"))
+        mockMvc.perform(get("/checkin/event/DNE")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
     @Test
     fun listAllEventsNoPage() {
-        mockMvc.perform(get("/checkin/event/listall"))
+        mockMvc.perform(get("/checkin/event/listall")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andDo {
                     val contents = JSONArray(it.response.contentAsString)
@@ -207,7 +260,11 @@ class EventControllerMvcTest {
                             }
                         """.trimIndent()
                 )
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isOk)
         boardingEvent = eventRepo.findByEventId(boardingEvent.eventId).get()
         assertEquals("233", boardingEvent.eventName)
@@ -225,7 +282,11 @@ class EventControllerMvcTest {
                             }
                         """.trimIndent()
                 )
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isOk)
         boardingEvent = eventRepo.findByEventId(boardingEvent.eventId).get()
         assertEquals("233", boardingEvent.eventName)
@@ -235,17 +296,29 @@ class EventControllerMvcTest {
 
         mockMvc.perform(post("/checkin/event/")
                 .content("{}")
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
 
         mockMvc.perform(post("/checkin/event/")
                 .content("{\"eventId\": \"${boardingEvent.eventId}\"}")
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
 
         mockMvc.perform(post("/checkin/event/")
                 .content("{\"eventId\": \"DNE\"}")
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
