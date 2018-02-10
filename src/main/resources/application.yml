@@ -14,6 +14,10 @@ spring:
       ddl-auto: ${dbmode:validate}
     properties:
       hibernate:
+        connection:
+          CharSet: utf8
+          characterEncoding: utf8
+          useUnicode: true
         dialect: org.hibernate.dialect.MySQL57InnoDBDialect
   datasource:
     url: jdbc:mysql://${dbaddr:mysql}:${dbport:3306}/${dbname:aofgo}?useUnicode=yes&characterEncoding=UTF-8&useSSL=${useSSL:false}
