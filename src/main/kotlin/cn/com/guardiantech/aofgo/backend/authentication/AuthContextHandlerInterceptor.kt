@@ -43,9 +43,8 @@ open class AuthContextHandlerInterceptor constructor(
                 val permissions = getMergedPermissions(handler)
 
                 if (authCtx.isAuthenticated()) {
-                    // TODO uncomment this line to enable Authorization
-                    if (!disableAuth) {
-                        authenticationService.verifySessionPermission(authHeader, permissions)
+                    if (!authenticationService.verifySessionPermission(authHeader, permissions) && !disableAuth) {
+                        throw UnauthorizedException("Missing Permission")
                     }
                 } else {
                     throw UnauthorizedException("FUCK YOU, go LOGIN")
