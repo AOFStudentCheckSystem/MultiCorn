@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.authentication
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
+import cn.com.guardiantech.aofgo.backend.exception.PermissionDeniedException
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.slf4j.Logger
@@ -44,7 +45,7 @@ open class AuthContextHandlerInterceptor constructor(
 
                 if (authCtx.isAuthenticated()) {
                     if (!authenticationService.verifySessionPermission(authHeader, permissions) && !disableAuth) {
-                        throw UnauthorizedException("Missing Permission")
+                        throw PermissionDeniedException("Missing Permission")
                     }
                 } else {
                     throw UnauthorizedException("FUCK YOU, go LOGIN")
