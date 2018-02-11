@@ -6,6 +6,7 @@ import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.ControllerException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
+import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
@@ -13,13 +14,16 @@ import javassist.NotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/student")
 class StudentController @Autowired constructor(
-        val studentService: StudentService
+        val studentService: StudentService,
+        private val studentPagedRepository: StudentPagedRepository
 ) {
     private val logger: Logger = LoggerFactory.getLogger(StudentController::class.java)
 
@@ -34,6 +38,12 @@ class StudentController @Autowired constructor(
     } catch (e: Throwable) {
         logger.error("Student Saving Error:", e)
         throw RepositoryException("Failed to save student due to conflict")
+    }
+
+    @Require(["STUDENT_READ"])
+    @GetMapping("/")
+    fun listStudentPaged(pageable: Pageable): Page<Student> {
+        return studentPagedRepository.findAll(pageable)
     }
 
     @Require(["STUDENT_READ"])
