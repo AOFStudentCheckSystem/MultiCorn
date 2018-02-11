@@ -28,6 +28,7 @@ spring:
       validation-query: SET NAMES utf8mb4
     driver-class-name: com.mysql.jdbc.Driver
     platform: mysql
+    initSQL: "SET NAMES 'utf8mb4'"
   mail:
     from: "AOF Activity Sign-up<signups@233.com.hk>"
     host: mail.codetector.cn
