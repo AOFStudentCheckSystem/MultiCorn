@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
 import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 import javax.persistence.*
@@ -13,6 +14,7 @@ import javax.persistence.*
 class Session(
         @Id
         @GeneratedValue
+        @JsonIgnore
         val id: Long = -1,
 
         val sessionKey: String,
@@ -29,10 +31,12 @@ class Session(
 
         @Column(nullable = false)
         @Temporal(TemporalType.TIMESTAMP)
+        @JsonIgnore
         val creationTimestamp: Date = Date(),
 
         @Column(nullable = false, updatable = true, name = "accessed")
         @Temporal(TemporalType.TIMESTAMP)
+        @JsonIgnore
         var accessTimestamp: Date = Date()
 ) {
     @JsonProperty("permissions")
