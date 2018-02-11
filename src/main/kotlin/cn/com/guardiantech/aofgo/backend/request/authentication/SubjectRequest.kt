@@ -10,7 +10,6 @@ data class SubjectRequest(
         val principal: PrincipalRequest,
         @field:NotNull
         val credential: CredentialRequest,
-        @field:JsonProperty(defaultValue = "")
-        val subjectAttachedInfo: String,
+        val subjectAttachedInfo: String = "",
         val roles: Set<String> = setOf()
 )
