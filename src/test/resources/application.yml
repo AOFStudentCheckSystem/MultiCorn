@@ -24,3 +24,5 @@ spring:
 auth:
   sessionTimeout: 1800
   disableAuth: true
+storage:
+  location: ./tmp

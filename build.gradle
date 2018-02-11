@@ -79,6 +79,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-validation')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-mail')
+    compile "org.springframework.boot:spring-boot-configuration-processor"
 
     // Kotlin Language Libraries
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
