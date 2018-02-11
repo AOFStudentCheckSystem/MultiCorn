@@ -84,11 +84,9 @@ open class AuthContextHandlerInterceptor constructor(
 
     override fun postHandle(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, modelAndView: ModelAndView?) {
         AuthContext.clear()
-        logger.trace("Clearing AuthContext")
     }
 
     override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, ex: Exception?) {
         AuthContext.clear()
-        logger.trace("Clearing AuthContext")
     }
 }
