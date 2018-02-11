@@ -42,3 +42,5 @@ spring:
       mail.transport.protocol: smtps
 auth:
   sessionTimeout: 1800
+storage:
+  upload-dir: /appdata/uploads
