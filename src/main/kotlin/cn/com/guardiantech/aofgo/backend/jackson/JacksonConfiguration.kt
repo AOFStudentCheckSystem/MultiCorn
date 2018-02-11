@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
@@ -44,7 +45,7 @@ class JacksonConfiguration: WebMvcConfigurerAdapter() {
         module.addSerializer(Date::class.java, DateSerializer())
 
         mapper.registerModule(module)
-//        mapper.registerModule(KotlinModule())
+        mapper.registerModule(KotlinModule())
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         mapper.enable(MapperFeature.DEFAULT_VIEW_INCLUSION)
 

@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull
 data class RecordToUpload(
         @field:NotNull
         val timestamp: Long,
+        @get:JsonProperty(defaultValue = "1")
         val status: Int = 1,
         @field:NotNull
         val studentId: String
