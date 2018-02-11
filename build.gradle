@@ -63,7 +63,7 @@ sourceCompatibility = 1.8
 ext {
     log4j2Version = '2.8.2'
     slf4jVersion = '1.7.25'
-    mysql_version = '6.0.6'
+    mysql_version = '5.1.45'
 }
 
 
@@ -100,7 +100,7 @@ dependencies {
             "org.slf4j:slf4j-api:$slf4jVersion"
 
 
-    runtime group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
+    runtime group: 'mysql', name: 'mysql-connector-java', version: "$mysql_version"
 
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
