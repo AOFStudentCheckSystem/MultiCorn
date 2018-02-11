@@ -25,7 +25,7 @@ spring:
     password: ${dbpass}
     dbcp2:
       test-while-idle: true
-      validation-query: SELECT 1
+      validation-query: SET NAMES utf8mb4
     driver-class-name: com.mysql.cj.jdbc.Driver
     platform: mysql
   mail:
