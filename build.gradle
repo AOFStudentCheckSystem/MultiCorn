@@ -1,16 +1,19 @@
 buildscript {
 	ext {
-		kotlinVersion = '1.2.20'
+		kotlinVersion = '1.2.21'
 		springBootVersion = '1.5.9.RELEASE'
 	}
 	repositories {
 		mavenCentral()
+        jcenter()
 	}
 	dependencies {
 		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
         classpath("org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}")
 		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'com.bmuschko:gradle-docker-plugin:3.0.11'
+//        classpath 'org.springframework:springloaded:1.2.6.RELEASE'
     }
 }
 
@@ -22,9 +25,18 @@ apply plugin: 'kotlin-spring'
 apply plugin: "kotlin-noarg"
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'com.bmuschko.docker-remote-api'
 
+//apply plugin: 'idea'
+
+//idea {
+//    module {
+//        inheritOutputDirs = false
+//        outputDir = file("$buildDir/classes/main/")
+//    }
+//}
 group = 'cn.com.guardiantech.aofgo'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = 1.8
 compileKotlin {
 	kotlinOptions.jvmTarget = "1.8"
@@ -49,10 +61,9 @@ noArg {
 sourceCompatibility = 1.8
 
 ext {
-	springCloudVersion = 'Edgware.RELEASE'
     log4j2Version = '2.8.2'
     slf4jVersion = '1.7.25'
-    mysql_version = '6.0.6'
+    mysql_version = '5.1.45'
 }
 
 
@@ -64,14 +75,20 @@ configurations.all {
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
+//    compile("org.springframework.boot:spring-boot-starter-actuator")
 	compile('org.springframework.boot:spring-boot-starter-validation')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-mail')
 
     // Kotlin Language Libraries
-	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
+	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
 	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    compile ("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0") {
+        exclude group: 'org.jetbrains.kotlin'
+    }
     compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
+
+    compile group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 
     compile group: 'com.google.guava', name: 'guava', version: '23.0'
 
@@ -83,7 +100,7 @@ dependencies {
             "org.slf4j:slf4j-api:$slf4jVersion"
 
 
-    runtime group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
+    runtime group: 'mysql', name: 'mysql-connector-java', version: "$mysql_version"
 
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -109,6 +126,52 @@ task copyLibraries(type: Copy) {
     into("$buildDir/out/std/libs")
 }
 
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+if (hasProperty("code_dockerUser") && hasProperty("code_dockerPass")) {
+    docker {
+        registryCredentials {
+            url = "https://docker.codetector.cn"
+            username = "$code_dockerUser"
+            password = "$code_dockerPass"
+        }
+    }
+}
+
+task createDockerfile(type: Dockerfile) {
+    group = 'Docker'
+    dependsOn build
+    destFile = project.file('build/docker/Dockerfile')
+    if (destFile.exists()) {
+        destFile.delete()
+    }
+    from 'java:8'
+    addFile('libs/' + jar.archiveName, '/app.jar')
+    addFile('docker/wait.dms', '/wait')
+    runCommand('chmod +x /wait')
+    defaultCommand("bash", "-c", "/wait && java \$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar")
+}
+
+task copyDockerWaitBinary(type: Copy) {
+    from 'docker-files/wait.dms'
+    into 'build/docker'
+}
+
+task buildImage(type: DockerBuildImage) {
+    group = 'Docker'
+    dependsOn copyDockerWaitBinary
+    dependsOn createDockerfile
+    dockerFile = createDockerfile.destFile
+    inputDir = project.buildDir
+    tags.add(getProperty("dockerImageName") as String)
+}
+
+task pushImage(type: DockerPushImage) {
+    imageName = getProperty("dockerImageName")
+}
+
 processResources {
     if (!debug) {
         println("Building Release")
@@ -116,10 +179,4 @@ processResources {
     } else {
         println("Building DEBUG")
     }
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
 }

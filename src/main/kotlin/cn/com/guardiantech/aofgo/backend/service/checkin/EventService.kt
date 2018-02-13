@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 import kotlin.NoSuchElementException
 
@@ -27,6 +28,7 @@ class EventService @Autowired constructor(
         private val mailService: EmailService
 ) {
 
+    @Transactional
     fun removeEvent(eventID: String) {
         val linesChanged = eventRepository.removeByEventId(eventID)
         if (linesChanged == 0L) {
@@ -34,6 +36,7 @@ class EventService @Autowired constructor(
         }
     }
 
+    @Transactional
     fun createEvent(request: EventRequest): ActivityEvent {
         return eventRepository.save(
                 ActivityEvent(
@@ -50,7 +53,7 @@ class EventService @Autowired constructor(
      * @throws IllegalArgumentException No event status with name
      */
     fun listEventsByStatus(status: String): Set<ActivityEvent> {
-        val upperCasedStatus= status.toUpperCase()
+        val upperCasedStatus = status.toUpperCase()
         val statusNumber = upperCasedStatus.toIntOrNull()
         val statusEnum = if (statusNumber != null) {
             EventStatus.values().first {
@@ -71,10 +74,11 @@ class EventService @Autowired constructor(
             eventRepository.findAll()
 
     @Suppress("SENSELESS_COMPARISON")
-            /**
+    /**
      * @throws NoSuchElementException Cannot find event
      * @throws IllegalArgumentException
      */
+    @Transactional
     fun editEvent(eventId: String, request: EventRequest): ActivityEvent {
         val eventToEdit = eventRepository.findByEventId(eventId).get()
         if (eventToEdit.eventStatus == EventStatus.COMPLETED) {

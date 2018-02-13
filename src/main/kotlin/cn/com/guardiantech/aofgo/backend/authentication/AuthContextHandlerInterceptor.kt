@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.authentication
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
+import cn.com.guardiantech.aofgo.backend.exception.PermissionDeniedException
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.slf4j.Logger
@@ -13,7 +14,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 open class AuthContextHandlerInterceptor constructor(
-        private val authenticationService: AuthenticationService
+        private val authenticationService: AuthenticationService,
+        var disableAuth: Boolean = false
 ): HandlerInterceptor {
 
     private val logger: Logger = LoggerFactory.getLogger(AuthContextHandlerInterceptor::class.java)
@@ -34,14 +36,17 @@ open class AuthContextHandlerInterceptor constructor(
         val authCtx = AuthContext.currentContext
 
         if (handler is HandlerMethod) {
-            if (checkRequire(handler)) {
+            if (checkRequireExists(handler)) {
 
-                // This should be guaranteed, as checkRequire has already checked the preconditions
-                val require = getNearestRequire(handler)!!
+                // This should be guaranteed, as checkRequireExists() has already checked the preconditions
+                //val require = getNearestRequire(handler)!!
 
-                // Todo implement permission check
+                val permissions = getMergedPermissions(handler)
+
                 if (authCtx.isAuthenticated()) {
-
+                    if (!authenticationService.verifySessionPermission(authHeader, permissions) && !disableAuth) {
+                        throw PermissionDeniedException("Missing Permission")
+                    }
                 } else {
                     throw UnauthorizedException("FUCK YOU, go LOGIN")
                 }
@@ -50,7 +55,7 @@ open class AuthContextHandlerInterceptor constructor(
         return true
     }
 
-    private fun checkRequire(handlerMethod: HandlerMethod): Boolean {
+    private fun checkRequireExists(handlerMethod: HandlerMethod): Boolean {
         return handlerMethod.hasMethodAnnotation(Require::class.java) || handlerMethod.method.declaringClass.isAnnotationPresent(Require::class.java)
     }
 
@@ -63,13 +68,25 @@ open class AuthContextHandlerInterceptor constructor(
         return null
     }
 
+    private fun getMergedPermissions(handlerMethod: HandlerMethod): Array<String> {
+        if (handlerMethod.hasMethodAnnotation(Require::class.java)) {
+            val permissions = handlerMethod.getMethodAnnotation(Require::class.java).permissions.toMutableSet()
+            if (handlerMethod.method.declaringClass.isAnnotationPresent(Require::class.java)) {
+                permissions.addAll(handlerMethod.method.declaringClass.getDeclaredAnnotation(Require::class.java).permissions)
+            }
+            return permissions.toTypedArray()
+        } else if (handlerMethod.method.declaringClass.isAnnotationPresent(Require::class.java)) {
+            return handlerMethod.method.declaringClass.getDeclaredAnnotation(Require::class.java).permissions
+        }
+        return arrayOf()
+    }
+
+
     override fun postHandle(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, modelAndView: ModelAndView?) {
         AuthContext.clear()
-        logger.trace("Clearing AuthContext")
     }
 
     override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse?, handler: Any?, ex: Exception?) {
         AuthContext.clear()
-        logger.trace("Clearing AuthContext")
     }
 }

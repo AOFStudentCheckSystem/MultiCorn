@@ -4,13 +4,17 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Permission
 import cn.com.guardiantech.aofgo.backend.jackson.deserializer.DateDeserializer
 import cn.com.guardiantech.aofgo.backend.jackson.serializer.DateSerializer
 import cn.com.guardiantech.aofgo.backend.jackson.serializer.PermissionSerializer
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.util.*
+import kotlin.reflect.jvm.internal.impl.serialization.deserialization.Deserialization
 
 
 /**
@@ -34,12 +38,17 @@ class JacksonConfiguration: WebMvcConfigurerAdapter() {
 
         // Date (DE)Serialization
         module.addDeserializer(Date::class.java, DateDeserializer())
-        module.addSerializer(Date::class.java, DateSerializer())
+//        module.addDeserializer(RecordToUpload::class.java, RecordToUploadDeserializer())
 
         // Permission Serialization
         module.addSerializer(Permission::class.java, PermissionSerializer())
+        module.addSerializer(Date::class.java, DateSerializer())
 
         mapper.registerModule(module)
+        mapper.registerModule(KotlinModule())
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        mapper.enable(MapperFeature.DEFAULT_VIEW_INCLUSION)
+
         return mapper
     }
 }

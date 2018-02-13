@@ -2,13 +2,13 @@ package cn.com.guardiantech.aofgo.backend.request.student
 
 import cn.com.guardiantech.aofgo.backend.annotation.NoArg
 import cn.com.guardiantech.aofgo.backend.data.entity.Gender
-import cn.com.guardiantech.aofgo.backend.request.account.AccountCreationRequest
+import cn.com.guardiantech.aofgo.backend.request.account.AccountRequest
 import java.util.*
 import javax.validation.constraints.NotNull
 
 @NoArg
 data class StudentRequest(
-        @NotNull
+        @field:NotNull
         val idNumber: String,
         val cardSecret: String?,
         val grade: Int?,
@@ -18,5 +18,5 @@ data class StudentRequest(
         val dormInfo: String?,
         //Id
         val accountId: Long?,
-        val account: AccountCreationRequest?
+        val account: AccountRequest?
 )

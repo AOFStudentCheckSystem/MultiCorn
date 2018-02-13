@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import javax.validation.constraints.NotNull
 
 @NoArg
-data class RegisterRequest(
-        @NotNull
+data class SubjectRequest(
+        @field:NotNull
         val principal: PrincipalRequest,
-        @NotNull
+        @field:NotNull
         val credential: CredentialRequest,
-        @JsonProperty(defaultValue = "")
-        val subjectAttachedInfo: String
+        val subjectAttachedInfo: String = "",
+        val roles: Set<String> = setOf()
 )

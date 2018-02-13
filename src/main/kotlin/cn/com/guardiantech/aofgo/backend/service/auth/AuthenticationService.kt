@@ -1,27 +1,25 @@
 package cn.com.guardiantech.aofgo.backend.service.auth
 
 import cn.com.guardiantech.aofgo.backend.authentication.AuthenticationMechanism
+import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Credential
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Principal
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
-import cn.com.guardiantech.aofgo.backend.repository.auth.CredentialRepository
-import cn.com.guardiantech.aofgo.backend.repository.auth.PrincipalRepository
-import cn.com.guardiantech.aofgo.backend.repository.auth.SessionRepository
-import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.*
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.util.SessionUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import javax.transaction.Transactional
 
 @Service
 class AuthenticationService @Autowired constructor(
@@ -29,7 +27,8 @@ class AuthenticationService @Autowired constructor(
         private val principalRepo: PrincipalRepository,
         private val credentialRepo: CredentialRepository,
         private val sessionRepo: SessionRepository,
-        private val authenticationMechanism: AuthenticationMechanism
+        private val authenticationMechanism: AuthenticationMechanism,
+        private val accountRepository: AccountRepository
 ) {
 
     @PersistenceContext
@@ -38,12 +37,22 @@ class AuthenticationService @Autowired constructor(
     @Value("\${auth.sessionTimeout}")
     private var sessionTimeout: Int = 60
 
+    @Transactional
+    @Modifying
+    fun register(registerRequest: SubjectRequest): Account {
+        val newSubject = registerSubject(registerRequest)
+        val account = accountRepository.save(Account(
+                subject = newSubject)
+        )
+        entityManager.refresh(newSubject)
+        return account
+    }
+
     /**
      * @throws DataIntegrityViolationException Duplicate principal
      */
     @Transactional
-    @Modifying
-    fun register(registerRequest: RegisterRequest): Subject {
+    fun registerSubject(registerRequest: SubjectRequest): Subject {
         val newSubject = subjectRepo.save(Subject(
                 subjectAttachedInfo = registerRequest.subjectAttachedInfo))
 
@@ -63,6 +72,7 @@ class AuthenticationService @Autowired constructor(
         return newSubject
     }
 
+    @Transactional
     fun authenticate(authRequest: AuthenticationRequest): Session {
         //NoSuchElementException
         val principal = principalRepo.findByTypeAndIdentification(
@@ -84,6 +94,7 @@ class AuthenticationService @Autowired constructor(
         }
     }
 
+    @Transactional
     fun authenticateSession(session: String): Session? {
         val sessionFind = sessionRepo.findBySessionKey(session)
 
@@ -100,5 +111,26 @@ class AuthenticationService @Autowired constructor(
             }
         }
         return null
+    }
+
+    fun verifySessionPermission(sessionKey: String, permission: Array<String>): Boolean {
+        val sessionNullable = this.authenticateSession(sessionKey)
+        return sessionNullable?.let { session ->
+            val perms = session.getPermissions()
+            return@let permission.all {
+                perms.contains(it)
+            }
+        } ?: false
+    }
+
+    /**
+     * @throws NoSuchElementException
+     * @throws Throwable
+     */
+    @Transactional
+    fun invalidateSession(sessionKey: String) {
+        sessionRepo.findBySessionKey(sessionKey).orElseGet { null }?.let { session ->
+            sessionRepo.delete(session)
+        }
     }
 }

@@ -6,7 +6,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
@@ -23,3 +23,4 @@ spring:
       mail.transport.protocol: smtps
 auth:
   sessionTimeout: 1800
+  disableAuth: true

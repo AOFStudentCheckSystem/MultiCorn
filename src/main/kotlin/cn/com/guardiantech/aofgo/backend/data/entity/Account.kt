@@ -11,24 +11,24 @@ class Account(
 
         @OneToOne
         @JoinColumn(name = "subject", unique = true)
-        val subject: Subject? = null,
+        var subject: Subject? = null,
 
         @Column(name = "first_name")
-        val firstName: String,
+        var firstName: String = "unknown",
 
         @Column(name = "last_name")
-        val lastName: String,
+        var lastName: String = "unknown",
 
-        @Column(name = "email")
-        val email: String,
+        @Column(name = "email", unique = true)
+        var email: String? = null,
 
         @Column(name = "phone")
-        val phone: String?,
+        var phone: String? = null,
 
         @Enumerated(EnumType.STRING)
         @Column(name = "account_type")
-        val type: AccountType,
+        var type: AccountType = AccountType.OTHER,
 
         @Column(name = "preferred_name")
-        val preferredName: String
+        var preferredName: String = firstName
 )

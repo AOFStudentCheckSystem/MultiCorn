@@ -3,6 +3,7 @@ package cn.com.guardiantech.aofgo.backend.service.checkin
 import cn.com.guardiantech.aofgo.backend.repository.checkin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Created by dedztbh on 1/6/18.
@@ -18,6 +19,7 @@ class SignupService @Autowired constructor(
         private val groupRepository: EventGroupRepository,
         private val emailService: EmailService
 ) {
+    @Transactional
     fun removeSheet(id: Long): Long =
             sheetRepository.removeById(id)
 

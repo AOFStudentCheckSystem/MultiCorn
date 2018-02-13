@@ -10,13 +10,14 @@ import javax.persistence.*
 class Role(
         @Id
         @GeneratedValue
+        @JsonIgnore
         @Column(name = "role_id")
         val id: Long = -1,
 
         @Column(name = "role_name", unique = true)
         val roleName: String,
 
-        @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+        @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
         @JoinTable(
                 name = "roles_permissions",
                 joinColumns = [(JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false))],

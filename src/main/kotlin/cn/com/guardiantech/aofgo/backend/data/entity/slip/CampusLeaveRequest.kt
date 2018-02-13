@@ -1,5 +1,6 @@
-package cn.com.guardiantech.aofgo.backend.data.entity
+package cn.com.guardiantech.aofgo.backend.data.entity.slip
 
+import cn.com.guardiantech.aofgo.backend.data.entity.*
 import java.util.*
 import javax.persistence.*
 

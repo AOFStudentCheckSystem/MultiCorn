@@ -13,8 +13,8 @@ import javax.validation.constraints.Size
 @NoArg
 data class EventRequest(
         val eventId: String?,
-        @NotNull
-        @Size(min=1)
+        @field:NotNull
+        @field:Size(min=1)
         val name: String = "",
         val description: String?,
         val time: Date?,

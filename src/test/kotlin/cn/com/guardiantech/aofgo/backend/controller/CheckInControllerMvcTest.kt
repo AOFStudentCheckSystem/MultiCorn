@@ -78,20 +78,16 @@ class CheckInControllerMvcTest {
         ))
         assertEquals("Unexpected repository content", 1, studentRepo.count())
 
-        var targetEvent = event.eventId
-
         checkInRawRequest = """{
-        "targetEvent" : "$targetEvent",
+        "targetEvent" : "${event.eventId}",
         "recordsToUpload" : [
          {
-           "timestamp":  1515454572,
+           "timestamp":  1518371246,
            "status": 1,
            "studentId": ${student.idNumber}
          }
          ]
         }""".trimIndent()
-
-        print(checkInRawRequest)
     }
 
     @Test
@@ -110,7 +106,43 @@ class CheckInControllerMvcTest {
                 }
 
         assertNotNull(eventRecordRepository.count())
-        assertEquals(1, 1)
+        assertEquals(1, eventRecordRepository.count())
+
+        val record = eventRecordRepository.findByEvent(event)[0]
+        assertEquals(1518371246, record.checkInTime)
+    }
+
+    @Test
+    fun addCheckInWithDefaultStatus() {
+
+        checkInRawRequest = """{
+        "targetEvent" : "${event.eventId}",
+        "recordsToUpload" : [
+         {
+           "timestamp":  1518371246,
+           "studentId": ${student.idNumber}
+         }
+         ]
+        }""".trimIndent()
+
+        mockMvc.perform(
+                put("/checkin/checkin/submit")
+                        .content(checkInRawRequest)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        )
+                .andExpect {
+                    var response = JSONObject(it.response.contentAsString)
+                    assertEquals(response.getString("targetEvent"), event.eventId)
+                    assertEquals(response.getInt("totalRecordsReceived"), 1)
+                    assertEquals(response.getInt("validRecords"), 1)
+                    assertEquals(response.getInt("effectiveRecords"), 1)
+                }
+
+        assertNotNull(eventRecordRepository.count())
+        assertEquals(1, eventRecordRepository.count())
+
+        val record = eventRecordRepository.findByEvent(event)[0]
+        assertEquals(1518371246, record.checkInTime)
     }
 
     @Test
@@ -130,10 +162,10 @@ class CheckInControllerMvcTest {
                                 var response = JSONArray(it.response.contentAsString)
                                 var allTheShit = response.getJSONObject(0)
                                 var studentResponse = allTheShit.getJSONObject("student")
-                                var eventResponse = allTheShit.getJSONObject("event")
+//                                var eventResponse = allTheShit.getJSONObject("event")
                                 assertEquals(studentResponse.getString("idNumber"), student.idNumber)
                                 assertEquals(studentResponse.getInt("grade"), student.grade)
-                                assertEquals(eventResponse.getString("eventName"), event.eventName)
+//                                assertEquals(eventResponse.getString("eventName"), event.eventName)
                             }
                 }
     }

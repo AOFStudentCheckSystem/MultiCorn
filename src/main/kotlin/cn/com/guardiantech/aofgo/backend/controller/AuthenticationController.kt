@@ -6,12 +6,13 @@ import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.RegisterRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.service.auth.AuthenticationService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -21,14 +22,15 @@ import javax.validation.Valid
  */
 @RestController
 @RequestMapping("/auth")
-class AuthenticationController @Autowired constructor(
+class
+AuthenticationController @Autowired constructor(
         private val authenticationService: AuthenticationService
 ) {
 
     private val logger: Logger = LoggerFactory.getLogger(AuthenticationController::class.java)
 
     @PostMapping(path = ["/register"])
-    fun register(@Valid @RequestBody registerRequest: RegisterRequest) = try {
+    fun register(@Valid @RequestBody registerRequest: SubjectRequest) = try {
         authenticationService.register(registerRequest)
     } catch (e: Throwable) {
         when (e) {
@@ -60,6 +62,14 @@ class AuthenticationController @Autowired constructor(
                 }
                 throw UnauthorizedException()
             }
+        }
+    }
+
+    @GetMapping(path = ["/signOut"])
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun signOut(authContext: AuthContext) {
+        authContext.session?.let { session ->
+            authenticationService.invalidateSession(session.sessionKey)
         }
     }
 }

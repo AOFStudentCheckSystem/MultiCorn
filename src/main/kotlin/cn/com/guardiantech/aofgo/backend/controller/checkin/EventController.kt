@@ -1,12 +1,16 @@
 package cn.com.guardiantech.aofgo.backend.controller.checkin
 
+import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
+import cn.com.guardiantech.aofgo.backend.jsonview.EventView
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.SendEmailRequest
 import cn.com.guardiantech.aofgo.backend.service.checkin.EventService
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonView
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,6 +33,7 @@ class EventController @Autowired constructor(
 
     @RequestMapping(path = ["/{id}"], method = [RequestMethod.DELETE])
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Require(["EVENT_WRITE"])
     fun removeEvent(@PathVariable("id") eventID: String) {
         try {
             eventService.removeEvent(eventID)
@@ -38,16 +43,20 @@ class EventController @Autowired constructor(
     }
 
     @RequestMapping(path = ["/"], method = [RequestMethod.PUT])
+    @Require(["EVENT_WRITE"])
+    @JsonView(EventView.NormalView::class)
     fun createEvent(@RequestBody @Valid request: EventRequest): ActivityEvent =
             eventService.createEvent(request)
 //            JSONObject().put("success",true).put("newEvent", JSONObject().put("eventId", evt.eventId)).encode()
 
     @RequestMapping(path = ["/list"], method = [RequestMethod.GET])
+    @JsonView(EventView.NormalView::class)
     fun listAllEvents(pageable: Pageable) =
             eventService.listAllEvents(pageable)
 //        return eventRepo.findAll(PageRequest(pageable.pageNumber, pageable.pageSize, Sort(Sort.Direction.ASC, "eventTime")))
 
     @RequestMapping(path = ["/list/{status}"], method = [RequestMethod.GET])
+    @JsonView(EventView.NormalView::class)
     fun listEventsByStatus(@PathVariable status: String): Set<ActivityEvent> =
             try {
                 eventService.listEventsByStatus(status)
@@ -56,6 +65,7 @@ class EventController @Autowired constructor(
             }
 
     @RequestMapping(path = ["/{id}"], method = [RequestMethod.GET])
+    @JsonView(EventView.FullEvent::class)
     fun getEventById(@PathVariable id: String): ActivityEvent =
             try {
                 eventService.getEventById(id)
@@ -64,10 +74,13 @@ class EventController @Autowired constructor(
             }
 
     @RequestMapping(path = ["/listall"], method = [RequestMethod.GET])
+    @JsonView(EventView.NormalView::class)
     fun listAllEventsNoPage(): List<ActivityEvent> =
             eventService.listAllEventsNoPage()
 
     @RequestMapping(path = ["/"], method = [RequestMethod.POST])
+    @Require(["EVENT_WRITE"])
+    @JsonView(EventView.NormalView::class)
     fun editEvent(@RequestBody request: EventRequest): ActivityEvent = try {
         if (request.eventId == null) throw BadRequestException("You no send eventId!")
         eventService.editEvent(request.eventId, request)
@@ -79,6 +92,7 @@ class EventController @Autowired constructor(
 
     //TODO: Judgement and dealing with Student without account
     @RequestMapping(path = ["/sendmail"], method = [RequestMethod.POST])
+    @Require(["SEND_EMAIL"])
     fun sendSummaryEmail(@RequestBody @Valid request: SendEmailRequest) = try {
         eventService.sendSummaryEmail(request)
     } catch (e: IllegalArgumentException) {

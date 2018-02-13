@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull
 
 @NoArg
 class CheckInSubmissionRequest(
-        @NotNull
+        @field:NotNull
         val targetEvent: String,
-        @NotNull
+        @field:NotNull
         val recordsToUpload: Array<RecordToUpload>
 )

@@ -7,11 +7,20 @@ import javax.validation.constraints.NotNull
 @NoArg
 class RolePermissionRequest(
 
-        @NotNull
-        @Length(min = 1)
+        @field:NotNull
+        @field:Length(min = 1)
         val roleName: String,
 
         val permissions: List<String>?,
         val permission: String?
-){
+) {
+    fun combinedPermissions(): MutableSet<String> {
+        val permissions: MutableSet<String> = this.permissions.orEmpty().toMutableSet()
+        this.permission?.let {
+            if (!permissions.contains(it)) {
+                permissions.add(it)
+            }
+        }
+        return permissions
+    }
 }

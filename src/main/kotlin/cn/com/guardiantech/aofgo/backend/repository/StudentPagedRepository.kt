@@ -1,4 +1,4 @@
-package cn.com.guardiantech.aofgo.backend.repository.checkin
+package cn.com.guardiantech.aofgo.backend.repository
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import org.springframework.data.domain.Page

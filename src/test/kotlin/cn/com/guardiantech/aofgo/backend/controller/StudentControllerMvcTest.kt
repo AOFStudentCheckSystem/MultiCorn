@@ -23,8 +23,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 /**
@@ -38,10 +37,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @Import(BackendApplicationTestConfiguration::class)
 @AutoConfigureMockMvc
 class StudentControllerMvcTest {
-    @Autowired private lateinit var mockMvc: MockMvc
-    @Autowired private lateinit var studentRepo: StudentRepository
-    @Autowired private lateinit var accountRepo: AccountRepository
-    @Autowired private lateinit var authenticationUtil: AuthenticationUtil
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+    @Autowired
+    private lateinit var studentRepo: StudentRepository
+    @Autowired
+    private lateinit var accountRepo: AccountRepository
+    @Autowired
+    private lateinit var authenticationUtil: AuthenticationUtil
 
     @Before
     fun initialize() {
@@ -53,7 +56,7 @@ class StudentControllerMvcTest {
             Account(
                     firstName = "fn",
                     lastName = "ln",
-                    email = "a@b.c",
+                    email = null,
                     phone = null,
                     type = AccountType.STUDENT,
                     preferredName = "pn"
@@ -62,7 +65,7 @@ class StudentControllerMvcTest {
 
     fun initStudent(): Student = studentRepo.save(
             Student(
-                idNumber = "12345AB"
+                    idNumber = "12345AB"
             )
     )
 
@@ -100,7 +103,7 @@ class StudentControllerMvcTest {
                 })
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(
-                """{
+                        """{
                         "idNumber": "123456A",
                         "cardSecret": null,
                         "grade": 10,
@@ -162,6 +165,8 @@ class StudentControllerMvcTest {
 
     @Test
     fun createStudentWithAccountTest() {
+        assertEquals(1L, accountRepo.count())
+        assertEquals(0L, studentRepo.count())
         mockMvc.perform(put("/student/")
                 .with({
                     it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
@@ -188,7 +193,7 @@ class StudentControllerMvcTest {
                 ))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect {
-                    assertEquals(1L, accountRepo.count())
+                    assertEquals(2L, accountRepo.count())
                     assertEquals(1L, studentRepo.count())
                     assertEquals(studentRepo.findAll().first().idNumber,
                             JSONObject(it.response.contentAsString).getString("idNumber"))
@@ -335,5 +340,71 @@ class StudentControllerMvcTest {
                 )
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
+
+    @Test
+    fun unbindStudentCardTest() {
+        val student = studentRepo.save(
+                Student(
+                        idNumber = "12345AB",
+                        cardSecret = "NOT REALLY",
+                        account = initAccount()
+                )
+        )
+
+        mockMvc.perform(delete("/student/card/${student.idNumber}")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                }))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+
+        assertEquals(null, studentRepo.findById(student.id).get().cardSecret)
+    }
+
+    @Test
+    fun editStudentCardTest() {
+        val student = studentRepo.save(
+                Student(
+                        idNumber = "12345AB",
+                        account = initAccount()
+                )
+        )
+
+        mockMvc.perform(put("/student/card")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                        """
+                            {
+                                "idNumber": "${student.idNumber}",
+                                "cardSecret": "very fast"
+                            }
+                        """.trimIndent()))
+                .andDo {
+                    println("req bod len: ${it.request.contentLength}")
+                }
+                .andExpect(MockMvcResultMatchers.status().isOk)
+
+        assertEquals("very fast", studentRepo.findById(student.id).get().cardSecret)
+
+        mockMvc.perform(put("/student/card")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                """{
+                    "idNumber": "${student.idNumber}",
+                    "cardSecret": "very slow"
+                }""".trimIndent()
+                ))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+
+        assertEquals("very slow", studentRepo.findById(student.id).get().cardSecret)
     }
 }

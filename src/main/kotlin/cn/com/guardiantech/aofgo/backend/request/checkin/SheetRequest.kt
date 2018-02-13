@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull
  */
 @NoArg
 class SheetRequest(
-        @NotNull
+        @field:NotNull
         val name: String,
         val groups: Array<String> = arrayOf()
 )

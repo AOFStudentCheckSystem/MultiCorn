@@ -1,5 +1,9 @@
 server:
   port: 9080
+#management:
+#  context-path: /spring-manage
+#  security:
+#    enabled: false
 spring:
   application:
     name: aofgo-backend
@@ -10,19 +14,24 @@ spring:
       ddl-auto: ${dbmode:validate}
     properties:
       hibernate:
+        connection:
+          CharSet: utf8mb4
+          characterEncoding: utf8
+          useUnicode: true
         dialect: org.hibernate.dialect.MySQL57InnoDBDialect
   datasource:
-    url: jdbc:mysql://${dbaddr:localhost}:${dbport:3306}/${dbname:aofgo}?useUnicode=yes&characterEncoding=UTF-8&useSSL=${useSSL:false}
+    url: jdbc:mysql://${dbaddr:mysql}:${dbport:3306}/${dbname:aofgo}?useUnicode=yes&characterEncoding=UTF-8&useSSL=${useSSL:false}
     username: ${dbuser}
     password: ${dbpass}
     dbcp2:
       test-while-idle: true
-      validation-query: SELECT 1
-    driver-class-name: com.mysql.cj.jdbc.Driver
+      validation-query: SET NAMES utf8mb4
+    driver-class-name: com.mysql.jdbc.Driver
     platform: mysql
+    initSQL: "SET NAMES 'utf8mb4'"
   mail:
     from: "AOF Activity Sign-up<signups@233.com.hk>"
-    host: hn2.guardiantech.com.cn
+    host: mail.codetector.cn
     protocol: smtps
     port: 587
     username: ${smtpusr:signups@233.com.hk}
