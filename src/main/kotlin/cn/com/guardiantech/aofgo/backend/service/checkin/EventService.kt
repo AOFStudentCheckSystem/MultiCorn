@@ -2,12 +2,13 @@ package cn.com.guardiantech.aofgo.backend.service.checkin
 
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
+import cn.com.guardiantech.aofgo.backend.data.entity.email.EmailTemplateTypeEnum
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRecordRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventSendEmailRequest
 import cn.com.guardiantech.aofgo.backend.service.email.EmailService
-import cn.com.guardiantech.aofgo.backend.service.email.MailTemplateFactory
+import cn.com.guardiantech.aofgo.backend.service.email.EmailTemplatingService
 import cn.com.guardiantech.aofgo.backend.util.isValidEmailAddress
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -26,7 +27,8 @@ import kotlin.NoSuchElementException
 class EventService @Autowired constructor(
         private val eventRepository: EventRepository,
         private val eventRecordRepository: EventRecordRepository,
-        private val mailService: EmailService
+        private val mailService: EmailService,
+        private val emailTemplatingService: EmailTemplatingService
 ) {
 
     @Transactional
@@ -112,29 +114,35 @@ class EventService @Autowired constructor(
         if (event.eventStatus.status < 2) {
             throw IllegalArgumentException("Only completed events is allowed to compile a result list")
         }
-        val template = MailTemplateFactory.createTemplateByFileName("eventNotify")
-
-        val emailContent = ArrayList<String>()
-        eventRecordRepository.findByEvent(event).filter { it.checkInTime > 0 }.sortedWith(kotlin.Comparator { o1, o2 ->
-            if (o1.student.account != null && o2.student.account != null) {
-                o1.student.account!!.lastName.compareTo(o2.student.account!!.lastName, true)
-            }
-            TODO("Student without account?")
-        }).forEach {
-            val sb = StringBuilder()
-            sb.append(it.student.account!!.preferredName)
-                    .append(" ")
-                    .append(it.student.account!!.lastName)
-                    .append(" - ")
-                    .append(it.student.dorm)
-            emailContent.add(sb.toString())
+        val compiledTemplate = mailService.defaultTemplate[EmailTemplateTypeEnum.CHECKIN].let {
+            emailTemplatingService.compileTemplate(
+                    template = it!!,
+                    values = mutableMapOf<String, Any>().let {
+                        val emailContent = ArrayList<String>()
+                        eventRecordRepository.findByEvent(event).filter { it.checkInTime > 0 }.sortedWith(kotlin.Comparator { o1, o2 ->
+                            if (o1.student.account != null && o2.student.account != null) {
+                                o1.student.account!!.lastName.compareTo(o2.student.account!!.lastName, true)
+                            }
+                            TODO("Student without account?")
+                        }).forEach {
+                            val sb = StringBuilder()
+                            sb.append(it.student.account!!.preferredName)
+                                    .append(" ")
+                                    .append(it.student.account!!.lastName)
+                                    .append(" - ")
+                                    .append(it.student.dorm)
+                            emailContent.add(sb.toString())
+                        }
+                        it["eventName"] = event.eventName
+                        it["count"] = emailContent.size.toString()
+                        it["studentList"] = emailContent
+                        it["eventId"] = event.eventId
+                        it
+                    })
         }
-        template.setStringValue("eventName", event.eventName)
-        template.setStringValue("count", emailContent.size)
-        template.setListValue("studentList", emailContent)
-        template.setStringValue("eventId", event.eventId)
+
         Thread(Runnable {
-            mailService.sendMailWithTitle(template, event.eventName, request.address)
+            mailService.sendEmail(compiledTemplate.first, compiledTemplate.second, request.address)
         }).start()
     }
 }

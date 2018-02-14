@@ -29,7 +29,6 @@ class EmailService {
 
     private val logger: Logger = LoggerFactory.getLogger(EmailService::class.java)
 
-
     @Value("\${spring.mail.from:}")
     lateinit var from: String
 
@@ -45,29 +44,18 @@ class EmailService {
     @Autowired
     lateinit var emailTemplateVariableRepository: EmailTemplateVariableRepository
 
-    var defaultTemplate: MutableMap<EmailTemplateTypeEnum, Pair<String, String>> = mutableMapOf()
+    var defaultTemplate: MutableMap<EmailTemplateTypeEnum, EmailTemplate> = mutableMapOf()
 
-//    fun sendMail(templateName: String, values: HashMap<String, String>, vararg recipients: String) {
-//        val template = MailTemplateFactory.createTemplateByFileName(if (templateName.endsWith(".template", true)) templateName else templateName + ".template")
-//        values.forEach {
-//            template.setStringValue(it.key, it.value)
-//        }
-//        sendMail(template, *recipients)
-//    }
-
-    fun sendMailWithTitle(template: MailTemplate, title: String, vararg recipients: String) {
-        val msg = mailSender.createMimeMessage()
-        msg.setFrom(from)
-        msg.subject = title
-        msg.setText(template.encode(), "utf-8", "html")
-        recipients.mapTo(HashSet<Address>(), ::InternetAddress).forEach {
-            msg.addRecipient(Message.RecipientType.TO, it)
-        }
-        mailSender.send(msg)
-    }
-
-    fun sendEmail(type: EmailTemplateTypeEnum, values: Map<String, Any>) {
-
+    fun sendEmail(title: String, body: String, vararg recipients: String) {
+        mailSender.send(mailSender.createMimeMessage().let { msg ->
+            msg.setFrom(from)
+            msg.subject = title
+            msg.setText(body, "utf-8", "html")
+            recipients.mapTo(HashSet<Address>(), ::InternetAddress).forEach {
+                msg.addRecipient(Message.RecipientType.TO, it)
+            }
+            msg
+        })
     }
 
     @Transactional
@@ -159,11 +147,16 @@ class EmailService {
     }
 
     private fun setDefaultTemplate(template: EmailTemplate) {
-        defaultTemplate[template.templateType.templateType] = Pair(template.title, template.body)
+        defaultTemplate[template.templateType.templateType] = template
     }
 
     private fun loadDefaultTemplate(type: EmailTemplateTypeEnum) {
-        defaultTemplate[type] = Pair(resrcToString("/template/${type.toString().toLowerCase()}/default_title"), resrcToString("/template/${type.toString().toLowerCase()}/default_body"))
+        defaultTemplate[type] = EmailTemplate(
+                name = "",
+                title = resrcToString("/template/${type.toString().toLowerCase()}/default_title"),
+                body = resrcToString("/template/${type.toString().toLowerCase()}/default_body"),
+                templateType = emailTemplateTypeRepository.findByTemplateType(type).get()
+        )
     }
 
     private fun resrcToString(path: String) =

@@ -9,7 +9,7 @@
         {{studentList}}
     </div>
     <div style="text-align:center;">
-        <a href="http://www.aofactivities.com">Cuddly System</a>
+        <a href="http://www.aofactivities.com">AOF Check-in System</a>
         <br>
         <a>{{eventId}}</a>
     </div>

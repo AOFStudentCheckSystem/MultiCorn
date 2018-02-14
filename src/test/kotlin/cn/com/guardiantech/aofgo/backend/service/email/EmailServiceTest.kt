@@ -32,13 +32,10 @@ class EmailServiceTest {
 
     @Autowired
     lateinit var emailService: EmailService
-
     @Autowired
     lateinit var emailTemplateRepository: EmailTemplateRepository
-
     @Autowired
     lateinit var emailTemplateTypeRepository: EmailTemplateTypeRepository
-
     @Autowired
     lateinit var emailTemplateVariableRepository: EmailTemplateVariableRepository
 

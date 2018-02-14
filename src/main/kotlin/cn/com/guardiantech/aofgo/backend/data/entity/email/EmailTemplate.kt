@@ -1,7 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.email
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import javax.persistence.*
 
 /**
