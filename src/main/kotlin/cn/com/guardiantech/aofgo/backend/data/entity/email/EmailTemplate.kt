@@ -13,11 +13,13 @@ class EmailTemplate (
         @GeneratedValue
         val id: Long = -1,
 
+        @Column(unique = true, name = "template_name")
+        val name: String,
+
         @ManyToOne
         @JoinColumn
         val templateType: EmailTemplateType,
 
-        @Column(unique = true)
         val title: String,
 
         @Lob

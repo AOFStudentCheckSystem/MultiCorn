@@ -1,18 +1,14 @@
 package cn.com.guardiantech.aofgo.backend.service.email
 
-import cn.com.guardiantech.aofgo.backend.controller.StudentController
-import cn.com.guardiantech.aofgo.backend.data.entity.email.EmailDefaultTemplate
-import cn.com.guardiantech.aofgo.backend.data.entity.email.EmailTemplate
-import cn.com.guardiantech.aofgo.backend.data.entity.email.EmailTemplateTypeEnum
-import cn.com.guardiantech.aofgo.backend.repository.email.EmailDefaultTemplateRepository
+import cn.com.guardiantech.aofgo.backend.data.entity.email.*
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateRepository
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateTypeRepository
+import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateVariableRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.DefaultResourceLoader
-import org.springframework.core.io.Resource
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -47,21 +43,17 @@ class EmailService {
     lateinit var emailTemplateTypeRepository: EmailTemplateTypeRepository
 
     @Autowired
-    lateinit var emailDefaultTemplateRepository: EmailDefaultTemplateRepository
+    lateinit var emailTemplateVariableRepository: EmailTemplateVariableRepository
 
     var defaultTemplate: MutableMap<EmailTemplateTypeEnum, Pair<String, String>> = mutableMapOf()
 
-    fun sendMail(templateName: String, values: HashMap<String, String>, vararg recipients: String) {
-        val template = MailTemplateFactory.createTemplateByFileName(if (templateName.endsWith(".template", true)) templateName else templateName + ".template")
-        values.forEach {
-            template.setStringValue(it.key, it.value)
-        }
-        sendMail(template, *recipients)
-    }
-
-    fun sendMail(template: MailTemplate, vararg recipients: String) {
-        sendMailWithTitle(template, "AOF Check In System", *recipients)
-    }
+//    fun sendMail(templateName: String, values: HashMap<String, String>, vararg recipients: String) {
+//        val template = MailTemplateFactory.createTemplateByFileName(if (templateName.endsWith(".template", true)) templateName else templateName + ".template")
+//        values.forEach {
+//            template.setStringValue(it.key, it.value)
+//        }
+//        sendMail(template, *recipients)
+//    }
 
     fun sendMailWithTitle(template: MailTemplate, title: String, vararg recipients: String) {
         val msg = mailSender.createMimeMessage()
@@ -74,8 +66,12 @@ class EmailService {
         mailSender.send(msg)
     }
 
+    fun sendEmail(type: EmailTemplateTypeEnum, values: Map<String, Any>) {
+
+    }
+
     @Transactional
-    fun submitTemplate(type: EmailTemplateTypeEnum, title: String, body: String): EmailTemplate {
+    fun submitTemplate(name: String, type: EmailTemplateTypeEnum, title: String, body: String): EmailTemplate {
         val templateType = emailTemplateTypeRepository.findByTemplateType(type).get()
 
         val setFound = Pattern.compile("\\{\\{ *([0-9A-Za-z]+) *}}").let {
@@ -96,7 +92,8 @@ class EmailService {
             return emailTemplateRepository.save(EmailTemplate(
                     templateType = templateType,
                     title = title,
-                    body = body
+                    body = body,
+                    name = name
             ))
         }
 
@@ -105,10 +102,30 @@ class EmailService {
 
     @PostConstruct
     fun initialize() {
-        val checkinDefault = emailDefaultTemplateRepository.findByTemplateType(EmailTemplateTypeEnum.CHECKIN)
+        val checkinDefault = emailTemplateTypeRepository.findByTemplateType(EmailTemplateTypeEnum.CHECKIN)
         val gotCheckin = if (!checkinDefault.isPresent) {
-            emailDefaultTemplateRepository.save(EmailDefaultTemplate(
-                    templateType = EmailTemplateTypeEnum.CHECKIN
+            emailTemplateTypeRepository.save(EmailTemplateType(
+                    templateType = EmailTemplateTypeEnum.CHECKIN,
+                    variables = emailTemplateVariableRepository.save(
+                            setOf(
+                                    EmailTemplateVariable(
+                                            name = "eventName",
+                                            type = EmailTemplateVariableType.STRING
+                                    ),
+                                    EmailTemplateVariable(
+                                            name = "count",
+                                            type = EmailTemplateVariableType.STRING
+                                    ),
+                                    EmailTemplateVariable(
+                                            name = "studentList",
+                                            type = EmailTemplateVariableType.LIST
+                                    ),
+                                    EmailTemplateVariable(
+                                            name = "eventId",
+                                            type = EmailTemplateVariableType.STRING
+                                    )
+                            )
+                    ).toMutableSet()
             ))
         } else {
             checkinDefault.get()

@@ -69,14 +69,14 @@ class EmailServiceTest {
         assertEquals(2, checkin.variables.size)
         assertEquals(2, emailTemplateTypeRepository.findAll().first().variables.size)
 
-        emailService.submitTemplate(checkin.templateType, "This is a test", "This should pass {{001}} the {{ test }}")
+        emailService.submitTemplate("a", checkin.templateType, "This is a test", "This should pass {{001}} the {{ test }}")
         assertEquals(1, emailTemplateRepository.count())
 
-        emailService.submitTemplate(checkin.templateType, "This is a {{ 001 }}{{", "g}}This should also pass the {{ test }}")
+        emailService.submitTemplate("b", checkin.templateType, "This is a {{ 001 }}{{", "g}}This should also pass the {{ test }}")
         assertEquals(2, emailTemplateRepository.count())
 
         try {
-            emailService.submitTemplate(checkin.templateType, "This is a test3", "This should not pass the test {{001}}")
+            emailService.submitTemplate("c", checkin.templateType, "This is a test3", "This should not pass the test {{001}}")
             fail()
         } catch (e: IllegalArgumentException) {
             assertEquals("Invalid", e.message)

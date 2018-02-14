@@ -14,7 +14,11 @@ class EmailTemplateType(
         val templateType: EmailTemplateTypeEnum,
 
         @OneToMany(mappedBy = "master", orphanRemoval = true, fetch = FetchType.EAGER)
-        val variables: MutableSet<EmailTemplateVariable> = mutableSetOf()
+        val variables: MutableSet<EmailTemplateVariable> = mutableSetOf(),
+
+        @OneToOne
+        @JoinColumn
+        val defaultTemplate: EmailTemplate? = null
 ) {
     fun addVariable(variable: EmailTemplateVariable) {
         variables.add(variable)
