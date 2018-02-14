@@ -1,5 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.email
 
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.*
 
 /**
@@ -10,6 +12,7 @@ import javax.persistence.*
 class EmailTemplateVariable (
         @Id
         @GeneratedValue
+        @JsonIgnore
         val id: Long = -1,
 
         @Column
@@ -21,5 +24,6 @@ class EmailTemplateVariable (
 ) {
         @ManyToOne
         @JoinColumn
+        @JsonBackReference
         lateinit var master: EmailTemplateType
 }

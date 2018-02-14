@@ -100,6 +100,25 @@ class EmailService {
         throw IllegalArgumentException("Invalid")
     }
 
+    @Transactional
+    fun appointDefaultTemplate(name: String?, type: EmailTemplateTypeEnum) {
+        if (name != null) {
+            val foundTemplate = emailTemplateRepository.findByNameAndTemplateType(name, type).get()
+            foundTemplate.templateType.let {
+                it.defaultTemplate = foundTemplate
+                emailTemplateTypeRepository.save(it)
+            }
+            setDefaultTemplate(foundTemplate)
+        } else {
+            emailTemplateTypeRepository.findByTemplateType(type).get().let {
+                it.defaultTemplate = null
+                emailTemplateTypeRepository.save(it)
+            }
+            loadDefaultTemplate(type)
+        }
+
+    }
+
     @PostConstruct
     fun initialize() {
         val checkinDefault = emailTemplateTypeRepository.findByTemplateType(EmailTemplateTypeEnum.CHECKIN)
@@ -130,16 +149,25 @@ class EmailService {
         } else {
             checkinDefault.get()
         }
-        defaultTemplate[EmailTemplateTypeEnum.CHECKIN] = if (gotCheckin.defaultTemplate !== null){
-            Pair(gotCheckin.defaultTemplate.title, gotCheckin.defaultTemplate.body)
+        if (gotCheckin.defaultTemplate !== null) {
+            setDefaultTemplate(gotCheckin.defaultTemplate!!)
         } else {
-            Pair(resrcToString("/template/checkin/default_title"), resrcToString("/template/checkin/default_body"))
+            loadDefaultTemplate(EmailTemplateTypeEnum.CHECKIN)
         }
 
         logger.debug("Active templates:" + defaultTemplate.toString())
     }
 
-    private fun resrcToString(path: String) = DefaultResourceLoader()
-            .getResource(path)
-            .inputStream.bufferedReader().use { it.readText() }
+    private fun setDefaultTemplate(template: EmailTemplate) {
+        defaultTemplate[template.templateType.templateType] = Pair(template.title, template.body)
+    }
+
+    private fun loadDefaultTemplate(type: EmailTemplateTypeEnum) {
+        defaultTemplate[type] = Pair(resrcToString("/template/${type.toString().toLowerCase()}/default_title"), resrcToString("/template/${type.toString().toLowerCase()}/default_body"))
+    }
+
+    private fun resrcToString(path: String) =
+            DefaultResourceLoader()
+                    .getResource(path)
+                    .inputStream.bufferedReader().use { it.readText() }
 }

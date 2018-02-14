@@ -1,5 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.email
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import javax.persistence.*
 
 /**
@@ -14,11 +16,13 @@ class EmailTemplateType(
         val templateType: EmailTemplateTypeEnum,
 
         @OneToMany(mappedBy = "master", orphanRemoval = true, fetch = FetchType.EAGER)
+        @JsonManagedReference
         val variables: MutableSet<EmailTemplateVariable> = mutableSetOf(),
 
-        @OneToOne
+        @OneToOne(cascade = [(CascadeType.DETACH)])
         @JoinColumn
-        val defaultTemplate: EmailTemplate? = null
+        @JsonIgnore
+        var defaultTemplate: EmailTemplate? = null
 ) {
     fun addVariable(variable: EmailTemplateVariable) {
         variables.add(variable)
