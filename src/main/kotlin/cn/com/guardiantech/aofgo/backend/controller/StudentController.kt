@@ -7,12 +7,10 @@ import cn.com.guardiantech.aofgo.backend.exception.ControllerException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
-import cn.com.guardiantech.aofgo.backend.request.student.ImportStudentRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import javassist.NotFoundException
-import org.hibernate.engine.jdbc.spi.SqlExceptionHelper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,15 +18,10 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
-import java.io.FileOutputStream
-import java.io.BufferedOutputStream
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
-import java.io.File
-import java.io.InputStream
 import java.sql.SQLException
-import javax.validation.ConstraintViolationException
 
 
 @RestController

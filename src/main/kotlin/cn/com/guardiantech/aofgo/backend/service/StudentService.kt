@@ -10,10 +10,6 @@ import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import com.opencsv.CSVParser
 import com.opencsv.CSVReader
-import com.opencsv.bean.ColumnPositionMappingStrategy
-import com.opencsv.bean.CsvToBean
-import com.opencsv.bean.CsvToBeanBuilder
-import com.opencsv.bean.HeaderColumnNameMappingStrategy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
