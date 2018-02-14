@@ -106,7 +106,7 @@ class StudentController @Autowired constructor(
     @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
     @PostMapping("/import")
     @ResponseBody
-    fun handleFileUpload(
+    fun importStudentsFromCsv(
             @RequestParam("file") file: MultipartFile) = try {
         val fileStream = file.inputStream
         studentService.importStudentsFromCsv(fileStream)
