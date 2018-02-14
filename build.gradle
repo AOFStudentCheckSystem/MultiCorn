@@ -92,6 +92,8 @@ dependencies {
 
     compile group: 'com.google.guava', name: 'guava', version: '23.0'
 
+    compile "com.opencsv:opencsv:4.0"
+
     // Logging
     compile "org.apache.logging.log4j:log4j-api:$log4j2Version",
             "org.apache.logging.log4j:log4j-core:$log4j2Version",

@@ -2,18 +2,28 @@ package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
+import cn.com.guardiantech.aofgo.backend.data.entity.Gender
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
+import com.opencsv.CSVParser
+import com.opencsv.CSVReader
+import com.opencsv.bean.ColumnPositionMappingStrategy
+import com.opencsv.bean.CsvToBean
+import com.opencsv.bean.CsvToBeanBuilder
+import com.opencsv.bean.HeaderColumnNameMappingStrategy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.io.*
 
 @Service
 class StudentService @Autowired constructor(
         private val studentRepo: StudentRepository,
-        private val accountService: AccountService
+        private val accountService: AccountService,
+        private val accountRepo: AccountRepository
 ) {
     /**
      * Failed to save student due to conflict
@@ -99,4 +109,46 @@ class StudentService @Autowired constructor(
                 it.cardSecret = cardSecret
                 studentRepo.save(it)
             }
+
+    @Transactional
+    fun importStudentsFromCsv(csvContent: InputStream): List<Student> {
+        var csvReader: CSVReader = CSVReader((InputStreamReader(csvContent)), CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
+        var studentArrayList: ArrayList<Student> = arrayListOf()
+        var records: List<Array<String>> = csvReader.readAll()
+
+        for (record: Array<String> in records) {
+            val newAccount: Account = accountRepo.save(
+                    Account(
+                            firstName = record[4],
+                            lastName = record[7],
+                            email = record[3],
+                            phone = null,
+                            type = AccountType.STUDENT,
+                            preferredName = record[8],
+                            subject = null
+                    )
+            )
+
+            var processedCardSecret: String? = null
+            if (record[1] == "NULL") {
+            } else {
+                processedCardSecret = record[1]
+            }
+
+            studentArrayList.add(Student(
+                    idNumber = record[6],
+                    cardSecret = processedCardSecret,
+                    grade = record[5].toInt(),
+                    dateOfBirth = null,
+                    gender = Gender.MALE,
+                    dorm = record[2],
+                    dormInfo = null,
+                    account = newAccount
+            ))
+        }
+        for (student: Student in studentArrayList) {
+            studentRepo.save(student)
+        }
+        return studentArrayList
+    }
 }

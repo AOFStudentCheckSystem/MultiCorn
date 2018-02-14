@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.data.entity
 
 import java.util.*
+import javax.annotation.Nullable
 import javax.persistence.*
 
 @Entity

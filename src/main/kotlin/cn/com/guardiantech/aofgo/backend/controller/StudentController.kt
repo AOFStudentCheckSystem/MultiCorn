@@ -7,6 +7,7 @@ import cn.com.guardiantech.aofgo.backend.exception.ControllerException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
+import cn.com.guardiantech.aofgo.backend.request.student.ImportStudentRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
@@ -18,6 +19,14 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
+import java.io.FileOutputStream
+import java.io.BufferedOutputStream
+import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
+import java.io.File
+import java.io.InputStream
+
 
 @RestController
 @RequestMapping("/student")
@@ -94,4 +103,23 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student")
     }
 
+    //    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
+//    @PostMapping("/import")
+//    fun importStudents(@RequestBody request: ImportStudentRequest): Student = try {
+//        studentService.importStudentsFromCsv(request.csvContent.toString())
+//    } catch (e: Throwable) {
+//        throw RepositoryException("Failed to import student")
+//    }
+//}
+//    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
+    @PostMapping("/import")
+    @ResponseBody
+    fun handleFileUpload(
+            @RequestParam("file") file: MultipartFile): List<Student> = try {
+        val fileStream = file.inputStream
+        studentService.importStudentsFromCsv(fileStream)
+    } catch (e: Throwable) {
+        e.printStackTrace()
+        throw RepositoryException("Failed to save student")
+    }
 }
