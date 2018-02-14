@@ -9,7 +9,6 @@ import cn.com.guardiantech.aofgo.backend.jsonview.EventView
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventSendEmailRequest
 import cn.com.guardiantech.aofgo.backend.service.checkin.EventService
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonView
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
