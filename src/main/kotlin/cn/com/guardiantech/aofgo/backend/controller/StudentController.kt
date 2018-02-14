@@ -103,15 +103,7 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student")
     }
 
-    //    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
-//    @PostMapping("/import")
-//    fun importStudents(@RequestBody request: ImportStudentRequest): Student = try {
-//        studentService.importStudentsFromCsv(request.csvContent.toString())
-//    } catch (e: Throwable) {
-//        throw RepositoryException("Failed to import student")
-//    }
-//}
-//    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
+    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
     @PostMapping("/import")
     @ResponseBody
     fun handleFileUpload(
