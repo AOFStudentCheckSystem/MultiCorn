@@ -14,34 +14,15 @@ class EmailTemplateType(
         val templateType: EmailTemplateTypeEnum,
 
         @OneToMany(mappedBy = "master", orphanRemoval = true, fetch = FetchType.EAGER)
-        val titleVariables: MutableSet<EmailTemplateVariable> = mutableSetOf(),
-
-        @OneToMany(mappedBy = "master", orphanRemoval = true, fetch = FetchType.EAGER)
-        val bodyVariables: MutableSet<EmailTemplateVariable> = mutableSetOf()
+        val variables: MutableSet<EmailTemplateVariable> = mutableSetOf()
 ) {
-    fun addBodyVariable(variable: EmailTemplateVariable) {
-        bodyVariables.add(variable)
-        variable.master = this
+    fun addVariable(variable: EmailTemplateVariable) {
+        variables.add(variable)
     }
 
-    fun addTitleVariable(variable: EmailTemplateVariable) {
-        titleVariables.add(variable)
-        variable.master = this
-    }
-
-    fun getBodyVariableMapping(repeatKeyCheck: Boolean = true): MutableMap<String, EmailTemplateVariableType> {
+    fun getVariableMapping(repeatKeyCheck: Boolean = true): MutableMap<String, EmailTemplateVariableType> {
         return mutableMapOf<String, EmailTemplateVariableType>().let { map ->
-            bodyVariables.forEach {
-                if (map.containsKey(it.name) && repeatKeyCheck) throw IllegalArgumentException("Repeat Key: ${it.name}")
-                map[it.name] = it.type
-            }
-            map
-        }
-    }
-
-    fun getTitleVariableMapping(repeatKeyCheck: Boolean = true): MutableMap<String, EmailTemplateVariableType> {
-        return mutableMapOf<String, EmailTemplateVariableType>().let { map ->
-            titleVariables.forEach {
+            variables.forEach {
                 if (map.containsKey(it.name) && repeatKeyCheck) throw IllegalArgumentException("Repeat Key: ${it.name}")
                 map[it.name] = it.type
             }

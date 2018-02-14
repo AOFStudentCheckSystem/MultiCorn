@@ -15,10 +15,10 @@ import javax.mail.Address
 import javax.mail.Message
 import javax.mail.internet.InternetAddress
 
-        /**
-         * Created by Codetector on 2017/4/12.
-         * Project backend
-         */
+/**
+ * Created by Codetector on 2017/4/12.
+ * Project backend
+ */
 
 @Service
 class EmailService {
@@ -61,37 +61,28 @@ class EmailService {
     fun submitTemplate(type: EmailTemplateTypeEnum, title: String, body: String): EmailTemplate {
         val templateType = emailTemplateTypeRepository.findEmailTemplateTypeByTemplateType(type).get()
 
-        val titleError = validateTemplate(title, templateType.titleVariables)
-        if (titleError.isNotBlank()) throw IllegalArgumentException("Title $titleError")
-
-        val bodyError = validateTemplate(body, templateType.bodyVariables)
-        if (bodyError.isNotBlank()) throw IllegalArgumentException("Body $bodyError")
-
-        return emailTemplateRepository.save(EmailTemplate(
-                templateType = templateType,
-                title = title,
-                body = body
-        ))
-    }
-
-    private fun validateTemplate(str: String, variables: MutableSet<EmailTemplateVariable>): String {
-        val listFound = Pattern.compile("\\{\\{ *([0-9A-Za-z]+) *}}").matcher(str).let {
-            val list = mutableListOf<String>()
-            while (it.find()) {
-                list.add(it.group(1))
+        val setFound = Pattern.compile("\\{\\{ *([0-9A-Za-z]+) *}}").let {
+            val set = mutableSetOf<String>()
+            it.matcher(title).let {
+                while (it.find()) {
+                    set.add(it.group(1))
+                }
             }
-            list
+            it.matcher(body).let {
+                while (it.find()) {
+                    set.add(it.group(1))
+                }
+            }
+            set
         }
-        val setFound = listFound.toSet()
-        if (listFound.size > setFound.size) {
-            // Duplicate names
-            return "has duplicate names"
+        if (setFound == templateType.variables.map { it.name }.toSet()) {
+            return emailTemplateRepository.save(EmailTemplate(
+                    templateType = templateType,
+                    title = title,
+                    body = body
+            ))
         }
-        val standardSet = variables.map { it.name }.toSet()
-        return if (setFound == standardSet) {
-            ""
-        } else {
-            "is invalid"
-        }
+
+        throw IllegalArgumentException("Invalid")
     }
 }
