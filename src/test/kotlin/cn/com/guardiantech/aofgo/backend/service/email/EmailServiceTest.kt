@@ -52,7 +52,7 @@ class EmailServiceTest {
         val checkin = emailTemplateTypeRepository.save(
                 EmailTemplateType(
                         templateType = EmailTemplateTypeEnum.CHECKIN,
-                        variables = emailTemplateVariableRepository.save(
+                        bodyVariables = emailTemplateVariableRepository.save(
                                 setOf(
                                         EmailTemplateVariable(
                                                 name = "test",
@@ -66,8 +66,8 @@ class EmailServiceTest {
                         ).toMutableSet()
                 )
         )
-        assertEquals(2, checkin.variables.size)
-        assertEquals(2, emailTemplateTypeRepository.findAll().first().variables.size)
+        assertEquals(2, checkin.bodyVariables.size)
+        assertEquals(2, emailTemplateTypeRepository.findAll().first().bodyVariables.size)
 
         emailService.submitTemplate(checkin.templateType, "This is a test", "This should pass {{001}} the {{ test }}")
         assertEquals(1, emailTemplateRepository.count())
@@ -76,14 +76,14 @@ class EmailServiceTest {
             emailService.submitTemplate(checkin.templateType, "This is a test2", "This should not pass the {{ test }} {{ test }}")
             fail()
         } catch (e: IllegalArgumentException) {
-            assertEquals("Duplicate names", e.message)
+            assertEquals("Body has duplicate names", e.message)
         }
 
         try {
             emailService.submitTemplate(checkin.templateType, "This is a test3", "This should not pass the test {{001}}")
             fail()
         } catch (e: IllegalArgumentException) {
-            assertEquals("Invalid", e.message)
+            assertEquals("Body is invalid", e.message)
         }
     }
 }
