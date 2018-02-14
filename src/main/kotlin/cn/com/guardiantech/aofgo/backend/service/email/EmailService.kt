@@ -18,7 +18,6 @@ import javax.annotation.PostConstruct
 import javax.mail.Address
 import javax.mail.Message
 import javax.mail.internet.InternetAddress
-import javax.persistence.EntityManager
 
 
 /**
@@ -41,10 +40,8 @@ class EmailService {
     lateinit var emailTemplateTypeRepository: EmailTemplateTypeRepository
     @Autowired
     lateinit var emailTemplateVariableRepository: EmailTemplateVariableRepository
-    @Autowired
-    lateinit var entityManager: EntityManager
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
+
+    var objectMapper = ObjectMapper()
 
     var defaultTemplate: MutableMap<EmailTemplateTypeEnum, EmailTemplate> = mutableMapOf()
 
