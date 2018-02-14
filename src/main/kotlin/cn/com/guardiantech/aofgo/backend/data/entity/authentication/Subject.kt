@@ -1,7 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.authentication
 
 import cn.com.guardiantech.aofgo.backend.jsonview.SubjectView
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonView

@@ -9,7 +9,7 @@ import javax.persistence.*
  */
 
 @Entity
-class EmailTemplate (
+class EmailTemplate(
         @Id
         @GeneratedValue
         @JsonIgnore

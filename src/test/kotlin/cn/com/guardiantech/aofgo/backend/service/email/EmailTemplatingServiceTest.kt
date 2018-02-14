@@ -6,9 +6,8 @@ import cn.com.guardiantech.aofgo.backend.data.entity.email.*
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateRepository
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateTypeRepository
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateVariableRepository
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -70,8 +69,8 @@ class EmailTemplatingServiceTest {
 
         val compiledPair = emailTemplatingService.compileTemplate(checkin, mutableMapOf<String, Any>().let {
             it["test"] = "www"
-            it["001"] = mutableSetOf("a","b")
-            it["a"] = Pair("a","b")
+            it["001"] = mutableSetOf("a", "b")
+            it["a"] = Pair("a", "b")
             it
         })
         assertEquals("This is a www", compiledPair.first)

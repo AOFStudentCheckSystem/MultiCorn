@@ -4,6 +4,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.email.*
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateRepository
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateTypeRepository
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateVariableRepository
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,6 +18,7 @@ import javax.annotation.PostConstruct
 import javax.mail.Address
 import javax.mail.Message
 import javax.mail.internet.InternetAddress
+import javax.persistence.EntityManager
 
 
 /**
@@ -31,18 +33,18 @@ class EmailService {
 
     @Value("\${spring.mail.from:}")
     lateinit var from: String
-
     @Autowired
     lateinit var mailSender: JavaMailSender
-
     @Autowired
     lateinit var emailTemplateRepository: EmailTemplateRepository
-
     @Autowired
     lateinit var emailTemplateTypeRepository: EmailTemplateTypeRepository
-
     @Autowired
     lateinit var emailTemplateVariableRepository: EmailTemplateVariableRepository
+    @Autowired
+    lateinit var entityManager: EntityManager
+    @Autowired
+    lateinit var objectMapper: ObjectMapper
 
     var defaultTemplate: MutableMap<EmailTemplateTypeEnum, EmailTemplate> = mutableMapOf()
 
@@ -107,43 +109,69 @@ class EmailService {
 
     }
 
+    /**
+     *  A TemplateType will be regenerate when variables whenever its saved variables is different from initialization code!
+     */
     @PostConstruct
     fun initialize() {
         val checkinDefault = emailTemplateTypeRepository.findByTemplateType(EmailTemplateTypeEnum.CHECKIN)
-        val gotCheckin = if (!checkinDefault.isPresent) {
-            emailTemplateTypeRepository.save(EmailTemplateType(
-                    templateType = EmailTemplateTypeEnum.CHECKIN,
-                    variables = emailTemplateVariableRepository.save(
-                            setOf(
-                                    EmailTemplateVariable(
-                                            name = "eventName",
-                                            type = EmailTemplateVariableType.STRING
-                                    ),
-                                    EmailTemplateVariable(
-                                            name = "count",
-                                            type = EmailTemplateVariableType.STRING
-                                    ),
-                                    EmailTemplateVariable(
-                                            name = "studentList",
-                                            type = EmailTemplateVariableType.LIST
-                                    ),
-                                    EmailTemplateVariable(
-                                            name = "eventId",
-                                            type = EmailTemplateVariableType.STRING
-                                    )
-                            )
-                    ).toMutableSet()
-            ))
-        } else {
+        val templateVariableSet = setOf(
+                EmailTemplateVariable(
+                        name = "eventName",
+                        type = EmailTemplateVariableType.STRING
+                ),
+                EmailTemplateVariable(
+                        name = "count",
+                        type = EmailTemplateVariableType.STRING
+                ),
+                EmailTemplateVariable(
+                        name = "studentList",
+                        type = EmailTemplateVariableType.LIST
+                ),
+                EmailTemplateVariable(
+                        name = "eventId",
+                        type = EmailTemplateVariableType.STRING
+                )
+        )
+        var variablesValid = false
+        var gotCheckin = if (checkinDefault.isPresent) {
+            checkinDefault.get().let {
+                variablesValid = it.variables.map {
+                    Pair(it.name, it.type)
+                }.toSet() == templateVariableSet.map {
+                    Pair(it.name, it.type)
+                }.toSet()
+            }
             checkinDefault.get()
+        } else {
+            emailTemplateTypeRepository.save(EmailTemplateType(
+                    templateType = EmailTemplateTypeEnum.CHECKIN
+            ))
         }
+
+        logger.debug("CHECKIN variables valid: $variablesValid")
+        if (!variablesValid) {
+            gotCheckin = emailTemplateTypeRepository.save(
+                    gotCheckin.let {
+                        it.variables.clear()
+                        it
+                    }
+            )
+            templateVariableSet.let {
+                it.forEach {
+                    gotCheckin.addVariable(it)
+                }
+                emailTemplateVariableRepository.save(it)
+            }
+        }
+
         if (gotCheckin.defaultTemplate !== null) {
             setDefaultTemplate(gotCheckin.defaultTemplate!!)
         } else {
             loadDefaultTemplate(EmailTemplateTypeEnum.CHECKIN)
         }
 
-        logger.debug("Active templates:" + defaultTemplate.toString())
+        logger.debug("Active templates:" + objectMapper.writeValueAsString(defaultTemplate))
     }
 
     private fun setDefaultTemplate(template: EmailTemplate) {

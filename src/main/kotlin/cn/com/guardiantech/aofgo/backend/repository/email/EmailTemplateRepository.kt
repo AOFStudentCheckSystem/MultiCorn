@@ -9,7 +9,7 @@ import java.util.*
  * Created by dedztbh on 18-2-13.
  * Project AOFGoBackend
  */
-interface EmailTemplateRepository: CrudRepository<EmailTemplate, Long> {
+interface EmailTemplateRepository : CrudRepository<EmailTemplate, Long> {
     fun findByName(name: String): Optional<EmailTemplate>
     fun findByNameAndTemplateType(name: String, templateType: EmailTemplateTypeEnum): Optional<EmailTemplate>
 }

@@ -8,8 +8,8 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.jsonview.SubjectView
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountPageableRepository
-import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectPageableRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectPageableRepository
 import cn.com.guardiantech.aofgo.backend.request.account.AccountRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.admin.*
 import cn.com.guardiantech.aofgo.backend.service.AccountService
@@ -60,7 +60,8 @@ class AuthenticationAdminController @Autowired constructor(
     @PutMapping("/role")
     @Require(["ROLE_WRITE"])
     fun createRole(@RequestBody @Valid roleRequest: RoleRequest): Role {
-        return authorizationService.createRole(roleName = roleRequest.roleName, permissions_in = roleRequest.permissions ?: setOf())
+        return authorizationService.createRole(roleName = roleRequest.roleName, permissions_in = roleRequest.permissions
+                ?: setOf())
     }
 
     @DeleteMapping("/role/{roleName}")
@@ -172,23 +173,23 @@ class AuthenticationAdminController @Autowired constructor(
     @Require(["ACCOUNT_WRITE", "SUBJECT_WRITE"])
     @JsonView(SubjectView.AdminView::class)
     fun createAccountWithSubject(@RequestBody @Valid accountRequest: AccountRequest): Account =
-        try {
-            accountService.createAccount(accountRequest)
-        } catch (e: Throwable) {
-            //TODO: Finish Exception Handle
-            throw BadRequestException("naive request")
-        }
+            try {
+                accountService.createAccount(accountRequest)
+            } catch (e: Throwable) {
+                //TODO: Finish Exception Handle
+                throw BadRequestException("naive request")
+            }
 
     @PostMapping("/subject")
     @Require(["SUBJECT_WRITE"])
     @JsonView(SubjectView.AdminView::class)
     fun editSubjectSetRole(@RequestBody @Valid subjectEditRequest: SubjectEditRequest): Subject =
-        try {
-            authorizationService.editSubjectSetRole(subjectEditRequest)
-        } catch (e: Throwable) {
-            //TODO: Finish Exception Handle
-            throw BadRequestException("naive request")
-        }
+            try {
+                authorizationService.editSubjectSetRole(subjectEditRequest)
+            } catch (e: Throwable) {
+                //TODO: Finish Exception Handle
+                throw BadRequestException("naive request")
+            }
 
     @PostMapping("/account")
     @JsonView(SubjectView.BriefView::class)

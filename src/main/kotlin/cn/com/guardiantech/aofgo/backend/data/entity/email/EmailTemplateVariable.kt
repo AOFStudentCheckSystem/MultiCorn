@@ -9,7 +9,7 @@ import javax.persistence.*
  * Project AOFGoBackend
  */
 @Entity
-class EmailTemplateVariable (
+class EmailTemplateVariable(
         @Id
         @GeneratedValue
         @JsonIgnore
@@ -22,8 +22,8 @@ class EmailTemplateVariable (
         @Enumerated(EnumType.STRING)
         val type: EmailTemplateVariableType
 ) {
-        @ManyToOne
-        @JoinColumn
-        @JsonBackReference
-        lateinit var master: EmailTemplateType
+    @ManyToOne
+    @JoinColumn
+    @JsonBackReference
+    lateinit var master: EmailTemplateType
 }

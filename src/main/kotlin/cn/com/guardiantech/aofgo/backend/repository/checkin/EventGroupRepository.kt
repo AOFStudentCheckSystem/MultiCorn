@@ -13,7 +13,7 @@ import javax.transaction.Transactional
  * Created by Codetector on 2017/4/7.
  * Project backend
  */
-interface EventGroupRepository: PagingAndSortingRepository<EventGroup, Long> {
+interface EventGroupRepository : PagingAndSortingRepository<EventGroup, Long> {
     fun findById(id: Long): Optional<EventGroup>
 
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<EventGroup>

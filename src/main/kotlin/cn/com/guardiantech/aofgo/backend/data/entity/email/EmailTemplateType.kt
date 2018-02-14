@@ -15,7 +15,7 @@ class EmailTemplateType(
         @Enumerated(EnumType.STRING)
         val templateType: EmailTemplateTypeEnum,
 
-        @OneToMany(mappedBy = "master", orphanRemoval = true, fetch = FetchType.EAGER)
+        @OneToMany(mappedBy = "master", orphanRemoval = true, fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
         @JsonManagedReference
         val variables: MutableSet<EmailTemplateVariable> = mutableSetOf(),
 
@@ -26,6 +26,7 @@ class EmailTemplateType(
 ) {
     fun addVariable(variable: EmailTemplateVariable) {
         variables.add(variable)
+        variable.master = this
     }
 
     fun getVariableMapping(repeatKeyCheck: Boolean = true): MutableMap<String, EmailTemplateVariableType> {
