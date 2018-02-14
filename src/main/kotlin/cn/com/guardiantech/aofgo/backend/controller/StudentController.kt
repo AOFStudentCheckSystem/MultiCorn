@@ -2,10 +2,7 @@ package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
-import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
-import cn.com.guardiantech.aofgo.backend.exception.ControllerException
-import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
-import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
+import cn.com.guardiantech.aofgo.backend.exception.*
 import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
@@ -22,11 +19,16 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import java.sql.SQLException
+import org.springframework.web.util.WebUtils.getRealPath
+import java.io.File
+import javax.servlet.ServletContext
 
 
 @RestController
 @RequestMapping("/student")
 class StudentController @Autowired constructor(
+        @Autowired
+        val context: ServletContext,
         val studentService: StudentService,
         private val studentPagedRepository: StudentPagedRepository
 ) {
@@ -99,7 +101,7 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student")
     }
 
-    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
+    //    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
     @PostMapping("/import")
     @ResponseBody
     fun importStudentsFromCsv(
@@ -107,11 +109,8 @@ class StudentController @Autowired constructor(
         val fileStream = file.inputStream
         studentService.importStudentsFromCsv(fileStream)
     } catch (e: SQLException) {
-        e.printStackTrace()
-        if (e.errorCode == 1062 && e.sqlState == "23000") {
-            throw RepositoryException("Constraint violation; check for duplicate entries")
-        } else {
-            throw RepositoryException("Failed to save student; Got SQLException")
-        }
+        throw ImportBadConstraintException("Constraint violation; check for duplicate entries")
+    } catch (e: Throwable) {
+        throw RepositoryException("Failed to save students")
     }
 }

@@ -108,9 +108,8 @@ class StudentService @Autowired constructor(
 
     @Transactional
     fun importStudentsFromCsv(csvContent: InputStream) {
-        var csvReader: CSVReader = CSVReader((InputStreamReader(csvContent)), CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
-        var studentArrayList: ArrayList<Student> = arrayListOf()
-        var records: List<Array<String>> = csvReader.readAll()
+        val csvReader: CSVReader = CSVReader((InputStreamReader(csvContent)), CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
+        val records: List<Array<String>> = csvReader.readAll()
 
         for (record: Array<String> in records) {
             val newAccount: Account = accountRepo.save(
@@ -131,7 +130,7 @@ class StudentService @Autowired constructor(
                 processedCardSecret = record[1]
             }
 
-            studentArrayList.add(Student(
+            studentRepo.save(Student(
                     idNumber = record[6],
                     cardSecret = processedCardSecret,
                     grade = record[5].toInt(),
@@ -141,9 +140,6 @@ class StudentService @Autowired constructor(
                     dormInfo = null,
                     account = newAccount
             ))
-        }
-        for (student: Student in studentArrayList) {
-            studentRepo.save(student)
         }
     }
 }
