@@ -17,10 +17,12 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
-class AuthContextConfiguration: WebMvcConfigurerAdapter(), ApplicationContextAware {
+class AuthContextConfiguration : WebMvcConfigurerAdapter(), ApplicationContextAware {
 
-    @Autowired lateinit var authorizationService:AuthorizationService
-    @field:Value("\${auth.disableAuth:false}") var disableAuth:Boolean? = null
+    @Autowired
+    lateinit var authorizationService: AuthorizationService
+    @field:Value("\${auth.disableAuth:false}")
+    var disableAuth: Boolean? = null
 
 
     companion object {
@@ -56,7 +58,7 @@ class AuthContextConfiguration: WebMvcConfigurerAdapter(), ApplicationContextAwa
 
     @Autowired
     @Lazy
-    private lateinit var authContextHandlerInterceptor:AuthContextHandlerInterceptor
+    private lateinit var authContextHandlerInterceptor: AuthContextHandlerInterceptor
 
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
         argumentResolvers.add(AuthContextMethodArgumentResolver())

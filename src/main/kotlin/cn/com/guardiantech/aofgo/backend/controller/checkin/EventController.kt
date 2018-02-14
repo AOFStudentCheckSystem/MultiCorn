@@ -7,7 +7,7 @@ import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import cn.com.guardiantech.aofgo.backend.jsonview.EventView
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
-import cn.com.guardiantech.aofgo.backend.request.checkin.SendEmailRequest
+import cn.com.guardiantech.aofgo.backend.request.checkin.EventSendEmailRequest
 import cn.com.guardiantech.aofgo.backend.service.checkin.EventService
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonView
@@ -93,7 +93,7 @@ class EventController @Autowired constructor(
     //TODO: Judgement and dealing with Student without account
     @RequestMapping(path = ["/sendmail"], method = [RequestMethod.POST])
     @Require(["SEND_EMAIL"])
-    fun sendSummaryEmail(@RequestBody @Valid request: SendEmailRequest) = try {
+    fun sendSummaryEmail(@RequestBody @Valid request: EventSendEmailRequest) = try {
         eventService.sendSummaryEmail(request)
     } catch (e: IllegalArgumentException) {
         throw BadRequestException(e.message)

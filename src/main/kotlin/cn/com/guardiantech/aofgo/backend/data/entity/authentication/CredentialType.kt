@@ -6,5 +6,5 @@ package cn.com.guardiantech.aofgo.backend.data.entity.authentication
  */
 enum class CredentialType(val weight: Short) {
     PASSWORD(0b100000000000000),
-    TOTP(    0b000000000000001)
+    TOTP(0b000000000000001)
 }

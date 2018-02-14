@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse
 open class AuthContextHandlerInterceptor constructor(
         private val authenticationService: AuthenticationService,
         var disableAuth: Boolean = false
-): HandlerInterceptor {
+) : HandlerInterceptor {
 
     private val logger: Logger = LoggerFactory.getLogger(AuthContextHandlerInterceptor::class.java)
 

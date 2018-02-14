@@ -10,8 +10,8 @@ import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionReques
 import cn.com.guardiantech.aofgo.backend.request.checkin.CheckInSubmissionResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import unitDirection
 import org.springframework.transaction.annotation.Transactional
+import unitDirection
 
 /**
  * Created by dedztbh on 1/6/18.

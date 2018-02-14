@@ -398,7 +398,7 @@ class StudentControllerMvcTest {
                 })
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(
-                """{
+                        """{
                     "idNumber": "${student.idNumber}",
                     "cardSecret": "very slow"
                 }""".trimIndent()

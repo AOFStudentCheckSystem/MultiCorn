@@ -1,8 +1,5 @@
 package cn.com.guardiantech.aofgo.backend.configuration
 
-import org.apache.catalina.connector.Connector
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.EnableWebMvc

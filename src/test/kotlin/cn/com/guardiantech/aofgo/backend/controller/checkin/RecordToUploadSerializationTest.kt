@@ -1,7 +1,8 @@
 package cn.com.guardiantech.aofgo.backend.controller.checkin
 
 import cn.com.guardiantech.aofgo.backend.request.checkin.RecordToUpload
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -7,7 +7,7 @@ import cn.com.guardiantech.aofgo.backend.annotation.NoArg
  * Project AOFGoBackend
  */
 @NoArg
-data class SendEmailRequest(
+data class EventSendEmailRequest(
         val eventId: String,
         val address: String
 )

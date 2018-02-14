@@ -6,6 +6,6 @@ package cn.com.guardiantech.aofgo.backend.util
  */
 object ConfigurationUtil {
     fun getSystemProperty(name: String, default: String = ""): String {
-        return System.getProperty(name)?:default
+        return System.getProperty(name) ?: default
     }
 }

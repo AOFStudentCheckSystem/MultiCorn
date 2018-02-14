@@ -22,7 +22,7 @@ import kotlin.reflect.jvm.internal.impl.serialization.deserialization.Deserializ
  * Project AOFGoBackend
  */
 @Configuration
-class JacksonConfiguration: WebMvcConfigurerAdapter() {
+class JacksonConfiguration : WebMvcConfigurerAdapter() {
 
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>?) {
         val converter = MappingJackson2HttpMessageConverter()
