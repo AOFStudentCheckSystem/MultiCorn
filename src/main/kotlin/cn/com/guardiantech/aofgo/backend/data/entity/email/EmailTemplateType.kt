@@ -10,11 +10,16 @@ import javax.persistence.*
 @Entity
 class EmailTemplateType(
         @Id
-        val templateType: String,
+        @Enumerated(EnumType.STRING)
+        val templateType: EmailTemplateTypeEnum,
 
         @OneToMany(mappedBy = "master", orphanRemoval = true, fetch = FetchType.EAGER)
-        private val variables: MutableSet<EmailTemplateVariable>
+        val variables: MutableSet<EmailTemplateVariable> = mutableSetOf()
 ) {
+    fun addVariable(variable: EmailTemplateVariable) {
+        variables.add(variable)
+    }
+
     fun getVariableMapping(repeatKeyCheck: Boolean = true): MutableMap<String, EmailTemplateVariableType> {
         return mutableMapOf<String, EmailTemplateVariableType>().let { map ->
             variables.forEach {

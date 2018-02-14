@@ -1,4 +1,4 @@
-package cn.com.guardiantech.aofgo.backend.service.checkin.mail
+package cn.com.guardiantech.aofgo.backend.service.email
 
 class MailTemplate constructor(var templateContent: String) {
     var recipientAddress: String = ""

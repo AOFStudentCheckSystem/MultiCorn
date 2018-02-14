@@ -5,8 +5,9 @@ import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRecordRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
 import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
-import cn.com.guardiantech.aofgo.backend.request.checkin.SendEmailRequest
-import cn.com.guardiantech.aofgo.backend.service.checkin.mail.MailTemplateFactory
+import cn.com.guardiantech.aofgo.backend.request.checkin.EventSendEmailRequest
+import cn.com.guardiantech.aofgo.backend.service.email.EmailService
+import cn.com.guardiantech.aofgo.backend.service.email.MailTemplateFactory
 import cn.com.guardiantech.aofgo.backend.util.isValidEmailAddress
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -103,7 +104,7 @@ class EventService @Autowired constructor(
      * @throws NoSuchElementException Cannot find event
      * @throws IllegalArgumentException
      */
-    fun sendSummaryEmail(request: SendEmailRequest) {
+    fun sendSummaryEmail(request: EventSendEmailRequest) {
         if (!isValidEmailAddress(request.address)) {
             throw IllegalArgumentException("Invalid email address")
         }

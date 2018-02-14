@@ -17,9 +17,9 @@ class EmailTemplateVariable (
 
         @Column
         @Enumerated(EnumType.STRING)
-        val type: EmailTemplateVariableType,
-
+        val type: EmailTemplateVariableType
+) {
         @ManyToOne
         @JoinColumn
-        val master: EmailTemplateType
-)
+        lateinit var master: EmailTemplateType
+}

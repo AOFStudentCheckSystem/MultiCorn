@@ -1,4 +1,4 @@
-package cn.com.guardiantech.aofgo.backend.service.checkin.mail
+package cn.com.guardiantech.aofgo.backend.service.email
 
 import com.google.common.io.Resources
 import java.io.File
