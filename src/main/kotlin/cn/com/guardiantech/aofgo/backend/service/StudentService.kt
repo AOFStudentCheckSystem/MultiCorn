@@ -111,7 +111,7 @@ class StudentService @Autowired constructor(
             }
 
     @Transactional
-    fun importStudentsFromCsv(csvContent: InputStream): List<Student> {
+    fun importStudentsFromCsv(csvContent: InputStream) {
         var csvReader: CSVReader = CSVReader((InputStreamReader(csvContent)), CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
         var studentArrayList: ArrayList<Student> = arrayListOf()
         var records: List<Array<String>> = csvReader.readAll()
@@ -149,6 +149,5 @@ class StudentService @Autowired constructor(
         for (student: Student in studentArrayList) {
             studentRepo.save(student)
         }
-        return studentArrayList
     }
 }
