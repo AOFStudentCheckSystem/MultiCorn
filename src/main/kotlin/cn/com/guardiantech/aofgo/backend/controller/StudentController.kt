@@ -12,6 +12,7 @@ import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRe
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import javassist.NotFoundException
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import java.io.File
 import java.io.InputStream
+import java.sql.SQLException
+import javax.validation.ConstraintViolationException
 
 
 @RestController
@@ -103,15 +106,19 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student")
     }
 
-    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
+    //    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
     @PostMapping("/import")
     @ResponseBody
     fun importStudentsFromCsv(
             @RequestParam("file") file: MultipartFile) = try {
         val fileStream = file.inputStream
         studentService.importStudentsFromCsv(fileStream)
-    } catch (e: Throwable) {
+    } catch (e: SQLException) {
         e.printStackTrace()
-        throw RepositoryException("Failed to save student")
+        if (e.errorCode == 1062 && e.sqlState == "23000") {
+            throw RepositoryException("Constraint violation; check for duplicate entries")
+        } else {
+            throw RepositoryException("Failed to save student; Got SQLException")
+        }
     }
 }
