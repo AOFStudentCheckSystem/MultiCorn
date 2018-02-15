@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.service.checkin
 
 import cn.com.guardiantech.aofgo.backend.repository.checkin.*
+import cn.com.guardiantech.aofgo.backend.service.email.EmailService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

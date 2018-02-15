@@ -7,7 +7,8 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.repository.auth.RoleRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
 import cn.com.guardiantech.aofgo.backend.test.authutil.AuthenticationUtil
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

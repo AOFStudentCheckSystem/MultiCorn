@@ -5,9 +5,9 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @NoArg
-class RoleRequest (
+class RoleRequest(
         @field:NotNull
-        @field:Size(min=1)
+        @field:Size(min = 1)
         val roleName: String,
         val permissions: Set<String>? = null
 )

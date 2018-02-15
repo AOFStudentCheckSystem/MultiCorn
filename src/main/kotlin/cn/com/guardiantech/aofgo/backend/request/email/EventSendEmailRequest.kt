@@ -1,4 +1,4 @@
-package cn.com.guardiantech.aofgo.backend.request.checkin
+package cn.com.guardiantech.aofgo.backend.request.email
 
 import cn.com.guardiantech.aofgo.backend.annotation.NoArg
 

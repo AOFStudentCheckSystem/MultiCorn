@@ -11,7 +11,7 @@ import javax.transaction.Transactional
  * Created by Codetector on 2017/4/4.
  * Project backend
  */
-interface EventRepository : PagingAndSortingRepository<ActivityEvent, Long>{
+interface EventRepository : PagingAndSortingRepository<ActivityEvent, Long> {
     override fun findAll(): MutableList<ActivityEvent>
 
     @Modifying

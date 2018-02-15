@@ -5,7 +5,6 @@ import cn.com.guardiantech.aofgo.backend.BackendApplicationTestConfiguration
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.ActivityEvent
 import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
-import cn.com.guardiantech.aofgo.backend.request.checkin.EventRequest
 import cn.com.guardiantech.aofgo.backend.test.authutil.AuthenticationUtil
 import org.json.JSONArray
 import org.json.JSONObject
@@ -35,9 +34,11 @@ import java.util.*
 @EnableSpringDataWebSupport
 class EventControllerMvcTest {
 
-    @Autowired private lateinit var mockMvc: MockMvc
+    @Autowired
+    private lateinit var mockMvc: MockMvc
 
-    @Autowired private lateinit var eventRepo: EventRepository
+    @Autowired
+    private lateinit var eventRepo: EventRepository
 
     private lateinit var event: ActivityEvent
 
@@ -74,10 +75,10 @@ class EventControllerMvcTest {
         assert(count > 0)
         mockMvc
                 .perform(delete("/checkin/event/${event.eventId}")
-                .with({
-                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
-                    it
-                }))
+                        .with({
+                            it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                            it
+                        }))
                 .andExpect(MockMvcResultMatchers.status().isNoContent)
         assertEquals(count - 1, eventRepo.count())
     }
@@ -88,10 +89,10 @@ class EventControllerMvcTest {
         assert(count > 0)
         mockMvc
                 .perform(delete("/checkin/event/-1")
-                .with({
-                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
-                    it
-                }))
+                        .with({
+                            it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                            it
+                        }))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
         assertEquals(count, eventRepo.count())
     }
