@@ -18,5 +18,6 @@ data class StudentRequest(
         val dormInfo: String?,
         //Id
         val accountId: Long?,
-        val account: AccountRequest?
+        val account: AccountRequest?,
+        val guardians: Set<GuardianRequest>?
 )

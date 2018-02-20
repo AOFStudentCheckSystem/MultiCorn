@@ -226,6 +226,104 @@ class StudentControllerMvcTest {
     }
 
     @Test
+    fun createStudentWithGuardianTest() {
+        val ah = accountRepo.save(
+                Account(
+                        firstName = "a",
+                        lastName = "b",
+                        email = null,
+                        phone = null,
+                        type = AccountType.FACULTY,
+                        preferredName = "c"
+                )
+        )
+        assertEquals(2L, accountRepo.count())
+        assertEquals(0L, studentRepo.count())
+        mockMvc.perform(put("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                        """{
+                                "idNumber": "123456A",
+                                "cardSecret": null,
+                                "grade": 10,
+                                "gender": "FEMALE",
+                                "dateOfBirth": 612939600,
+                                "dorm": "ELE",
+                                "dormInfo": "DNE",
+                                "account": {
+                                    "firstName": "fn",
+                                    "lastName": "ln",
+                                    "email": "a@b.c",
+                                    "type": "OTHER",
+                                    "preferredName": "pn"
+                                },
+                                "guardians": [
+                                    {
+                                        "accountId": ${ah.id},
+                                        "relation": "ASSOCIATE_HEADMASTER"
+                                    }
+                                ]
+                        }""".trimIndent()
+                ))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect {
+                    assertEquals(1L, studentRepo.count())
+                    assertEquals(1, studentRepo.findAll().first().guardians.size)
+                }
+    }
+
+    @Test
+    fun setGuardianTest() {
+        val ah = accountRepo.save(
+                Account(
+                        firstName = "a",
+                        lastName = "b",
+                        email = null,
+                        phone = null,
+                        type = AccountType.FACULTY,
+                        preferredName = "c"
+                )
+        )
+        assertEquals(0L, studentRepo.count())
+        val s = studentRepo.save(
+                Student(
+                        idNumber = "ejiffadfw",
+                        account = initAccount()
+                )
+        )
+        assertEquals(3L, accountRepo.count())
+        assertEquals(0, s.guardians.size)
+
+        mockMvc.perform(post("/student/${s.idNumber}/guardian")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                        """
+                        [
+                            {
+                                "accountId": ${ah.id},
+                                "relation": "ASSOCIATE_HEADMASTER"
+                            }
+                        ]
+                        """.trimIndent()
+                ))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect {
+                    assertEquals(3L, accountRepo.count())
+                    assertEquals(1L, studentRepo.count())
+                    assertEquals(1, studentRepo.findAll().first().guardians.size)
+                    assertEquals(ah.id, studentRepo.findAll().first().guardians.first().guardianAccount.id)
+                }
+    }
+
+    @Test
     fun listAllStudentTest() {
         val stu = initStudent()
         mockMvc.perform(get("/student/listall")

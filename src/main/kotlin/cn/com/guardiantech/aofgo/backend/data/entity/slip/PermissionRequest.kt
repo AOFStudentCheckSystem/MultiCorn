@@ -1,28 +1,28 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.slip
 
-import cn.com.guardiantech.aofgo.backend.data.entity.Account
+import cn.com.guardiantech.aofgo.backend.data.entity.Guardian
 import java.util.*
 import javax.persistence.*
 
 @Entity
-class PermissionGrant(
+class PermissionRequest(
         @Id
         @GeneratedValue
         val id: Long = -1,
 
         @ManyToOne
-        @JoinColumn(name = "account")
-        val account: Account,
+        @JoinColumn
+        val acceptor: Guardian,
 
         @Column(name = "ip")
-        val ip: String,
+        var acceptorIp: String = "",
 
         @Column(name = "time")
-        val time: Date,
+        var acceptTime: Date = Date(0),
 
         @Column(name = "result")
-        val result: Boolean,
+        var accepted: Boolean? = null,
 
         @Column(name = "note")
-        val note: String
+        var note: String = ""
 )
