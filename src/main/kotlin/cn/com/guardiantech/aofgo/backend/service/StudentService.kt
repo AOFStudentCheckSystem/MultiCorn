@@ -1,10 +1,8 @@
 package cn.com.guardiantech.aofgo.backend.service
 
-import cn.com.guardiantech.aofgo.backend.data.entity.Account
-import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
-import cn.com.guardiantech.aofgo.backend.data.entity.Gender
-import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import cn.com.guardiantech.aofgo.backend.data.entity.*
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
+import cn.com.guardiantech.aofgo.backend.repository.GuardianRepository
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
@@ -20,6 +18,7 @@ import com.opencsv.CSVReaderBuilder
 class StudentService @Autowired constructor(
         private val studentRepo: StudentRepository,
         private val accountService: AccountService,
+        private val guardianRepository: GuardianRepository,
         private val accountRepo: AccountRepository
 ) {
     /**
@@ -38,7 +37,7 @@ class StudentService @Autowired constructor(
             }
         }
 
-        return studentRepo.save(Student(
+        val s = studentRepo.save(Student(
                 idNumber = request.idNumber,
                 cardSecret = request.cardSecret,
                 grade = request.grade,
@@ -48,6 +47,22 @@ class StudentService @Autowired constructor(
                 dormInfo = request.dormInfo,
                 account = theAccount
         ))
+
+        if (request.guardians !== null && request.guardians.isNotEmpty()) {
+            guardianRepository.save(
+                    request.guardians.map {
+                        Guardian(
+                                guardianAccount = accountService.getAccountById(it.accountId),
+                                relation = it.relation
+                        )
+                    }
+            ).forEach {
+                s.addGuardian(it)
+            }
+            studentRepo.save(s)
+        }
+
+        return s
     }
 
     fun listAllStudents(): List<Student> {
@@ -106,6 +121,22 @@ class StudentService @Autowired constructor(
                 it.cardSecret = cardSecret
                 studentRepo.save(it)
             }
+
+    fun findStudentBySubjectId(subjectId: Long): Student = studentRepo.findStudentBySubjectId(subjectId).get()
+
+    @Transactional
+    fun setGuardians(studentId: String, guardians: Set<GuardianRequest>): Set<Guardian> {
+        val student = studentRepo.findByIdNumber(studentId).get()
+        guardianRepository.save(guardians.map {
+            Guardian(
+                    guardianAccount = accountService.getAccountById(it.accountId),
+                    relation = it.relation
+            )
+        }).forEach {
+            student.addGuardian(it)
+        }
+        return studentRepo.save(student).guardians
+    }
 
     @Transactional
     fun importStudentsFromCsv(csvContent: InputStream) {

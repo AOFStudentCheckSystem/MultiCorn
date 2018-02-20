@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
+import cn.com.guardiantech.aofgo.backend.data.entity.Guardian
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.exception.*
 import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
@@ -19,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import java.sql.SQLException
-import org.springframework.web.util.WebUtils.getRealPath
-import java.io.File
 import javax.servlet.ServletContext
 
 
@@ -41,6 +40,7 @@ class StudentController @Autowired constructor(
     } catch (e: NoSuchElementException) {
         throw EntityNotFoundException("Account Not Found")
     } catch (e: IllegalArgumentException) {
+        logger.error(e.message)
         throw BadRequestException(e.message)
     } catch (e: Throwable) {
         logger.error("Student Saving Error:", e)
@@ -112,5 +112,15 @@ class StudentController @Autowired constructor(
         throw ImportBadConstraintException("Constraint violation; check for duplicate entries")
     } catch (e: Throwable) {
         throw RepositoryException("Failed to save students")
+    }
+
+    @Require(["STUDENT_WRITE"])
+    @PostMapping("/{studentId}/guardian")
+    fun setGuardians(@PathVariable studentId: String, @RequestBody r: StudentRequest): Set<Guardian> {
+        if (r.guardians == null) throw BadRequestException("Guardians Not Found")
+        return studentService.setGuardians(
+                studentId,
+                r.guardians
+        )
     }
 }
