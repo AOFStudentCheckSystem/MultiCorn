@@ -6,4 +6,5 @@ import java.util.*
 
 interface AccountRepository : CrudRepository<Account, Long> {
     fun findById(id: Long): Optional<Account>
+    fun findByEmail(email: String): Optional<Account>
 }
