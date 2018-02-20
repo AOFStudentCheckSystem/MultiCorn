@@ -36,11 +36,7 @@ class Student(
 
         @OneToMany
         @JoinTable
-        var advisors: MutableSet<Account> = hashSetOf(),
-
-        @OneToMany
-        @JoinTable
-        var parents: MutableSet<Account> = hashSetOf(),
+        var guardians: MutableSet<Guardian> = hashSetOf(),
 
         @OneToOne
         @JoinColumn
@@ -49,4 +45,14 @@ class Student(
 //        @OneToMany
 //        @Column(name = "courses")
 //        var courses: MutableSet<Courses> = hashSetOf()
-)
+) {
+    fun relationWith(account: Account): GuardianType? {
+        return guardians.firstOrNull {
+            it.guardianAccount.id == account.id
+        }?.relation
+    }
+
+    fun addGuardian(guardian: Guardian) {
+        guardians.add(guardian)
+    }
+}

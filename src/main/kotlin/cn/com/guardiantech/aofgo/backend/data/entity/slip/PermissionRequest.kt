@@ -1,6 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.slip
 
-import cn.com.guardiantech.aofgo.backend.data.entity.Account
+import cn.com.guardiantech.aofgo.backend.data.entity.Guardian
 import java.util.*
 import javax.persistence.*
 
@@ -12,11 +12,7 @@ class PermissionRequest(
 
         @ManyToOne
         @JoinColumn
-        val requestor: Account,
-
-        @ManyToOne
-        @JoinColumn
-        val acceptor: Account,
+        val acceptor: Guardian,
 
         @Column(name = "ip")
         var acceptorIp: String = "",

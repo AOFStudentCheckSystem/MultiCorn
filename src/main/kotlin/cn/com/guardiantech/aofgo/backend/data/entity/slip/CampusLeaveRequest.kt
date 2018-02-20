@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.slip
 
+import cn.com.guardiantech.aofgo.backend.data.entity.GuardianType
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
@@ -28,11 +29,7 @@ class CampusLeaveRequest(
 
         @OneToMany
         @JoinColumn(name = "permission_requests")
-        val permissionRequests: MutableSet<PermissionRequest>,
-
-        @OneToOne
-        @JoinColumn(name = "approval_request")
-        val approvalRequest: PermissionRequest,
+        val permissionRequests: MutableSet<PermissionRequest> = mutableSetOf(),
 
         @Enumerated(EnumType.STRING)
         @Column(name = "transportation_method")
@@ -67,6 +64,12 @@ class CampusLeaveRequest(
 ) {
     @JsonProperty("status")
     fun status(): LeaveStatus {
+        val permissionRequests = permissionRequests.filterNot {
+            it.acceptor.relation == GuardianType.ASSOCIATE_HEADMASTER
+        }
+        val approvalRequest = permissionRequests.first {
+            it.acceptor.relation == GuardianType.ASSOCIATE_HEADMASTER
+        }
         if (permissionRequests.all { it.accepted === null }) return LeaveStatus.PENDING
         return when {
             permissionRequests.all { it.accepted == true } ->
@@ -84,5 +87,9 @@ class CampusLeaveRequest(
             permissionRequests.firstOrNull { it.accepted == false } !== null -> LeaveStatus.REJECTED
             else -> LeaveStatus.WAITINGPERMISSIONS
         }
+    }
+
+    fun addPermissionRequest(pr: PermissionRequest) {
+        permissionRequests.add(pr)
     }
 }

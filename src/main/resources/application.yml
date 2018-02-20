@@ -22,7 +22,7 @@ spring:
     dbcp2:
       test-while-idle: true
       validation-query: SELECT 1
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
     platform: mysql
   mail:
     from: "AOF Activity Sign-up<signups@233.com.hk>"

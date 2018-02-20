@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
+import cn.com.guardiantech.aofgo.backend.data.entity.Guardian
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.ControllerException
@@ -30,6 +31,7 @@ class StudentController @Autowired constructor(
     } catch (e: NoSuchElementException) {
         throw EntityNotFoundException("Account Not Found")
     } catch (e: IllegalArgumentException) {
+        logger.error(e.message)
         throw BadRequestException(e.message)
     } catch (e: Throwable) {
         logger.error("Student Saving Error:", e)
@@ -84,4 +86,13 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student")
     }
 
+    @Require(["STUDENT_WRITE"])
+    @PostMapping("/{studentId}/guardian")
+    fun setGuardians(@PathVariable studentId: String, @RequestBody r: StudentRequest): Set<Guardian> {
+        if (r.guardians == null) throw BadRequestException("Guardians Not Found")
+        return studentService.setGuardians(
+                studentId,
+                r.guardians
+        )
+    }
 }

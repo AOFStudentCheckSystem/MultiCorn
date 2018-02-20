@@ -1,9 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.request.slip
 
 import cn.com.guardiantech.aofgo.backend.annotation.NoArg
-import cn.com.guardiantech.aofgo.backend.data.entity.slip.LeaveStatus
 import cn.com.guardiantech.aofgo.backend.data.entity.slip.LeaveType
-import cn.com.guardiantech.aofgo.backend.data.entity.slip.PermissionRequest
 import cn.com.guardiantech.aofgo.backend.data.entity.slip.TransportationMethod
 import java.util.*
 import javax.validation.constraints.NotNull
@@ -47,9 +45,9 @@ class LocalLeaveRequestRequest(
         @field:NotNull
         val missJob: Boolean,
 
-        val contactName: String,
+        val contactName: String = "",
 
-        val contactPhone: String,
+        val contactPhone: String = "",
 
-        val contactAddress: String
+        val contactAddress: String = ""
 )
