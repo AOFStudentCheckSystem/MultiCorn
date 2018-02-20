@@ -163,7 +163,16 @@ class StudentService @Autowired constructor(
                         it.account = newAccount
                         studentRepo.save(it)
                     }
-
+                    studentRepo.findByCardSecret(processedCardSecret).get().let {
+                        it.idNumber = record[6]
+                        it.grade = record[5].toInt()
+                        it.dateOfBirth = null
+                        it.gender = Gender.MALE
+                        it.dorm = record[2]
+                        it.dormInfo = null
+                        it.account = newAccount
+                        studentRepo.save(it)
+                    }
                 } catch (e: NoSuchElementException) {
                     studentRepo.save(Student(
                             idNumber = record[6],
