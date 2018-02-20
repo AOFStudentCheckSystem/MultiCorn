@@ -5,24 +5,28 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-class PermissionGrant(
+class PermissionRequest(
         @Id
         @GeneratedValue
         val id: Long = -1,
 
         @ManyToOne
-        @JoinColumn(name = "account")
-        val account: Account,
+        @JoinColumn
+        val requestor: Account,
+
+        @ManyToOne
+        @JoinColumn
+        val acceptor: Account,
 
         @Column(name = "ip")
-        val ip: String,
+        var acceptorIp: String = "",
 
         @Column(name = "time")
-        val time: Date,
+        var acceptTime: Date = Date(0),
 
         @Column(name = "result")
-        val result: Boolean,
+        var accepted: Boolean? = null,
 
         @Column(name = "note")
-        val note: String
+        var note: String = ""
 )

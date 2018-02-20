@@ -1,9 +1,9 @@
 package cn.com.guardiantech.aofgo.backend.repository.slip
 
-import cn.com.guardiantech.aofgo.backend.data.entity.slip.PermissionGrant
+import cn.com.guardiantech.aofgo.backend.data.entity.slip.PermissionRequest
 import org.springframework.data.repository.CrudRepository
 import java.util.*
 
-interface PermissionGrantRepository : CrudRepository<PermissionGrant, Long> {
-    fun findById(id: Long): Optional<PermissionGrant>
+interface PermissionGrantRepository : CrudRepository<PermissionRequest, Long> {
+    fun findById(id: Long): Optional<PermissionRequest>
 }

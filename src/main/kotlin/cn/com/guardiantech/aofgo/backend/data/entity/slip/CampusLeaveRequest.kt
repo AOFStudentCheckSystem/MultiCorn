@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.slip
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 import javax.persistence.*
 
@@ -22,20 +23,16 @@ class CampusLeaveRequest(
         @Column(name = "description")
         val description: String,
 
-        @Enumerated(EnumType.STRING)
-        @Column(name = "status")
-        val status: LeaveStatus,
-
         @Column(name = "status_message")
         val statusMessage: String,
 
-        @Column(name = "required_permission")
-        @ElementCollection
-        val requiredPermission: MutableSet<String>,
-
         @OneToMany
-        @JoinColumn(name = "granted_permission")
-        val grantedPermission: MutableSet<PermissionGrant> = hashSetOf(),
+        @JoinColumn(name = "permission_requests")
+        val permissionRequests: MutableSet<PermissionRequest>,
+
+        @OneToOne
+        @JoinColumn(name = "approval_request")
+        val approvalRequest: PermissionRequest,
 
         @Enumerated(EnumType.STRING)
         @Column(name = "transportation_method")
@@ -67,5 +64,25 @@ class CampusLeaveRequest(
 
         @Column(name = "contact_address")
         val contactAddress: String
-
-)
+) {
+    @JsonProperty("status")
+    fun status(): LeaveStatus {
+        if (permissionRequests.all { it.accepted === null }) return LeaveStatus.PENDING
+        return when {
+            permissionRequests.all { it.accepted == true } ->
+                when (approvalRequest.accepted) {
+                    null -> {
+                        LeaveStatus.WAITINGAPPROVAL
+                    }
+                    true -> {
+                        LeaveStatus.APPROVAL
+                    }
+                    false -> {
+                        LeaveStatus.REJECTED
+                    }
+                }
+            permissionRequests.firstOrNull { it.accepted == false } !== null -> LeaveStatus.REJECTED
+            else -> LeaveStatus.WAITINGPERMISSIONS
+        }
+    }
+}
