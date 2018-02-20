@@ -300,14 +300,12 @@ class StudentControllerMvcTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(
                         """
-                        {
-                            "guardians": [
-                                        {
-                                            "accountId": ${ah.id},
-                                            "relation": "ASSOCIATE_HEADMASTER"
-                                        }
-                                    ]
-                        }
+                        [
+                            {
+                                "accountId": ${ah.id},
+                                "relation": "ASSOCIATE_HEADMASTER"
+                            }
+                        ]
                         """.trimIndent()
                 ))
                 .andExpect(MockMvcResultMatchers.status().isOk)

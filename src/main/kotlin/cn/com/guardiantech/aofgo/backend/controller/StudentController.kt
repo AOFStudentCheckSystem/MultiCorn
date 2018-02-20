@@ -5,6 +5,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.Guardian
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.exception.*
 import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
+import cn.com.guardiantech.aofgo.backend.request.student.GuardianRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
@@ -116,11 +117,11 @@ class StudentController @Autowired constructor(
 
     @Require(["STUDENT_WRITE"])
     @PostMapping("/{studentId}/guardian")
-    fun setGuardians(@PathVariable studentId: String, @RequestBody r: StudentRequest): Set<Guardian> {
-        if (r.guardians == null) throw BadRequestException("Guardians Not Found")
+    fun setGuardians(@PathVariable studentId: String, @RequestBody guardians: Array<GuardianRequest>): Set<Guardian> {
+//        if (r.guardians == null) throw BadRequestException("Guardians Not Found")
         return studentService.setGuardians(
                 studentId,
-                r.guardians
+                guardians.toSet()
         )
     }
 }
