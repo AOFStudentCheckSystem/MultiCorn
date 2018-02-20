@@ -8,12 +8,13 @@ import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
-import com.opencsv.CSVParser
-import com.opencsv.CSVReader
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.io.*
+import com.opencsv.enums.CSVReaderNullFieldIndicator
+import com.opencsv.CSVReaderBuilder
+
 
 @Service
 class StudentService @Autowired constructor(
@@ -108,38 +109,74 @@ class StudentService @Autowired constructor(
 
     @Transactional
     fun importStudentsFromCsv(csvContent: InputStream) {
-        val csvReader: CSVReader = CSVReader((InputStreamReader(csvContent)), CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
+
+        val csvReader = CSVReaderBuilder(InputStreamReader(csvContent))
+                .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
+                // Skip the header
+                .withSkipLines(1)
+                .build()
+
         val records: List<Array<String>> = csvReader.readAll()
 
         for (record: Array<String> in records) {
-            val newAccount: Account = accountRepo.save(
-                    Account(
-                            firstName = record[4],
-                            lastName = record[7],
-                            email = record[3],
-                            phone = null,
-                            type = AccountType.STUDENT,
-                            preferredName = record[8],
-                            subject = null
-                    )
-            )
+
+            var newAccount: Account
+
+            try {
+                newAccount = accountRepo.findByEmail(record[3]).get().let {
+                    it.firstName = record[4]
+                    it.lastName = record[7]
+                    it.phone = null
+                    it.type = AccountType.STUDENT
+                    it.preferredName = record[8]
+                    it.subject = null
+                    accountRepo.save(it)
+                }
+
+            } catch (e: NoSuchElementException) {
+                newAccount = accountRepo.save(
+                        Account(
+                                firstName = record[4],
+                                lastName = record[7],
+                                email = record[3],
+                                phone = null,
+                                type = AccountType.STUDENT,
+                                preferredName = record[8],
+                                subject = null
+                        )
+                )
+            }
 
             var processedCardSecret: String? = null
             if (record[1] == "NULL") {
             } else {
                 processedCardSecret = record[1]
-            }
 
-            studentRepo.save(Student(
-                    idNumber = record[6],
-                    cardSecret = processedCardSecret,
-                    grade = record[5].toInt(),
-                    dateOfBirth = null,
-                    gender = Gender.MALE,
-                    dorm = record[2],
-                    dormInfo = null,
-                    account = newAccount
-            ))
+                try {
+                    studentRepo.findByIdNumber(record[6]).get().let {
+                        it.cardSecret = processedCardSecret
+                        it.grade = record[5].toInt()
+                        it.dateOfBirth = null
+                        it.gender = Gender.MALE
+                        it.dorm = record[2]
+                        it.dormInfo = null
+                        it.account = newAccount
+                        studentRepo.save(it)
+                    }
+
+                } catch (e: NoSuchElementException) {
+                    studentRepo.save(Student(
+                            idNumber = record[6],
+                            cardSecret = processedCardSecret,
+                            grade = record[5].toInt(),
+                            dateOfBirth = null,
+                            gender = Gender.MALE,
+                            dorm = record[2],
+                            dormInfo = null,
+                            account = newAccount
+                    ))
+                }
+            }
         }
     }
 }

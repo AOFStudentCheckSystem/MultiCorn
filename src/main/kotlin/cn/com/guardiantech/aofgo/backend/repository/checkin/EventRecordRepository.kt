@@ -10,7 +10,7 @@ import java.util.*
  * Created by Codetector on 2017/4/7.
  * Project backend
  */
-interface EventRecordRepository: CrudRepository<ActivityEventRecord, Long> {
+interface EventRecordRepository : CrudRepository<ActivityEventRecord, Long> {
     fun findByStudent(student: Student): List<ActivityEventRecord>
     fun findByEvent(event: ActivityEvent): List<ActivityEventRecord>
     fun findByEventAndStudent(event: ActivityEvent, student: Student): Optional<ActivityEventRecord>

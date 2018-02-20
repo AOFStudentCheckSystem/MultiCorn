@@ -99,7 +99,7 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student")
     }
 
-    //    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
+    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
     @PostMapping("/import")
     @ResponseBody
     fun importStudentsFromCsv(

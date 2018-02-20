@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.IntNode
 import com.fasterxml.jackson.databind.node.LongNode
 
-class RecordToUploadDeserializer: JsonDeserializer<RecordToUpload>() {
+class RecordToUploadDeserializer : JsonDeserializer<RecordToUpload>() {
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): RecordToUpload {
         val root: JsonNode = p.codec.readTree(p)
         val ts = (root["timestamp"] as LongNode).longValue()
