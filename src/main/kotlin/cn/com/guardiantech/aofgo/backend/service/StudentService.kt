@@ -11,7 +11,6 @@ import com.opencsv.CSVReaderBuilder
 import com.opencsv.enums.CSVReaderNullFieldIndicator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -215,8 +214,14 @@ class StudentService @Autowired constructor(
                     }
 
             val processedCardSecret = if (record[1] == "NULL") null else record[1]
-            if (processedCardSecret !== null && studentRepo.findByCardSecret(processedCardSecret).isPresent)
-                throw IllegalArgumentException()
+            if (processedCardSecret !== null) {
+                studentRepo.findByCardSecret(processedCardSecret).let {
+                    if (it.isPresent) {
+                        it.get().cardSecret = null
+                        studentRepo.save(it.get())
+                    }
+                }
+            }
 
             studentRepo.findByIdNumber(record[6]).let {
                 if (it.isPresent) {
