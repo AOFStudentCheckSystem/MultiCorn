@@ -7,12 +7,13 @@ import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.request.student.GuardianRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
+import com.opencsv.CSVReaderBuilder
+import com.opencsv.enums.CSVReaderNullFieldIndicator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.io.*
-import com.opencsv.enums.CSVReaderNullFieldIndicator
-import com.opencsv.CSVReaderBuilder
+import java.io.InputStream
+import java.io.InputStreamReader
 
 
 @Service
@@ -128,7 +129,39 @@ class StudentService @Autowired constructor(
     @Transactional
     fun setGuardians(studentId: String, guardians: Set<GuardianRequest>): Set<Guardian> {
         val student = studentRepo.findByIdNumber(studentId).get()
-        guardianRepository.save(guardians.map {
+        val oldGuardianAccountIds = student.guardians.map { it.guardianAccount.id }
+        val newGuardianAccountIds = guardians.map { it.accountId }
+
+        val guardianAccountIdsToRemove =
+                oldGuardianAccountIds.filter { !newGuardianAccountIds.contains(it) }
+        val guardiansToAdd =
+                guardians.filter { !oldGuardianAccountIds.contains(it.accountId) }
+        val guardiansToUpdate =
+                guardiansToAdd.map { it.accountId }.let { guardianIdsToAdd ->
+                    guardians.filterNot {
+                        guardianAccountIdsToRemove.contains(it.accountId) ||
+                                guardianIdsToAdd.contains(it.accountId)
+                    }
+                }
+
+        guardianAccountIdsToRemove.let {
+            if (it.isNotEmpty()) {
+                it.forEach {
+                    student.removeGuardian(it)
+                }
+//                student = studentRepo.save(student)
+            }
+        }
+        guardiansToUpdate.let {
+            if (it.isNotEmpty()) {
+                it.forEach {
+                    guardianRepository.save(
+                            student.updateGuardian(it.accountId, it.relation)
+                    )
+                }
+            }
+        }
+        guardianRepository.save(guardiansToAdd.map {
             Guardian(
                     guardianAccount = accountService.getAccountById(it.accountId),
                     relation = it.relation

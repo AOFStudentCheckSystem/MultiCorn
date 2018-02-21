@@ -14,5 +14,5 @@ class Guardian(
 
         @Enumerated(EnumType.STRING)
         @Column
-        val relation: GuardianType
+        var relation: GuardianType
 )
