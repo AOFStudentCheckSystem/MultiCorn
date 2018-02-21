@@ -174,15 +174,17 @@ class StudentService @Autowired constructor(
 
     @Transactional
     fun importStudentsFromCsv(csvContent: InputStream) {
-
         val csvReader = CSVReaderBuilder(InputStreamReader(csvContent))
                 .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
                 // Skip the header
                 .withSkipLines(1)
                 .build()
 
-        val records: List<Array<String>> = csvReader.readAll()
+        importStudentsFrom2DArray(csvReader.readAll())
+    }
 
+    @Transactional
+    fun importStudentsFrom2DArray(records: List<Array<String>>) {
         for (record: Array<String> in records) {
 
             var newAccount: Account
@@ -197,7 +199,6 @@ class StudentService @Autowired constructor(
                     it.subject = null
                     accountRepo.save(it)
                 }
-
             } catch (e: NoSuchElementException) {
                 newAccount = accountRepo.save(
                         Account(
@@ -212,8 +213,9 @@ class StudentService @Autowired constructor(
                 )
             }
 
-            var processedCardSecret: String? = null
+            var processedCardSecret: String?
             if (record[1] == "NULL") {
+                processedCardSecret = null
             } else {
                 processedCardSecret = record[1]
 
