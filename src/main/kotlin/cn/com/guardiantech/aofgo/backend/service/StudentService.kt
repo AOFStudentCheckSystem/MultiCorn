@@ -11,6 +11,7 @@ import com.opencsv.CSVReaderBuilder
 import com.opencsv.enums.CSVReaderNullFieldIndicator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -186,41 +187,40 @@ class StudentService @Autowired constructor(
     @Transactional
     fun importStudentsFrom2DArray(records: List<Array<String>>) {
         for (record: Array<String> in records) {
+            val newAccount =
+                    accountRepo.findByEmail(record[3]).let {
+                        if (it.isPresent) {
+                            it.get().let {
+                                it.firstName = record[4]
+                                it.lastName = record[7]
+                                it.phone = null
+                                it.type = AccountType.STUDENT
+                                it.preferredName = record[8]
+                                it.subject = null
+                                accountRepo.save(it)
+                            }
+                        } else {
+                            accountRepo.save(
+                                    Account(
+                                            firstName = record[4],
+                                            lastName = record[7],
+                                            email = record[3],
+                                            phone = null,
+                                            type = AccountType.STUDENT,
+                                            preferredName = record[8],
+                                            subject = null
+                                    )
+                            )
+                        }
+                    }
 
-            var newAccount: Account
+            val processedCardSecret = if (record[1] == "NULL") null else record[1]
+            if (processedCardSecret !== null && studentRepo.findByCardSecret(processedCardSecret).isPresent)
+                throw IllegalArgumentException()
 
-            try {
-                newAccount = accountRepo.findByEmail(record[3]).get().let {
-                    it.firstName = record[4]
-                    it.lastName = record[7]
-                    it.phone = null
-                    it.type = AccountType.STUDENT
-                    it.preferredName = record[8]
-                    it.subject = null
-                    accountRepo.save(it)
-                }
-            } catch (e: NoSuchElementException) {
-                newAccount = accountRepo.save(
-                        Account(
-                                firstName = record[4],
-                                lastName = record[7],
-                                email = record[3],
-                                phone = null,
-                                type = AccountType.STUDENT,
-                                preferredName = record[8],
-                                subject = null
-                        )
-                )
-            }
-
-            var processedCardSecret: String?
-            if (record[1] == "NULL") {
-                processedCardSecret = null
-            } else {
-                processedCardSecret = record[1]
-
-                try {
-                    studentRepo.findByIdNumber(record[6]).get().let {
+            studentRepo.findByIdNumber(record[6]).let {
+                if (it.isPresent) {
+                    it.get().let {
                         it.cardSecret = processedCardSecret
                         it.grade = record[5].toInt()
                         it.dateOfBirth = null
@@ -230,8 +230,7 @@ class StudentService @Autowired constructor(
                         it.account = newAccount
                         studentRepo.save(it)
                     }
-
-                } catch (e: NoSuchElementException) {
+                } else {
                     studentRepo.save(Student(
                             idNumber = record[6],
                             cardSecret = processedCardSecret,
