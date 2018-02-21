@@ -197,6 +197,7 @@ class StudentService @Autowired constructor(
                     }
                     studentRepo.findByCardSecret(processedCardSecret).get().let {
                         it.idNumber = record[6]
+                        it.cardSecret = processedCardSecret
                         it.grade = record[5].toInt()
                         it.dateOfBirth = null
                         it.gender = Gender.MALE

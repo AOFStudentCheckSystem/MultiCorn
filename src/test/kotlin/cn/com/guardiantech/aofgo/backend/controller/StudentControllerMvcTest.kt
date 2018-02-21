@@ -511,21 +511,4 @@ class StudentControllerMvcTest {
 
         assertEquals("very slow", studentRepo.findById(student.id).get().cardSecret)
     }
-
-//    @Test
-//    fun importStudentsFromCsv() {
-//
-////        mockMvc.perform(post("/student/card")
-////                .with({
-////                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
-////                    it
-////                })
-////        )
-////                .andExpect(MockMvcResultMatchers.status().isOk)
-//
-//        val folder: TemporaryFolder = TemporaryFolder()
-//        val uploadPath = folder.root.absolutePath
-//        val fileInputStream: FileInputStream = FileInputStream(File(uploadPath))
-//        val file: MockMultipartFile = MockMultipartFile("upload", "s")
-//    }
 }
