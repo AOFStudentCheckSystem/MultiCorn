@@ -62,5 +62,19 @@ class StudentServiceTest {
         studentRepo.findByIdNumber("100127260").get().let {
             assertEquals(null, it.cardSecret)
         }
+
+//        //Corrupt
+//        try {
+//            studentService.importStudentsFrom2DArray(
+//                    listOf(
+//                            arrayOf("fasefaf", "ELE 2-B7", "afeeaf@avonoldfarms.com", "afeafsfsa", "11", "200127260", "Xaron", "Will", "1")
+//                    )
+//            )
+//            fail()
+//        } catch (e: Throwable) {
+//            e.printStackTrace()
+//        }
+//        assertEquals(2L, studentRepo.count())
+//        assertEquals(2L, accountRepo.count())
     }
 }
