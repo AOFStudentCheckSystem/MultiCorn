@@ -43,4 +43,9 @@ class PinkSlipController @Autowired constructor(
                 contactAddress = r.contactAddress
         )
     }
+
+    @PutMapping("/init/{id}")
+    fun initiateLocalLeaveRequest(@PathVariable id: Long, authContext: AuthContext) {
+        pinkSlipService.studentSendPermissionRequests(id)
+    }
 }

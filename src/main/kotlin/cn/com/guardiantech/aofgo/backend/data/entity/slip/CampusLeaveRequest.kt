@@ -2,7 +2,6 @@ package cn.com.guardiantech.aofgo.backend.data.entity.slip
 
 import cn.com.guardiantech.aofgo.backend.data.entity.GuardianType
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 import javax.persistence.*
 
@@ -60,36 +59,40 @@ class CampusLeaveRequest(
         val contactPhone: String,
 
         @Column(name = "contact_address")
-        val contactAddress: String
+        val contactAddress: String,
+
+        @Column(name = "status")
+        @Enumerated(EnumType.STRING)
+        private var status: LeaveStatus = LeaveStatus.PENDING
 ) {
-    @JsonProperty("status")
-    fun status(): LeaveStatus {
-        val permissionRequests = permissionRequests.filterNot {
-            it.acceptor.relation == GuardianType.ASSOCIATE_HEADMASTER
-        }
-        val approvalRequest = permissionRequests.first {
-            it.acceptor.relation == GuardianType.ASSOCIATE_HEADMASTER
-        }
-        if (permissionRequests.all { it.accepted === null }) return LeaveStatus.PENDING
-        return when {
-            permissionRequests.all { it.accepted == true } ->
-                when (approvalRequest.accepted) {
-                    null -> {
-                        LeaveStatus.WAITINGAPPROVAL
-                    }
-                    true -> {
-                        LeaveStatus.APPROVAL
-                    }
-                    false -> {
-                        LeaveStatus.REJECTED
-                    }
-                }
-            permissionRequests.firstOrNull { it.accepted == false } !== null -> LeaveStatus.REJECTED
-            else -> LeaveStatus.WAITINGPERMISSIONS
-        }
-    }
 
     fun addPermissionRequest(pr: PermissionRequest) {
         permissionRequests.add(pr)
+    }
+
+    fun setStatus(newStatus: LeaveStatus): LeaveStatus {
+        if (status === LeaveStatus.PENDING) {
+            if (newStatus !== LeaveStatus.PENDING) {
+                throw IllegalArgumentException("Cannot revert state")
+            }
+        } else {
+            if (newStatus === LeaveStatus.APPROVAL || newStatus === LeaveStatus.REJECTED) {
+                status = newStatus
+            } else {
+                evalWaitingStatus()
+            }
+        }
+        return status
+    }
+
+    fun evalWaitingStatus() {
+        val permissionRequests = permissionRequests.filterNot {
+            it.acceptor.relation === GuardianType.ASSOCIATE_HEADMASTER
+        }
+        status = if (permissionRequests.all { it.accepted == true }) {
+            LeaveStatus.WAITINGAPPROVAL
+        } else {
+            LeaveStatus.WAITINGPERMISSIONS
+        }
     }
 }
