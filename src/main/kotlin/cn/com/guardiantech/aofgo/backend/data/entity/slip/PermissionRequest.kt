@@ -25,4 +25,7 @@ class PermissionRequest(
 
         @Column(name = "note")
         var note: String = ""
-)
+) {
+    @ManyToOne
+    lateinit var campusLeaveRequest: CampusLeaveRequest
+}

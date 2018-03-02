@@ -68,6 +68,7 @@ class CampusLeaveRequest(
 
     fun addPermissionRequest(pr: PermissionRequest) {
         permissionRequests.add(pr)
+        pr.campusLeaveRequest = this
     }
 
     fun setStatus(newStatus: LeaveStatus): LeaveStatus {

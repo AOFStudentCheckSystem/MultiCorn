@@ -2,11 +2,15 @@ package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.authentication.AuthContext
 import cn.com.guardiantech.aofgo.backend.data.entity.slip.CampusLeaveRequest
+import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.request.slip.LocalLeaveRequestRequest
+import cn.com.guardiantech.aofgo.backend.request.slip.PermissionRequestRequest
 import cn.com.guardiantech.aofgo.backend.service.PinkSlipService
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
+import javax.validation.Valid
 
 /**
  * Created by dedztbh on 18-1-24.
@@ -45,7 +49,16 @@ class PinkSlipController @Autowired constructor(
     }
 
     @PutMapping("/init/{id}")
-    fun initiateLocalLeaveRequest(@PathVariable id: Long, authContext: AuthContext) {
-        pinkSlipService.studentSendPermissionRequests(id)
+    fun initiateLocalLeaveRequest(@PathVariable id: Long, authContext: AuthContext): CampusLeaveRequest {
+        val optRequest = pinkSlipService.getLeaveRequestOwnedBySubject(id, authContext.session!!.subject.id)
+        if (!optRequest.isPresent) throw EntityNotFoundException("No owned campus leave request was found")
+        return pinkSlipService.studentSendPermissionRequests(optRequest.get())
+    }
+
+    @PutMapping("/permission")
+    fun setPermissionRequestAccepted(@RequestBody @Valid req: PermissionRequestRequest, authContext: AuthContext, httpServletRequest: HttpServletRequest) {
+        val optRequest = pinkSlipService.getPermissionRequestRequiredBySubject(req.id, authContext.session!!.subject.id)
+        if (!optRequest.isPresent) throw EntityNotFoundException("No owned permission request was found")
+        return pinkSlipService.setPermissionRequestAccepted(optRequest.get(), req.accepted, httpServletRequest.remoteAddr)
     }
 }
