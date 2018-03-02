@@ -2,9 +2,8 @@ package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.BackendApplication
 import cn.com.guardiantech.aofgo.backend.BackendApplicationTestConfiguration
-import cn.com.guardiantech.aofgo.backend.data.entity.Account
-import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
-import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import cn.com.guardiantech.aofgo.backend.data.entity.*
+import cn.com.guardiantech.aofgo.backend.repository.GuardianRepository
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.test.authutil.AuthenticationUtil
@@ -51,6 +50,8 @@ class StudentControllerMvcTest {
     private lateinit var accountRepo: AccountRepository
     @Autowired
     private lateinit var authenticationUtil: AuthenticationUtil
+    @Autowired
+    private lateinit var guardianRepository: GuardianRepository
 
     @Before
     fun initialize() {
@@ -278,9 +279,29 @@ class StudentControllerMvcTest {
 
     @Test
     fun setGuardianTest() {
-        val ah = accountRepo.save(
+        val a = accountRepo.save(
                 Account(
                         firstName = "a",
+                        lastName = "b",
+                        email = null,
+                        phone = null,
+                        type = AccountType.FACULTY,
+                        preferredName = "c"
+                )
+        )
+        val b = accountRepo.save(
+                Account(
+                        firstName = "a1",
+                        lastName = "b",
+                        email = null,
+                        phone = null,
+                        type = AccountType.FACULTY,
+                        preferredName = "c"
+                )
+        )
+        val c = accountRepo.save(
+                Account(
+                        firstName = "a2",
                         lastName = "b",
                         email = null,
                         phone = null,
@@ -292,11 +313,24 @@ class StudentControllerMvcTest {
         val s = studentRepo.save(
                 Student(
                         idNumber = "ejiffadfw",
-                        account = initAccount()
+                        account = initAccount(),
+                        guardians = guardianRepository.save(
+                                setOf(
+                                        Guardian(
+                                                guardianAccount = a,
+                                                relation = GuardianType.ASSOCIATE_HEADMASTER
+                                        ),
+                                        Guardian(
+                                                guardianAccount = b,
+                                                relation = GuardianType.PARENT
+                                        )
+                                )
+                        ).toMutableSet()
                 )
         )
-        assertEquals(3L, accountRepo.count())
-        assertEquals(0, s.guardians.size)
+        assertEquals(5L, accountRepo.count())
+        assertEquals(2, s.guardians.size)
+        println("account ids: a:${a.id} b:${b.id} c:${c.id}")
 
         mockMvc.perform(post("/student/${s.idNumber}/guardian")
                 .with({
@@ -308,18 +342,35 @@ class StudentControllerMvcTest {
                         """
                         [
                             {
-                                "accountId": ${ah.id},
-                                "relation": "ASSOCIATE_HEADMASTER"
+                                "accountId": ${b.id},
+                                "relation": "COACH"
+                            },
+                            {
+                                "accountId": ${c.id},
+                                "relation": "PARENT"
                             }
                         ]
                         """.trimIndent()
                 ))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect {
-                    assertEquals(3L, accountRepo.count())
+                    assertEquals(5L, accountRepo.count())
                     assertEquals(1L, studentRepo.count())
-                    assertEquals(1, studentRepo.findAll().first().guardians.size)
-                    assertEquals(ah.id, studentRepo.findAll().first().guardians.first().guardianAccount.id)
+                    assertEquals(2, studentRepo.findAll().first().guardians.size)
+                    studentRepo.findAll().first().guardians.forEach {
+                        println("account id found: ${it.guardianAccount.id}")
+                        when {
+                            it.guardianAccount.id == b.id -> {
+                                assertEquals(GuardianType.COACH, it.relation)
+                            }
+                            it.guardianAccount.id == c.id -> {
+
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
                 }
     }
 

@@ -284,11 +284,9 @@ class AuthorizationService @Autowired constructor(
                 addRoleToSubject(subject.id, rolesToAdd)
         }
         if (request.subjectAttachedInfo !== null) {
-            //TODO: Failed to set value see #AOFGO-80
             subject.subjectAttachedInfo = request.subjectAttachedInfo
             subject = subjectRepository.save(subject)
         }
-//        entityManager.refresh(subject)
         return subject
     }
 

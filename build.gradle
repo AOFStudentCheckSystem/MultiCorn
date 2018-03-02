@@ -106,7 +106,7 @@ dependencies {
 
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-    testRuntime('com.h2database:h2')
+    testCompile('com.h2database:h2')
 }
 
 ext.debug = project.hasProperty('debug') && (Boolean.parseBoolean(project.property("debug") as String))

@@ -2,17 +2,14 @@ package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.GuardianType
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
-import cn.com.guardiantech.aofgo.backend.data.entity.slip.CampusLeaveRequest
-import cn.com.guardiantech.aofgo.backend.data.entity.slip.LeaveType
-import cn.com.guardiantech.aofgo.backend.data.entity.slip.PermissionRequest
-import cn.com.guardiantech.aofgo.backend.data.entity.slip.TransportationMethod
+import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
+import cn.com.guardiantech.aofgo.backend.data.entity.slip.*
 import cn.com.guardiantech.aofgo.backend.repository.slip.CampusLeaveRequestRepository
 import cn.com.guardiantech.aofgo.backend.repository.slip.PermissionRequestRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
-import javax.security.auth.Subject
 
 /**
  * Created by dedztbh on 18-1-24.
@@ -43,7 +40,7 @@ class PinkSlipService @Autowired constructor(
             contactPhone: String,
             contactAddress: String
     ): CampusLeaveRequest {
-        val savedRequest = localLeaveRequestRepository.save(
+        return localLeaveRequestRepository.save(
                 CampusLeaveRequest(
                         student = student,
                         type = type,
@@ -60,11 +57,11 @@ class PinkSlipService @Autowired constructor(
                                         else -> true
                                     }
                                 }.map {
-                                            PermissionRequest(
-                                                    acceptor = it
-                                            )
-                                        }
-                        ).toMutableSet(),
+                                    PermissionRequest(
+                                            acceptor = it
+                                    )
+                                }
+                        ).toMutableSet<PermissionRequest>(),
                         dateOfLeave = dateOfLeave,
                         dateOfReturn = dateOfReturn,
                         missClass = missClass,
@@ -72,22 +69,37 @@ class PinkSlipService @Autowired constructor(
                         missJob = missJob,
                         contactName = contactName,
                         contactPhone = contactPhone,
-                        contactAddress = contactAddress
+                        contactAddress = contactAddress,
+                        status = LeaveStatus.PENDING
                 )
         )
-
-        savedRequest.permissionRequests.filterNot {
-            it.acceptor.relation == GuardianType.ASSOCIATE_HEADMASTER
-        }.forEach { sendPermissionRequests(it) }
-
-        return savedRequest
     }
 
-    fun sendPermissionRequests(permissionRequest: PermissionRequest) {
+    @Transactional
+    fun studentSendPermissionRequests(id: Long): CampusLeaveRequest {
+        val request = localLeaveRequestRepository.findById(id).get()
+        request.permissionRequests.filterNot {
+            it.acceptor.relation == GuardianType.ASSOCIATE_HEADMASTER
+        }.forEach { sendPermissionRequestEmail(it) }
+        request.evalWaitingStatus()
+        return localLeaveRequestRepository.save(request)
+    }
+
+    fun sendPermissionRequestEmail(permissionRequest: PermissionRequest) {
 
     }
 
     fun permissionRequestStatusChange(subject: Subject) {
 
+    }
+
+    fun findLeaveRequestsByStatus(status: LeaveStatus) =
+            localLeaveRequestRepository.findByStatus(status)
+
+    @Transactional
+    fun setLeaveRequestStatus(id: Long, leaveStatus: LeaveStatus): CampusLeaveRequest {
+        val foundRequest = localLeaveRequestRepository.findById(id).get()
+        foundRequest.setStatus(leaveStatus)
+        return localLeaveRequestRepository.save(foundRequest)
     }
 }

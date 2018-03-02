@@ -1,7 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity
 
 import java.util.*
-import javax.annotation.Nullable
 import javax.persistence.*
 
 @Entity
@@ -35,7 +34,7 @@ class Student(
         @Column(name = "dorm_info")
         var dormInfo: String? = null,
 
-        @OneToMany
+        @OneToMany(cascade = [(CascadeType.ALL)], orphanRemoval = true)
         @JoinTable
         var guardians: MutableSet<Guardian> = hashSetOf(),
 
@@ -55,5 +54,19 @@ class Student(
 
     fun addGuardian(guardian: Guardian) {
         guardians.add(guardian)
+    }
+
+    fun removeGuardian(accountId: Long) {
+        guardians.remove(guardians.find {
+            it.guardianAccount.id == accountId
+        })
+    }
+
+    fun updateGuardian(accountId: Long, relation: GuardianType): Guardian {
+        val found = guardians.first {
+            it.guardianAccount.id == accountId
+        }
+        found.relation = relation
+        return found
     }
 }
