@@ -2,6 +2,8 @@ package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Notes.StickyNote
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
+import cn.com.guardiantech.aofgo.backend.exception.ControllerException
+import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
 import org.slf4j.Logger
 import cn.com.guardiantech.aofgo.backend.request.note.StickyNoteRequest
@@ -31,7 +33,7 @@ class StickyNoteController @Autowired constructor(
         throw NotFoundException("StickyNote Not Found")
     }
 
-    @PutMapping("/")
+    @PutMapping("/add")
     fun createStickyNote(@RequestBody @Valid noteRequest: StickyNoteRequest): StickyNote = try {
         stickyNoteService.addNote(noteRequest)
     } catch (e: IllegalArgumentException) {
@@ -40,5 +42,28 @@ class StickyNoteController @Autowired constructor(
     } catch (e: Throwable) {
         logger.error("StickyNote Saving Error:", e)
         throw RepositoryException("Failed to save StickyNote due to conflict")
+    }
+
+    @PutMapping("/del")
+    fun deleteStickyNote(@RequestBody @Valid noteRequest: StickyNoteRequest): List<StickyNote> = try {
+        stickyNoteService.deleteNote(noteRequest)
+    } catch (e: IllegalArgumentException) {
+        logger.error(e.message)
+        throw BadRequestException(e.message)
+    } catch (e: Throwable) {
+        logger.error("StickyNote Deleting Error:", e)
+        throw RepositoryException("Failed to delete StickyNote due to conflict")
+    }
+
+    @PostMapping("/edit")
+    fun editStickyNote(@RequestBody @Valid request: StickyNoteRequest) = try {
+        stickyNoteService.editNote(request)
+    } catch (e: ControllerException) {
+        throw e
+    } catch (e: NoSuchElementException) {
+        throw EntityNotFoundException("StickyNote Not Found")
+    } catch (e: Throwable) {
+        logger.error("Failed while editing StickyNote", e)
+        throw RepositoryException("Failed to edit StickyNote")
     }
 }

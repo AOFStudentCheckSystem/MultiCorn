@@ -1,5 +1,4 @@
 package cn.com.guardiantech.aofgo.backend.service
-
 import cn.com.guardiantech.aofgo.backend.data.entity.*
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.GuardianRepository
@@ -7,14 +6,13 @@ import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.request.student.GuardianRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
+import com.opencsv.CSVReaderBuilder
+import com.opencsv.enums.CSVReaderNullFieldIndicator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.io.*
-import com.opencsv.enums.CSVReaderNullFieldIndicator
-import com.opencsv.CSVReaderBuilder
-
-
+import java.io.InputStream
+import java.io.InputStreamReader
 @Service
 class StudentService @Autowired constructor(
         private val studentRepo: StudentRepository,
@@ -37,7 +35,6 @@ class StudentService @Autowired constructor(
                 throw IllegalArgumentException("No account is provided with the student.")
             }
         }
-
         val s = studentRepo.save(Student(
                 idNumber = request.idNumber,
                 cardSecret = request.cardSecret,
@@ -48,7 +45,6 @@ class StudentService @Autowired constructor(
                 dormInfo = request.dormInfo,
                 account = theAccount
         ))
-
         if (request.guardians !== null && request.guardians.isNotEmpty()) {
             guardianRepository.save(
                     request.guardians.map {
@@ -62,21 +58,17 @@ class StudentService @Autowired constructor(
             }
             studentRepo.save(s)
         }
-
         return s
     }
-
     fun listAllStudents(): List<Student> {
         return studentRepo.findAll().toList()
     }
-
     /**
      * @throws NoSuchElementException Student Not Found
      */
     fun getStudentByIdNumber(id: String): Student {
         return studentRepo.findByIdNumber(id).get()
     }
-
     /**
      * @throws NoSuchElementException Student Not Found
      * Failed to save student
@@ -111,7 +103,6 @@ class StudentService @Autowired constructor(
         }
         return studentRepo.save(theStudent)
     }
-
     /**
      * @throws NoSuchElementException Student Not Found
      * Failed to save student
@@ -122,13 +113,41 @@ class StudentService @Autowired constructor(
                 it.cardSecret = cardSecret
                 studentRepo.save(it)
             }
-
     fun findStudentBySubjectId(subjectId: Long): Student = studentRepo.findStudentBySubjectId(subjectId).get()
-
     @Transactional
     fun setGuardians(studentId: String, guardians: Set<GuardianRequest>): Set<Guardian> {
         val student = studentRepo.findByIdNumber(studentId).get()
-        guardianRepository.save(guardians.map {
+        val oldGuardianAccountIds = student.guardians.map { it.guardianAccount.id }
+        val newGuardianAccountIds = guardians.map { it.accountId }
+        val guardianAccountIdsToRemove =
+                oldGuardianAccountIds.filter { !newGuardianAccountIds.contains(it) }
+        val guardiansToAdd =
+                guardians.filter { !oldGuardianAccountIds.contains(it.accountId) }
+        val guardiansToUpdate =
+                guardiansToAdd.map { it.accountId }.let { guardianIdsToAdd ->
+                    guardians.filterNot {
+                        guardianAccountIdsToRemove.contains(it.accountId) ||
+                                guardianIdsToAdd.contains(it.accountId)
+                    }
+                }
+        guardianAccountIdsToRemove.let {
+            if (it.isNotEmpty()) {
+                it.forEach {
+                    student.removeGuardian(it)
+                }
+//                student = studentRepo.save(student)
+            }
+        }
+        guardiansToUpdate.let {
+            if (it.isNotEmpty()) {
+                it.forEach {
+                    guardianRepository.save(
+                            student.updateGuardian(it.accountId, it.relation)
+                    )
+                }
+            }
+        }
+        guardianRepository.save(guardiansToAdd.map {
             Guardian(
                     guardianAccount = accountService.getAccountById(it.accountId),
                     relation = it.relation
@@ -138,54 +157,56 @@ class StudentService @Autowired constructor(
         }
         return studentRepo.save(student).guardians
     }
-
     @Transactional
     fun importStudentsFromCsv(csvContent: InputStream) {
-
         val csvReader = CSVReaderBuilder(InputStreamReader(csvContent))
                 .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
                 // Skip the header
                 .withSkipLines(1)
                 .build()
-
-        val records: List<Array<String>> = csvReader.readAll()
-
+        importStudentsFrom2DArray(csvReader.readAll())
+    }
+    @Transactional
+    fun importStudentsFrom2DArray(records: List<Array<String>>) {
         for (record: Array<String> in records) {
-
-            var newAccount: Account
-
-            try {
-                newAccount = accountRepo.findByEmail(record[3]).get().let {
-                    it.firstName = record[4]
-                    it.lastName = record[7]
-                    it.phone = null
-                    it.type = AccountType.STUDENT
-                    it.preferredName = record[8]
-                    it.subject = null
-                    accountRepo.save(it)
+            val newAccount =
+                    accountRepo.findByEmail(record[3]).let {
+                        if (it.isPresent) {
+                            it.get().let {
+                                it.firstName = record[4]
+                                it.lastName = record[7]
+                                it.phone = null
+                                it.type = AccountType.STUDENT
+                                it.preferredName = record[8]
+                                it.subject = null
+                                accountRepo.save(it)
+                            }
+                        } else {
+                            accountRepo.save(
+                                    Account(
+                                            firstName = record[4],
+                                            lastName = record[7],
+                                            email = record[3],
+                                            phone = null,
+                                            type = AccountType.STUDENT,
+                                            preferredName = record[8],
+                                            subject = null
+                                    )
+                            )
+                        }
+                    }
+            val processedCardSecret = if (record[1] == "NULL") null else record[1]
+            if (processedCardSecret !== null) {
+                studentRepo.findByCardSecret(processedCardSecret).let {
+                    if (it.isPresent) {
+                        it.get().cardSecret = null
+                        studentRepo.save(it.get())
+                    }
                 }
-
-            } catch (e: NoSuchElementException) {
-                newAccount = accountRepo.save(
-                        Account(
-                                firstName = record[4],
-                                lastName = record[7],
-                                email = record[3],
-                                phone = null,
-                                type = AccountType.STUDENT,
-                                preferredName = record[8],
-                                subject = null
-                        )
-                )
             }
-
-            var processedCardSecret: String? = null
-            if (record[1] == "NULL") {
-            } else {
-                processedCardSecret = record[1]
-
-                try {
-                    studentRepo.findByIdNumber(record[6]).get().let {
+            studentRepo.findByIdNumber(record[6]).let {
+                if (it.isPresent) {
+                    it.get().let {
                         it.cardSecret = processedCardSecret
                         it.grade = record[5].toInt()
                         it.dateOfBirth = null
@@ -195,8 +216,7 @@ class StudentService @Autowired constructor(
                         it.account = newAccount
                         studentRepo.save(it)
                     }
-
-                } catch (e: NoSuchElementException) {
+                } else {
                     studentRepo.save(Student(
                             idNumber = record[6],
                             cardSecret = processedCardSecret,

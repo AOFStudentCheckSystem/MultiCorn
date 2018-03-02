@@ -31,14 +31,14 @@ class StickyNoteService @Autowired constructor(
 
     @Transactional
     fun deleteNote(request: StickyNoteRequest): List<StickyNote> {
-        return stickyNoteRepository.deleteByNoteId(request.noteId)
+        return stickyNoteRepository.deleteByNoteId(request.noteQueryId)
     }
 
     @Transactional
     fun editNote(request: StickyNoteRequest): StickyNote {
 
         val theNote = try {
-            stickyNoteRepository.findByNoteId(request.noteId).get()
+            stickyNoteRepository.findByNoteId(request.noteQueryId).get()
         } catch (e: NoSuchElementException) {
             throw EntityNotFoundException("Note not found")
         }
@@ -49,6 +49,7 @@ class StickyNoteService @Autowired constructor(
         if (request.text != null) {
             theNote.text = request.text
         }
-        return theNote
+
+        return stickyNoteRepository.save(theNote)
     }
 }
