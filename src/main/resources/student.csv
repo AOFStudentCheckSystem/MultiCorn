@@ -1,0 +1,409 @@
+id,"card_secret","dorm","email","first_name",grade,"id_number","last_name","preferred_name",student_type
+1,"3B880100030506649889C03C","ELE 2-B7","aaronw@avonoldfarms.com","William",11,"100127260","Aaron","Will",1
+2,"3B88010003050664993480C0","JEN-6","aceem@avonoldfarms.com","Moses",11,"100729540","Acee","Moe",1
+3,"3b8801000305066499b200c6","ELE 2-223","adamsk@avonoldfarms.com","Kody",11,"100072660","Adams","Kody",1
+4,"3B880100030506E4975900A3","BH-212","ahnj@avonoldfarms.com","Junyeop",12,"100050430","Ahn","Jun",1
+5,"3b88010003050664993a004e","DAY","alih@avonoldfarms.com","Hashim",10,"100728910","Ali","Hashim",2
+6,"3B880100030506649921C095","PEL-304","allena@avonoldfarms.com","Andrew",9,"100702390","Allen","Andy",1
+7,"3b8801000305066499674053","DIO-204","alleng@avonoldfarms.com","Gordon",11,"100620500","Allen","Gordon",1
+8,"3b8801000305066499704044","ELE 3-301","allenw@avonoldfarms.com","William",11,"100620510","Allen","William",1
+9,"3B880100030506E497FB8081","BH Annex-B1","allisont@avonoldfarms.com","Tyson",10,"100632790","Allison","Tyson",1
+10,"3B880100030506649929401D","JEN-13","amabilinob@avonoldfarms.com","Brian",12,"100729460","Amabilino i Pérez","Brian",1
+11,"3b88010003050664998940bd","ELE 3-309","amezcuaj@avonoldfarms.com","Jeronimo",9,"100710650","Amezcua","Jeronimo",1
+12,"3B88010003050664987FC0CA","DAY","andersonc@avonoldfarms.com","Collin",10,"100614460","Anderson","Collin",2
+13,"3B880100030506649928C09C","JEN-10","andersonrl@avonoldfarms.com","Robert",12,"100683650","Anderson","Luc",1
+14,"3B8801000305066498F38006","ELE 2-210","andersonrs@avonoldfarms.com","Rohan",9,"100672770","Anderson","Michael",1
+15,"3B88010003050664987F000A","DAY","andrewsc@avonoldfarms.com","Cameron",11,"100634850","Andrews","Cam",2
+16,"3b8801000305066499aac01e","ELE 2-B5","ans@avonoldfarms.com","Seulchan",11,"100613430","An","Matthew",1
+17,"3B88010003050664992B005F","JEN-5","apostolosa@avonoldfarms.com","Alexander",11,"100715740","Apostolos","Alex",1
+18,"3b88010003050664995480a0","DAY","argazzia@avonoldfarms.com","Anthony",9,"100679420","Argazzi","AJ",2
+19,"3B880100030506E497D7C0ED","JEN-13","aruwajoyek@avonoldfarms.com","Kehinde",12,"100596690","Aruwajoye","Kenny",1
+20,"3B8801000305066499350041","JEN-6","aslanidisa@avonoldfarms.com","Alexandros",11,"100710700","Aslanidis","Alex",1
+21,"3b88010003050664991e006a","DAY","aubec@avonoldfarms.com","Christopher",9,"100678370","Aube","Chris",2
+22,"3b88010003050664990480f0","DIO-210","aughtryr@avonoldfarms.com","Robert",11,"100708430","Aughtry","Robert",1
+23,"3B88010003050664987E404B","JEN-7","Badieer@avonoldfarms.com","Reza",11,"100617080","Badiee","Reza",1
+24,"3B880100030506E496CC4077","JEN-8","baioi@avonoldfarms.com","Ian",12,"100046780","Baio","Ian",1
+25,"3b8801000305066498d440e1","DAY","banksj@avonoldfarms.com","Jalen",11,"100076320","Banks","Jalen",2
+26,"3b880100030506649914c0a0","DAY","bartkiewiczda@avonoldfarms.com","Dane",12,"100052140","Bartkiewicz","Dane",2
+27,"3B8801000305066499314005","EAG-216","batchelderc@avonoldfarms.com","Charles",12,"100583750","Batchelder","Chad",1
+28,"3B880100030506E495B84000","PEL-212","battsm@avonoldfarms.com","Matthew",12,"100036280","Batts","Matt",1
+29,"3B880100030506E495DD80A5","DAY","bednarza@avonoldfarms.com","Austin",12,"100047610","Bednarz","Austin",2
+30,"3b88010003050664992bc09f","DAY","belenardoj@avonoldfarms.com","Joseph",9,"100679360","Belenardo","Joey",2
+31,"3B880100030506E497EF8095","JAM-10","belyaevm@avonoldfarms.com","Maxim",12,"100052830","Belyaev","Max",1
+32,"3b88010003050664991580e1","DAY","bentonc@avonoldfarms.com","Connor",10,"100647450","Benton","Connor",2
+33,"3B8801000305066498EC0099","ELE 3-A9","berggrenb@avonoldfarms.com","Benjamin",11,"100072760","Berggren","Benny",1
+34,NULL,"DAY","berklas@avonoldfarms.com","August",9,"100682950","Berklas","August",2
+35,"3B8801000305066498EE40DB","ELE 2-222","bernardj@avonoldfarms.com","Jordan",10,"100621350","Bernard","Jordan",1
+36,"3B880100030506E496B84003","ELE 2-200","bhakdibhumib@avonoldfarms.com","Burapol",12,"100588490","Bhakdibhumi","Boon",1
+37,"3B88010003050664987CC0C9","BH-104","Bhakdibhumibh@avonoldfarms.com","Bhakapol",11,"100607950","Bhakdibhumi","Bon",1
+38,"3B8801000305066498F08005","JEN-9","bilala@avonoldfarms.com","Amari",12,"100682140","Bilal","Amari",1
+39,"3b8801000305066499ab409f","ELE 3-B10","blasbergr@avonoldfarms.com","Ryan",11,"100716170","Blasberg","Ryan",1
+40,"3B8801000305066499344000","EAG-206","blatchfordi@avonoldfarms.com","Ian",11,"100714310","Blatchford","Ian",1
+41,"3b8801000305066499a000d4","JAM-4","boatengs@avonoldfarms.com","Samuel",11,"100125170","Boateng","Sam",1
+42,"3B88010003050664995880AC","ELE 2-224","bogers@avonoldfarms.com","Samuel",11,"100715710","Boger","Sam",1
+43,"3B8801000305066498F340C6","EAG-202","boterot@avonoldfarms.com","Thor",11,"100706750","Botero","Thor",1
+44,"3b8801000305066499b4c000","DAY","boydb@avonoldfarms.com","Benjamin",9,"100702240","Boyd","Benjamin",2
+45,"3b8801000305066499a18055","EAG-304","boyersa@avonoldfarms.com","Aidan",10,"100076630","Boyers","Aidan",1
+46,"3B88010003050664987B808E","DAY","brennanm@avonoldfarms.com","Mackinnon",10,"100606950","Brennan","Mack",2
+47,"3B880100030506E497DF4065","DAY","brezenoffa@avonoldfarms.com","Alexander",11,"100083880","Brezenoff","Alex",2
+48,"3b880100030506649909c0bd","ELE 2-A7","brooksd@avonoldfarms.com","Dawson",12,"100710520","Brooks","Dawson",1
+49,"3B880100030506E4974100BB","ELE 2-A5","bryanr@avonoldfarms.com","Roland",12,"100073590","Bryan","Ro",1
+50,"3b8801000305066499000074","ELE 2-207","budkos@avonoldfarms.com","Stepan",9,"999999950","Budko","Stepan",1
+51,"3B880100030506E497FE8084","JAM-11","burkea@avonoldfarms.com","Andrew",12,"100596230","Burke","Andrew",1
+52,"3b8801000305066499530027","DAY","burkiz@avonoldfarms.com","Zain",9,"100704750","Burki","Zain",2
+53,"3b880100030506649911c0a5","DAY","bursteinb@avonoldfarms.com","Benjamin",10,"100621750","Burstein","Ben",2
+54,"3B880100030506E495D9C0E1","DAY","calcinaric@avonoldfarms.com","Christopher",11,"100046130","Calcinari","CJ",2
+55,"3B8801000305066499500024","ELE 3-309","callahanm@avonoldfarms.com","Michael",9,"100686000","Callahan","Michael",1
+56,"3B880100030506E496B480CF","PEL-209","callahanp@avonoldfarms.com","Peter",12,"100072870","Callahan","Peter",1
+57,"3B880100030506649879C0CC","PEL-221","capassoa@avonoldfarms.com","Anthony",10,"100609860","Capasso","Anthony",1
+58,"3B88010003050664987A000F","PEL-302","capassoan@avonoldfarms.com","Andrew",10,"100610010","Capasso","Andrew",1
+59,"3B880100030506649819006C","DAY","capozzolis@avonoldfarms.com","Scott",11,"100078240","Capozzoli","Scott",2
+60,"3B880100030506E496B3C088","EAG-209","carlisles@avonoldfarms.com","Stuart",11,"100074220","Carlisle","Stuart",1
+61,"3b8801000305066499a14095","ELE 2-A2","casads@avonoldfarms.com","Samuel",12,"100676940","Casad","Sam",1
+62,"3b8801000305066499b38047","PEL-308","catalinaf@avonoldfarms.com","Frank",11,"100685190","Catalina","Frank",1
+63,"3b8801000305066499b04084","DIO-215","cesarskiw@avonoldfarms.com","Walter",10,"100618510","Cesarski","Walter",1
+64,"3B880100030506649878808D","DAY","chahoa@avonoldfarms.com","Alex",10,"100620160","Chaho","Alex",2
+65,"3b88010003050664993780c3","DAY","chamberlainf@avonoldfarms.com","Francis",11,"100727360","Chamberlain","Rollie",2
+66,"3B880100030506E496B30048","PEL-306","chandorp@avonoldfarms.com","Peter",11,"100126610","Chandor","Peter",1
+67,"3B880100030506649950C0E4","EAG-306","changh@avonoldfarms.com","Ho Kwan",9,"100714210","Chang","Moses",1
+68,"3B880100030506649878404D","ELE 3-A11","changs@avonoldfarms.com","Sehoon",10,"100600850","Chang","Simon",1
+69,"3B88010003050664993CC088","EAG-304","choc@avonoldfarms.com","Chang Bin",10,"100684580","Cho","Brian",1
+70,"3B880100030506E496B24009","BH-212","chos@avonoldfarms.com","Seongwoon",12,"100084890","Cho","Seongwoon",1
+71,"3B880100030506E496B180CA","ELE 2-215","chosy@avonoldfarms.com","Si Yeon",11,"100078710","Cho","Sean",1
+72,"3B880100030506E496B1400A","EAG-224","christensenw@avonoldfarms.com","William",12,"100584800","Christensen","Will",1
+73,"3B88010003050664989DC028","EAG-215","chut@avonoldfarms.com","Tzu-Cheng",12,"100078290","Chu","Jimmy",1
+74,"3B8801000305066498B74082","PEL-300","colehowerj@avonoldfarms.com","Jackson",12,"100625800","Colehower","Jackson",1
+75,"3B88010003050664991B006F","EAG-200","collinsj@avonoldfarms.com","John",12,"100712870","Collins","Jack",1
+76,"3B8801000305066499374003","EAG-302","collinsw@avonoldfarms.com","William",10,"100711770","Collins","Will",1
+77,"3B88010003050664993E400A","BH Annex-B1","columbusb@avonoldfarms.com","Bo",10,"100630710","Columbus","Bo",1
+78,"3B880100030506E496AF4014","BH-110","coniffd@avonoldfarms.com","Davis",11,"100068760","Coniff","Davis",1
+79,"3b880100030506649966c0d2","JEN-3","conroyp@avonoldfarms.com","Paden",10,"100615510","Conroy","Paden",1
+80,"3B8801000305066498760003","BH-206","cookd@avonoldfarms.com","Darian",12,"100634970","Cook","Darian",1
+81,"3B88010003050664993D80C9","ELE 3-303","coopers@avonoldfarms.com","Shane",10,"100684490","Cooper","Shane",1
+82,"3B880100030506649875C0C0","PEL-215","corlissc@avonoldfarms.com","Christian",10,"100596910","Corliss","Christian",1
+83,NULL,"DAY","corningd@avonoldfarms.com","Dashiell",9,"100683850","Corning","Dash",2
+84,"3B880100030506649939004D","DIO-216","coxt@avonoldfarms.com","Tyler",10,"100635230","Cox","Tyler",1
+85,"3b8801000305066499b2c006","ELE 2-205","cuffek@avonoldfarms.com","Kyle",9,"100707670","Cuffe","Kyle",1
+86,"3B880100030506E497EC8096","ELE 3-A10","culhaneh@avonoldfarms.com","Henry",10,"100624990","Culhane","Henry",1
+87,"3B88010003050664983080C5","ELE 3-A10","cumberbatchk@avonoldfarms.com","Khamal",10,"100627230","Cumberbatch","Khamal",1
+88,"3b8801000305066499c28036","DIO-306","cummingsc@avonoldfarms.com","Chase",9,"100676700","Cummings","Chase",1
+89,"3b88010003050664995780a3","DAY","curleyl@avonoldfarms.com","Liam",9,"100681330","Curley","Liam",2
+90,"3B8801000305066499120066","PEL-200","curtisw@avonoldfarms.com","William",12,"100658460","Curtis","Will",1
+91,NULL,"DAY","daddabbom@avonoldfarms.com","M. Coholan",9,"100706000","D'Addabbo","Cohl",2
+92,"3b8801000305066499b700c3","ELE 2-200","daix@avonoldfarms.com","Xufeng",11,"100598540","Dai","Caesar",1
+93,"3b8801000305066499a3c017","JAM-1","damokoshe@avonoldfarms.com","Ethan",12,"100131710","Damokosh","Ethan",1
+94,"3B880100030506E495D780AF","ELE 3-300","danielsonq@avonoldfarms.com","Quentin",12,"100051150","Danielson","Quentin",1
+95,"3B88010003050664991DC0A9","ELE 2-209","davisb@avonoldfarms.com","Barclay",9,"100617280","Davis","Clay",1
+96,"3B880100030506E494208059","DAY","deckerse@avonoldfarms.com","Evan",12,"100035730","Deckers","Evan",2
+97,"3B8801000305066498A68053","DAY","deckersg@avonoldfarms.com","Graham",10,"100584260","Deckers","Graham",2
+98,"3B8801000305066498FDC048","DIO-205","dejongs@avonoldfarms.com","Samuel",11,"100073210","de Jong","Sam",1
+99,"3B88010003050664988AC03F","ELE 3-A8","delacruza@avonoldfarms.com","Alvaro",12,"100054150","de la Cruz","Alvaro",1
+100,"3B8801000305066498054030","JAM-2","dellaconob@avonoldfarms.com","Ben",11,"100673350","Dellacono","Ben",1
+101,"3B88010003050664991C80E8","ELE 3-308","desjardinss@avonoldfarms.com","Sean",9,"100679200","Desjardins","Sean",1
+102,"3b88010003050664998400f0","ELE 3-307","diazc@avonoldfarms.com","Carlos",9,"100713310","Diaz","Carlos",1
+103,"3B880100030506649960C0D4","ELE 2-214","dibonac@avonoldfarms.com","Charles",11,"100712460","Di Bona","Trey",1
+104,"3B8801000305066499220056","EAG-307","dibonaj@avonoldfarms.com","James",9,"100620290","Di Bona","Chase",1
+105,"3B880100030506E496D30028","DIO-213","dieterichf@avonoldfarms.com","F. Semler",12,"100032220","Dieterich","Semler",1
+106,"3b880100030506649900c0b4","JAM-1","dinicolaj@avonoldfarms.com","Joseph",12,"100046260","DiNicola","Joe",1
+107,"3B88010003050664986BC0DE","PEL-211","dodgen@avonoldfarms.com","Nathaniel",12,"100660030","Dodge","Nate",1
+108,"3b8801000305066499b34087","BH-209","donlana@avonoldfarms.com","Andrew",10,"100595030","Donlan","Drew",1
+109,"3b88010003050664994980bd","DAY","dowlingb@avonoldfarms.com","Brian",9,"100683420","Dowling","Brian",2
+110,"3b8801000305066498f40081","DAY","drewb@avonoldfarms.com","Brian",12,"100048100","Drew","Brian",2
+111,"3B880100030506E496A980D2","DAY","driggsj@avonoldfarms.com","Jack",12,"100044280","Driggs","Jack",2
+112,"3B8801000305066498F2C047","JEN-9","dubes@avonoldfarms.com","Sean",12,"100677920","Dube","Sean",1
+113,"3B88010003050664992980DD","ELE 2-A7","duncano@avonoldfarms.com","Oisin",12,"100713020","Duncan","Oisin",1
+114,"3B880100030506E4975440EE","DIO-208","duq@avonoldfarms.com","Qinyang",11,"100076890","Du","Peter",1
+115,"3B880100030506E495D4406C","DAY","duwanc@avonoldfarms.com","Christopher",11,"100046020","Duwan","Christopher",2
+116,"3b88010003050664993ac08e","DAY","dyerb@avonoldfarms.com","Brendan",11,"100709790","Dyer","Brendan",2
+117,"3B880100030506E496A80053","ELE 2-B6","ellisb@avonoldfarms.com","Bryan",12,"100044100","Ellis","Bryan",1
+118,"3B88010003050664985380A6","ELE 3-301","ellisbw@avonoldfarms.com","Brad",11,"100597720","Ellis","Brad",1
+119,"3B880100030506E49760009A","DAY","eschertj@avonoldfarms.com","John",11,"100081350","Eschert","Jack",2
+120,"3b8801000305066499b7c003","ELE 2-B1","ewingg@avonoldfarms.com","Gavin",12,"100077870","Ewing","Gavin",1
+121,"3B880100030506E495D2406A","ELE 2-A3","farnamw@avonoldfarms.com","William",12,"100045940","Farnam","William",1
+122,"3b88010003050664991ec0aa","DAY","feketec@avonoldfarms.com","Charles",9,"100678130","Fekete","Charlie",2
+123,"3b88010003050664993c0048","DAY","feketes@avonoldfarms.com","Samuel",10,"100681900","Fekete","Sam",2
+124,"3b88010003050664988c00f9","BH-203","fengy@avonoldfarms.com","Yao Tian",12,"100056270","Feng","Peter",1
+125,"3B88010003050664992C4018","EAG-204","ferliseg@avonoldfarms.com","Giancarlo",11,"100045140","Ferlise","Giancarlo",1
+126,"3B8801000305066498878072","ELE 2-A3","fidanqued@avonoldfarms.com","Daniel",12,"100632330","Fidanque","Daniel",1
+127,"3B88010003050664991D0069","ELE 3-307","finateria@avonoldfarms.com","Aeden",9,"100696880","Finateri","Aeden",1
+128,"3b8801000305066499a300d7","ELE 3-A9","fitzpatrickm@avonoldfarms.com","Macklin",11,"100083660","Fitzpatrick","Mack",1
+129,"3B88010003050664982D4018","ELE 2-221","flanaganq@avonoldfarms.com","Quinn",10,"100584650","Flanagan","Quinn",1
+130,"3B88010003050664990E403A","DIO-304","flanaganse@avonoldfarms.com","Sean",11,"100077140","Flanagan","Sean",1
+131,"3b88010003050664994a80be","DAY","foleyl@avonoldfarms.com","Luke",9,"100709500","Foley","Luke",2
+132,"3B88010003050664993880CC","JEN-3","fosterm@avonoldfarms.com","Michael",10,"100671330","Foster","Mike",1
+133,"3B880100030506E49709C033","PEL-301","frickeh@avonoldfarms.com","Heberton",11,"100076370","Fricke","Burton",1
+134,"3B880100030506E4970900F3","DAY","frutuosoc@avonoldfarms.com","Christopher",11,"100045090","Frutuoso","Chris",2
+135,"3B8801000305066498730006","DIO-217","fungp@avonoldfarms.com","Polam",10,"100595710","Fung","Polam",1
+136,"3B88010003050664992080D4","PEL-305","furneauxh@avonoldfarms.com","Henry",9,"100682930","Furneaux","Henry",1
+137,"3B88010003050664995D80A9","JAM-6","gadowskym@avonoldfarms.com","MacDonald",10,"100677740","Gadowsky","Mac",1
+138,"3B8801000305066498124027","DIO-TT","gardellab@avonoldfarms.com","Barton",11,"100494640","Gardella","Barton",1
+139,"3B8801000305066498728087","DAY","gartm@avonoldfarms.com","Maxwell",10,"100609430","Gart","Max",2
+140,"3b88010003050664994f407b","DAY","gauthiera@avonoldfarms.com","Ayden",9,"100678640","Gauthier","Ayden",2
+141,"3B880100030506649919402D","DIO-218","gearyj@avonoldfarms.com","Jack",10,"100670660","Geary","Jack",1
+142,"3B880100030506E497DDC0E7","JAM-7","gengd@avonoldfarms.com","Deming",11,"100127400","Geng","Nicolas",1
+143,"3B880100030506E49726409C","JEN-8","gerskyw@avonoldfarms.com","William",12,"100597470","Gersky","Will",1
+144,"3B8801000305066498724047","BH-104","giraultpardoj@avonoldfarms.com","Jorge",11,"100609780","Girault Pardo","Jorge",1
+145,"3b88010003050664994ec0fa","DAY","glaspeyj@avonoldfarms.com","John",9,"100674480","Glaspey","Jack",2
+146,"3B880100030506E495CC80B4","DAY","glennk@avonoldfarms.com","Kyle",12,"100052430","Glenn","Kyle",2
+147,"3B880100030506E4970840B2","DAY","godboutm@avonoldfarms.com","Maxwell",11,"100077500","Godbout","Max",2
+148,"3b88010003050664999d40a9","BH Annex-B4","gongy@avonoldfarms.com","Yunfan",12,"100050010","Gong","Jason",1
+149,"3b8801000305066499b68042","JEN-4","gordone@avonoldfarms.com","Elijah",11,"100073230","Gordon","Elijah",1
+150,"3B8801000305066499204014","PEL-305","gordont@avonoldfarms.com","Tyler",9,"100676380","Gordon","Tyler",1
+151,"3b88010003050664994f80bb","DAY","gravinaa@avonoldfarms.com","Aiden",9,"100715440","Gravina","Aiden",2
+152,"3b8801000305066499164022","JEN-12","grayja@avonoldfarms.com","Jacob",12,"100675520","Gray","Jake",1
+153,"3b880100030506649948003c","DAY","grossh@avonoldfarms.com","Gabriel",11,"100708990","Gross","Gabe",2
+154,"3B8801000305066498718084","EAG-213","guilmartj@avonoldfarms.com","Joshua",12,"100622980","Guilmart","Josh",1
+155,"3B88010003050664990AC0BE","ELE 3-306","hadend@avonoldfarms.com","David Elijah",9,"100680160","Haden","David",1
+156,"3B880100030506E4970600FC","ELE 3-302","hamerj@avonoldfarms.com","Jelani",11,"100079660","Hamer","Jelani",1
+157,"3B88010003050664991F80EB","DIO-308","hartmanj@avonoldfarms.com","Jace",9,"100680770","Hartman","Jace",1
+158,"3B880100030506E4974640FC","EAG-301","haskinh@avonoldfarms.com","Hudson",12,"100049210","Haskin","Hudson",1
+159,"3B8801000305066499210055","PEL-302","heinket@avonoldfarms.com","Timothy",9,"100707080","Heinke","Timothy",1
+160,"3B88010003050664995180A5","EAG-303","helsleyd@avonoldfarms.com","David",10,"100705650","Helsley","David",1
+161,"3b8801000305066499b58041","EAG-219","hendrickst@avonoldfarms.com","Thomas",12,"100083040","Hendricks","TJ",1
+162,"3B880100030506E4970300F9","ELE 2-B2","hennessyc@avonoldfarms.com","Christopher",12,"100077930","Hennessy","Chris",1
+163,"3B8801000305066498F10084","EAG-308","henricha@avonoldfarms.com","Alexander",9,"100680260","Henrich","Xan",1
+164,"3B8801000305066499234017","BH-211","hershkowitzm@avonoldfarms.com","Matthew",11,"100716320","Hershkowitz","Matthew",1
+165,"3b8801000305066499b8c00c","BH-209","hillw@avonoldfarms.com","Warren",10,"100603490","Hill","Warren",1
+166,"3b8801000305066499c440f0","EAG-303","hollerans@avonoldfarms.com","Samuel",10,"100729160","Holleran","Sam",1
+167,"3B88010003050664995AC0EE","BH-211","houghj@avonoldfarms.com","John",11,"100697430","Hough","Sam",1
+168,"3B88010003050664989E00EB","PEL-309","hubbardc@avonoldfarms.com","Christian",11,"100069100","Hubbard","Christian",1
+169,"3B880100030506E4972D00D7","DIO-211","hunterj@avonoldfarms.com","Jared",11,"100593570","Hunter","Jared",1
+170,"3B880100030506E495AC80D4","DIO-301","huveldtk@avonoldfarms.com","Kevin",12,"100049360","Huveldt","Kevin",1
+171,"3B880100030506E4970140BB","DIO-304","indomenicog@avonoldfarms.com","Gaetano",11,"100077170","Indomenico","Tommy",1
+172,NULL,"DAY","indomenicom@avonoldfarms.com","Michael",9,"100683600","Indomenico","Michael",2
+173,"3B8801000305066498A34096","PEL-218","intratorw@avonoldfarms.com","Wyatt",10,"100702050","Intrator","Wyatt",1
+174,"3B880100030506E49700C03A","ELE 2-213","inwoodc@avonoldfarms.com","Cameron",11,"100077960","Inwood","Cameron",1
+175,"3b8801000305066499ab805f","ELE 2-218","jacksoni@avonoldfarms.com","Isaiah",10,"100617050","Jackson","Isaiah",1
+176,"3B880100030506E4970000FA","PEL-308","jagtianij@avonoldfarms.com","Jayden",11,"100044980","Jagtiani","Jayden",1
+177,"3b8801000305066499464072","DAY","jainm@avonoldfarms.com","Millan",9,"100679020","Jain","Millan",2
+178,"3B880100030506649936C082","DIO-219","jarvist@avonoldfarms.com","Terrell",10,"100676140","Jarvis","TJ",1
+179,"3B88010003050664990C0078","ELE 2-A5","jaureguia@avonoldfarms.com","Alejandro",12,"100627490","Jauregui","Alejandro",1
+180,"3b88010003050664990f007b","DAY","jemisons@avonoldfarms.com","Symien",10,"100613750","Jemison","Symien",2
+181,"3B880100030506E496FF8084","DAY","jensenm@avonoldfarms.com","Matthew",11,"100586340","Jensen","Matt",2
+182,"3b8801000305066499470033","PEL-304","jinz@avonoldfarms.com","Zheng Yang",9,"100698510","Jin","Andy",1
+183,"3b88010003050664998340b7","BH-212","jungs@avonoldfarms.com","Seung Min",12,"100129550","Jung","Mike",1
+184,"3B8801000305066498F940CC","EAG-309","karoln@avonoldfarms.com","Nicholas",9,"100685760","Karol","Nick",1
+185,"3B8801000305066498FEC04B","ELE 2-212","kasperzykdc@avonoldfarms.com","Dylan",9,"100680880","Kasperzyk","Dylan",1
+186,"3B8801000305066498C400B1","BH-105","keatingj@avonoldfarms.com","Jeremiah",11,"100043890","Keating","Jerry",1
+187,"3B880100030506649905C0B1","DIO-222","kelleyw@avonoldfarms.com","William",12,"100065650","Kelley","Ned",1
+188,"3B880100030506E496FC8087","BH-109","keroackn@avonoldfarms.com","Nicholas",12,"100079290","Keroack","Nick",1
+189,"3b8801000305066499758081","DIO-303","kimdohan@avonoldfarms.com","Do Han",11,"100670630","Kim","Do Han",1
+190,"3B880100030506649939C08D","EAG-305","kime@avonoldfarms.com","Eugene",10,"100675970","Kim","Eugene",1
+191,"3B880100030506E4977EC044","BH-205","kindels@avonoldfarms.com","Sawyer",12,"100046190","Kindel","Sawyer",1
+192,"3B880100030506E4976B8011","ELE 2-A1","kirbyr@avonoldfarms.com","Reade",12,"100035490","Kirby","Reade",1
+193,"3B88010003050664984FC0FA","ELE 3-B8","kirwanm@avonoldfarms.com","Matthew",12,"100632740","Kirwan","Matt",1
+194,"3B8801000305066499330047","ELE 3-B11","kirwanr@avonoldfarms.com","Ryan",10,"100710040","Kirwan","Ryan",1
+195,"3B880100030506E496FC4047","DAY","klinzmanna@avonoldfarms.com","Andrew",12,"100591570","Klinzmann","Andrew",2
+196,"3B88010003050664990FC0BB","JAM-3","klippkaplanr@avonoldfarms.com","Ross",11,"100080580","Klipp Kaplan","Ross",1
+197,"3B880100030506E495A580DD","ELE 2-A4","knowltonc@avonoldfarms.com","Caleb",12,"100048920","Knowlton","Caleb",1
+198,"3b8801000305066498fbc04e","DAY","kowalskid@avonoldfarms.com","Derek",12,"100046740","Kowalski","Derek",2
+199,"3b8801000305066499bf804b","PEL-224","kragg@avonoldfarms.com","Gardner",10,"100611500","Krag","Gardner",1
+200,"3B880100030506E496FA4041","DAY","krupnikoffs@avonoldfarms.com","Samuel",11,"100069190","Krupnikoff","Sam",2
+201,"3B880100030506649942C0F6","EAG-306","landinil@avonoldfarms.com","Lorenzo",9,"100679920","Landini","Lorenzo",1
+202,"3B880100030506E496D6C0ED","DAY","lastc@avonoldfarms.com","Carson",12,"100046900","Last","Carson",2
+203,"3B88010003050664990E80FA","ELE 3-B9","latrental@avonoldfarms.com","Lucas",11,"100043600","Latrenta","Lucas",1
+204,"3B880100030506E496F80003","JAM-9","lawrenceb@avonoldfarms.com","Bryan",12,"100129730","Lawrence","Bryan",1
+205,"3b88010003050664994c4078","DAY","lawsona@avonoldfarms.com","Anthony",9,"100705060","Lawson","Anthony",2
+206,"3B880100030506E495A2C09A","DAY","lazorj@avonoldfarms.com","Jack",12,"100048080","Lazor","Jack",2
+207,"3B88010003050664984D4078","DAY","lazorm@avonoldfarms.com","Matthew",10,"100609490","Lazor","Matt",2
+208,"3B88010003050664984C0039","DIO-220","leeh@avonoldfarms.com","Heejai",10,"100617500","Lee","Heejai",1
+209,"3B8801000305066498A8C01D","ELE 3-A11","leehy@avonoldfarms.com","Ho Young",10,"100629430","Lee","Byul",1
+210,"3B880100030506E495A2005A","ELE 3-A8","leej@avonoldfarms.com","Joon Ho",12,"100056210","Lee","Joon Ho",1
+211,"3B8801000305066499170063","ELE 3-303","leep@avonoldfarms.com","Pok Wa",10,"100700850","Lee","Herman",1
+212,"3B88010003050664984B407E","JEN-7","leesfieldm@avonoldfarms.com","Michael",11,"100612180","Leesfield","Michael",1
+213,"3B880100030506E49728C012","DIO-214","lemieuxz@avonoldfarms.com","Zachary",12,"100086230","Lemieux","Zack",1
+214,"3B880100030506E496CF4074","ELE 3-B9","leonardh@avonoldfarms.com","Harrison",11,"100081650","Leonard","Harrison",1
+215,"3b88010003050664990d80f9","DAY","leopoldm@avonoldfarms.com","Matthew",9,"100712520","Leopold","Matt",2
+216,"3b8801000305066498f8c04d","DAY","levinb@avonoldfarms.com","Benjamin",11,"100715240","Levin","Ben",2
+217,"3B88010003050664984AC0FF","ELE 2-216","levinr@avonoldfarms.com","Reece",10,"100608580","Levin","Reece",1
+218,"3b88010003050664992c80d8","ELE 3-304","lewist@avonoldfarms.com","Treylin",10,"100602210","Lewis","Trey",1
+219,"3B880100030506649849003C","PEL-220","limj@avonoldfarms.com","Jaesang",10,"100626500","Lim","Jaesang",1
+220,"3B8801000305066498C58030","JEN-2","link@avonoldfarms.com","Kai",11,"100619790","Lin","Kai",1
+221,"3B880100030506E4977640CC","BH Annex-B5","liptrotan@avonoldfarms.com","Andrew",12,"100055350","Liptrot","Drew",1
+222,"3B880100030506E497E80012","BH-203","liup@avonoldfarms.com","Peiqi",11,"100085790","Liu","Tony",1
+223,"3b8801000305066499a44090","ELE 2-219","lix@avonoldfarms.com","Xihe",10,"100611190","Li","Jimmy",1
+224,"3B880100030506649848407D","PEL-205","lohrc@avonoldfarms.com","Carter",12,"100646560","Lohr","Carter",1
+225,"3B880100030506649935C081","ELE 3-B11","louderj@avonoldfarms.com","John",10,"100705740","Louder","John",1
+226,"3B88010003050664984780B2","EAG-205","luf@avonoldfarms.com","Feng",11,"100602000","Lu","Feng",1
+227,"3B88010003050664995D4069","ELE 3-308","luoj@avonoldfarms.com","Jonathan",9,"100711460","Luo","Jonathan",1
+228,"3B88010003050664981D80E8","DAY","mackayl@avonoldfarms.com","Lucas",10,"100081480","MacKay","Luke",2
+229,"3b88010003050664990b80ff","DIO-307","mackj@avonoldfarms.com","Jemar",9,"100702450","Mack","Jemar",1
+230,"3B8801000305066499614055","EAG-221","maddens@avonoldfarms.com","Samuel",12,"100489790","Madden","Sam",1
+231,"3B880100030506649846C0F3","PEL-208","maitlandc@avonoldfarms.com","Chase",12,"100598300","Maitland","Chase",1
+232,"3B8801000305066498B0C005","PEL-210","malterf@avonoldfarms.com","Ford",12,"100084690","Malter","Ford",1
+233,"3B88010003050664981E402B","DAY","manafortj@avonoldfarms.com","Jon",11,"100074540","Manafort","Jon",2
+234,"3B8801000305066498460033","DAY","marshallb@avonoldfarms.com","Brendan",10,"100621660","Marshall","Brendan",2
+235,"3B8801000305066498BB408E","DAY","marshallc@avonoldfarms.com","Connor",12,"100048490","Marshall","Connor",2
+236,"3B880100030506E4959DC0A5","DAY","marshallh@avonoldfarms.com","Hunter",12,"100042640","Marshall","Hunter",2
+237,"3B880100030506649845C0F0","DAY","matalonn@avonoldfarms.com","Noah",10,"100597610","Matalon","Noah",2
+238,"3B8801000305066498450030","BH-210","matherq@avonoldfarms.com","Quinton",10,"100620870","Mather","Quinton",1
+239,"3B88010003050664991BC0AF","EAG-220","mazurczakc@avonoldfarms.com","Cooper",12,"100672140","Mazurczak","Cooper",1
+240,"3B880100030506649927C093","PEL-204","mccarthylg@avonoldfarms.com","Liam",12,"100676350","McCarthy","Liam",1
+241,"3B880100030506E497E0405A","EAG-207","mcintyrea@avonoldfarms.com","Augustin",11,"100081170","McIntyre","August",1
+242,"3b880100030506e49721c01b","DAY","mckenzied@avonoldfarms.com","Dylan",12,"100584760","Mckenzie","Dylan",2
+243,"3B88010003050664984480B1","JEN-2","mckernancs@avonoldfarms.com","Caleb",10,"100606400","McKernan","Caleb",1
+244,"3B88010003050664995C0028","EAG-222","mclaughlinb@avonoldfarms.com","Brock",12,"100680310","McLaughlin","Brock",1
+245,"3B880100030506649933C087","PEL-307","melgarj@avonoldfarms.com","Luis",11,"100727330","Melgar Gosselin","Jero",1
+246,"3B8801000305066498BB804E","DAY","mellawc@avonoldfarms.com","William",10,"100598380","Mella","Will",2
+247,"3b8801000305066498f1c044","DAY","menendeze@avonoldfarms.com","Ezekiel",10,"100624310","Menendez","Zeke",2
+248,"3B8801000305066498BD4088","JEN-1","merrella@avonoldfarms.com","Andrew",12,"100047870","Merrell","Andrew",1
+249,"3B8801000305066498A200D7","DIO-223","mickelsonr@avonoldfarms.com","Ryan",12,"100050560","Mickelson","Ryan",1
+250,"3B88010003050664995280A6","DIO-302","miklakoss@avonoldfarms.com","Stefan",11,"100705320","Miklakos","Stef",1
+251,"3b8801000305066498ee801b","PEL-301","millerm@avonoldfarms.com","Maxwell",11,"100069260","Miller","Max",1
+252,"3B8801000305066499420036","DIO-308","minamik@avonoldfarms.com","Kaito",9,"100713860","Minami","Kaito",1
+253,"3B8801000305066498020077","DAY","mineaug@avonoldfarms.com","Garrett",12,"100044870","Mineau","Garrett",2
+254,"3b8801000305066499a500d1","DAY","mineaut@avonoldfarms.com","Theodore",10,"100620360","Mineau","Teddy",2
+255,"3B880100030506E4975600AC","EAG-200","mollicaj@avonoldfarms.com","Jared",12,"100045890","Mollica","Jared",1
+256,"3B8801000305066498FA800F","EAG-302","moninj@avonoldfarms.com","John",10,"100711850","Monin","Drew",1
+257,"3B880100030506E49617806C","BH-103","moorec@avonoldfarms.com","Christopher",12,"100045590","Moore","Chris",1
+258,"3B88010003050664984D80B8","DAY","morrisb@avonoldfarms.com","Bradley",10,"100612210","Morris","Bradley",2
+259,"3B880100030506E497EC4056","PEL-309","morrisj@avonoldfarms.com","John",11,"100583450","Morris","Jake",1
+260,"3B8801000305066498BA00CF","DAY","morrn@avonoldfarms.com","Nolan",11,"100084620","Morr","Nolan",2
+261,"3b8801000305066498ff800a","DAY","motupallys@avonoldfarms.com","Saagar",9,"100698010","Motupally","Saagar",2
+262,"3b88010003050664991380e7","BH-202","muellerj@avonoldfarms.com","James",12,"100084090","Mueller","Jake",1
+263,"3B880100030506649953C0E7","PEL-307","murphyo@avonoldfarms.com","Owen",11,"100696910","Murphy","Owen",1
+264,"3b88010003050664994b003f","DAY","murphyr@avonoldfarms.com","Ryan",11,"100715960","Murphy","Ryan",2
+265,"3B880100030506E497AF0055","EAG-218","murraym@avonoldfarms.com","Myles",12,"100069280","Murray","Myles",1
+266,"3B880100030506E496E1405A","DAY","murrayw@avonoldfarms.com","William",11,"100083310","Murray","William",2
+267,"3b8801000305066498f8008d","DAY","namnoumb@avonoldfarms.com","Brian",9,"100681670","Namnoum","Brian",2
+268,"3B8801000305066498A100D4","DAY","nastrid@avonoldfarms.com","Dylan",12,"100045060","Nastri","Dylan",2
+269,"3B880100030506649963C0D7","DIO-305","ndiayem@avonoldfarms.com","Mouhamed",12,"100594670","Ndiaye","Mouha",1
+270,"3B8801000305066499600014","DIO-305","needhamj@avonoldfarms.com","John",11,"100727410","Needham","Jack",1
+271,"3B880100030506E496E0C0DB","DAY","nesporj@avonoldfarms.com","Joseph",12,"100586690","Nespor","Joey",2
+272,"3B8801000305066499454071","ELE 3-306","newmanb@avonoldfarms.com","Brett",9,"100681450","Newman","Brett",1
+273,"3B88010003050664984280B7","ELE 3-304","nicholsonj@avonoldfarms.com","James",10,"100619070","Nicholson","James",1
+274,"3B88010003050664991080E4","ELE 2-B7","niimuray@avonoldfarms.com","Yoshiatsu",12,"100585790","Niimura","Yoshi",1
+275,"3b880100030506649955c0e1","DAY","nunezr@avonoldfarms.com","Ryan",9,"100677070","Nunez","Ryan",2
+276,"3B88010003050664992680D2","DIO-TT","nyahayj@avonoldfarms.com","Joseph",11,"100069300","Nyahay","Jojo",1
+277,"3B880100030506E496DE80A5","DIO-201","oharej@avonoldfarms.com","Jared",11,"100076710","O'Hare","Jared",1
+278,"3b8801000305066499c000b4","DIO-209","ohernp@avonoldfarms.com","Pierce",11,"100630980","O'Hern","Pierce",1
+279,"3B8801000305066498BD8048","DIO-MT","oldhamt@avonoldfarms.com","Tristan",10,"100602830","Oldham","Tristan",1
+280,"3b8801000305066498400035","DIO-206","onod@avonoldfarms.com","Daichi",11,"100630880","Ono","Daichi",1
+281,"3B8801000305066498414074","ELE 2-A6","osullivanp@avonoldfarms.com","Peter",12,"100625240","O'Sullivan","Pete",1
+282,"3B88010003050664983F80CA","EAG-300","overcashw@avonoldfarms.com","William",12,"100619260","Overcash","Danny",1
+283,"3B8801000305066499254011","JEN-11","owensg@avonoldfarms.com","Grey",12,"100726870","Owens","Grey",1
+284,"3B880100030506E497B1004B","PEL-203","palandjiand@avonoldfarms.com","Declan",12,"100051940","Palandjian","Declan",1
+285,"3B88010003050664995B406F","EAG-309","pangz@avonoldfarms.com","Ziwei",9,"100646240","Pang","Marco",1
+286,"3B8801000305066499360042","DIO-MT","papakostasc@avonoldfarms.com","Chris",10,"100702630","Papakostas","Chris",1
+287,"3b88010003050664996b405f","DIO-221","parkjw@avonoldfarms.com","Jungwoo",12,"100051490","Park","Chris",1
+288,"3b8801000305066499ae409a","BH-110","pavas@avonoldfarms.com","Spencer",11,"100593540","Pava","Spencer",1
+289,"3B88010003050664991980ED","EAG-201","pendexterc@avonoldfarms.com","Cole",11,"100675250","Pendexter","Cole",1
+290,"3b88010003050664996e405a","DIO-306","pendexterm@avonoldfarms.com","Mason",9,"100682490","Pendexter","Mason",1
+291,"3b88010003050664993f004b","DAY","perryj@avonoldfarms.com","Jacob",9,"100646530","Perry","Jacob",2
+292,"3b8801000305066499c0c074","ELE 2-B4","petersc@avonoldfarms.com","Connor",12,"100052170","Peters","Connor",1
+293,"3b8801000305066499bec00a","DIO-MT","petersonn@avonoldfarms.com","Nicholas",10,"100610840","Peterson","Nick",1
+294,"3B88010003050664983EC08B","ELE 3-302","pfannenbeckerl@avonoldfarms.com","Logan",10,"100069590","Pfannenbecker","Logan",1
+295,"3B880100030506649928005C","PEL-201","phillipsr@avonoldfarms.com","Ryan",12,"100633240","Phillips","Ryan",1
+296,"3B88010003050664983E004B","JAM-2","phommachanht@avonoldfarms.com","Taisun",11,"100612340","Phommachanh","Taisun",1
+297,"3B880100030506E497FC0006","BH-202","pikeg@avonoldfarms.com","George",12,"100646210","Pike","George",1
+298,"3B880100030506E496DD80A6","JAM-9","pintoa@avonoldfarms.com","Aaron",12,"100127460","Pinto","Aaron",1
+299,"3B880100030506649924C090","EAG-211","pirkoc@avonoldfarms.com","Cameron",11,"100633330","Pirko","Cameron",1
+300,"3B8801000305066498A04095","EAG-212","prattc@avonoldfarms.com","Chase",11,"100043980","Pratt","Chase",1
+301,"3B88010003050664995FC0EB","PEL-222","proulxk@avonoldfarms.com","Kristof",10,"100708770","Proulx","Kristof",1
+302,"3b88010003050664995e80aa","DAY","pugliellin@avonoldfarms.com","Nathan",9,"100679050","Puglielli","Nate",2
+303,"3B8801000305066499270053","DIO-TT","pumpert@avonoldfarms.com","Tyler",11,"100714780","Pumper","Tyler",1
+304,"3B88010003050664995E406A","JAM-6","quirchm@avonoldfarms.com","Mauricio",10,"100702120","Quirch","Maui",1
+305,"3B8801000305066499440030","EAG-307","radtkea@avonoldfarms.com","Aidan",9,"100674980","Radtke","Aidan",1
+306,"3B8801000305066498FD0088","BH-204","ragainin@avonoldfarms.com","Nico",12,"100684230","Ragaini","Nico",1
+307,"3B8801000305066498C340F6","JAM-11","ramirezj@avonoldfarms.com","Jan-Carlos",12,"100044780","Ramirez","Jan-Carlos",1
+308,"3B8801000305066498200055","ELE 2-B3","ramonfaurd@avonoldfarms.com","David",11,"100626580","Ramonfaur Gracia","David",1
+309,"3B8801000305066499264012","JEN-11","randm@avonoldfarms.com","Max",12,"100715550","Rand","Max",1
+310,"3B880100030506649826C093","DAY","ravechm@avonoldfarms.com","Maxwell",12,"100051760","Ravech","Max",2
+311,"3B8801000305066498224017","PEL-207","rayo@avonoldfarms.com","Owen",12,"100612010","Ray","Owen",1
+312,"3b88010003050664994c80b8","DAY","reboulc@avonoldfarms.com","Christian",9,"100646590","Reboul","Christian",2
+313,"3B88010003050664994BC0FF","BH-103","rehbaumz@avonoldfarms.com","Zachary",12,"100710490","Rehbaum","Zach",1
+314,"3B880100030506E495904028","DAY","rellerwy@avonoldfarms.com","Wyatt",12,"100046180","Reller","Wyatt",2
+315,"3B88010003050664993FC08B","ELE 2-202","rettaliataw@avonoldfarms.com","William",9,"100677100","Rettaliata","Will",1
+316,"3B880100030506E497DF80A5","BH-105","reynoldsc@avonoldfarms.com","Connor",11,"100085640","Reynolds","Connor",1
+317,"3B8801000305066499434077","EAG-308","rhossl@avonoldfarms.com","Luke",9,"100671630","Rhoss","Luke",1
+318,"3B8801000305066499140060","JEN-4","robertsj@avonoldfarms.com","Jaedon",10,"100660350","Roberts","Jaedon",1
+319,"3B88010003050664992A80DE","EAG-210","robinsong@avonoldfarms.com","Gaelen",11,"100619410","Robinson","Gaelen",1
+320,"3B88010003050664993D4009","EAG-305","rogalskit@avonoldfarms.com","Thomas",10,"100658920","Rogalski","Tommy",1
+321,"3B8801000305066498FC8009","BH-204","rogersl@avonoldfarms.com","Lorry",12,"100682900","Rogers","Casey",1
+322,"3B88010003050664988900FC","DAY","rooneyw@avonoldfarms.com","Willem",12,"100611080","Rooney","Willem",2
+323,"3B88010003050664989D00E8","DAY","rooth@avonoldfarms.com","Henry",10,"100601920","Root","Henry",2
+324,"3B8801000305066498040071","JAM-8","rosenblattw@avonoldfarms.com","William",10,"100602280","Rosenblatt","Will",1
+325,"3B8801000305066498C040F5","ELE 2-A2","ryanj@avonoldfarms.com","John",12,"100046680","Ryan","Jack",1
+326,"3b8801000305066498fe008b","DAY","ryanpm@avonoldfarms.com","Peter",10,"100602310","Ryan","Peter",2
+327,"3B880100030506E49621409A","ELE 2-A1","safeo@avonoldfarms.com","Owen",12,"100049960","Safe","Owen",1
+328,"3b88010003050664999fc02b","DAY","sappingtonb@avonoldfarms.com","Brian",9,"100628120","Sappington","Brian",2
+329,"3B88010003050664992580D1","PEL-202","sauvem@avonoldfarms.com","Max",12,"100728060","Sauve","Max",1
+330,"3B880100030506E4958CC0B4","BH-205","sayyahp@avonoldfarms.com","Preston",12,"100044400","Sayyah","Preston",1
+331,"3B880100030506E497E4C0DE","DAY","schaetzeld@avonoldfarms.com","Dylan",12,"100050460","Schaetzel","Dylan",2
+332,"3B88010003050664983980CC","ELE 2-220","scherj@avonoldfarms.com","James",10,"100627740","Scher","William",1
+333,"3b880100030506649918006c","DAY","schmidtl@avonoldfarms.com","Lucas",10,"100619350","Schmidt","Lucas",2
+334,"3B880100030506E4975D8027","DAY","schreckr@avonoldfarms.com","Ryan",12,"100051500","Schreck","Ryan",2
+335,"3B880100030506649838004D","JAM-8","shamburgera@avonoldfarms.com","Augustus",10,"100613780","Shamburger","Gentry",1
+336,"3B880100030506E4958AC0B2","DAY","shawt@avonoldfarms.com","Thomas",12,"100046150","Shaw","TJ",2
+337,"3b8801000305066498f68003","DAY","sheaw@avonoldfarms.com","William",9,"100685290","Shea","Will",2
+338,"3B880100030506E4973B4081","PEL-213","signorinor@avonoldfarms.com","Robert",11,"100082680","Signorino","Robert",1
+339,"3B880100030506649917C0A3","BH Annex-B4","sip@avonoldfarms.com","Pengyu",11,"100079840","Si","Pengyu",1
+340,"3b88010003050664996fc0db","BH Annex-B3","smarta@avonoldfarms.com","Akil",10,"100607560","Smart","Akil",1
+341,"3B88010003050664989A806F","ELE 2-201","smithj@avonoldfarms.com","Jamel",11,"100605860","Smith","Jamel",1
+342,"3b8801000305066499648090","JAM-3","smithm@avonoldfarms.com","Marshall",11,"100629400","Smith","Marshall",1
+343,"3B88010003050664995F002B","JEN-5","smithmm@avonoldfarms.com","Mark",11,"100726990","Smith","Mark",1
+344,"3B880100030506E4958880F0","DAY","smithr@avonoldfarms.com","Ryan",12,"100044380","Smith","Ryan",2
+345,"3B8801000305066498C38036","ELE 2-A4","smythp@avonoldfarms.com","Pierce",12,"100047230","Smyth","Pierce",1
+346,"3B8801000305066498DC00A9","ELE 2-B5","sonh@avonoldfarms.com","Hyojun",10,"100617830","Son","Matthew",1
+347,"3B880100030506E496228059","JAM-5","spearmanh@avonoldfarms.com","Henry",12,"100051390","Spearman","Henry",1
+348,"3B88010003050664994080B4","ELE 2-204","spencerm@avonoldfarms.com","Matthew",9,"100674280","Spencer","Matthew",1
+349,"3B880100030506E496F1C0CA","DAY","stephanc@avonoldfarms.com","Christopher",12,"100586090","Stephan","Chris",2
+350,"3B88010003050664989940AC","DAY","stolworthyc@avonoldfarms.com","Connor",11,"100043650","Stolworthy","Connor",2
+351,"3b88010003050664991680e2","DAY","stolworthyt@avonoldfarms.com","Taylor",11,"100043660","Stolworthy","Taylor",2
+352,"3B880100030506E496F1000A","DIO-203","sulkink@avonoldfarms.com","Kai",11,"100069470","Sulkin","Kai",1
+353,"3B880100030506E496F0808B","DAY","sulloj@avonoldfarms.com","Joseph",11,"100085720","Sullo","Joe",2
+354,"3B880100030506E4958780FF","ELE 2-B1","summersp@avonoldfarms.com","Patrick",12,"100052870","Summers","Patrick",1
+355,"3B8801000305066498A64093","DIO-303","sunga@avonoldfarms.com","Andrew",10,"100633450","Sung","Andrew",1
+356,"3B8801000305066498364003","DIO-309","sunh@avonoldfarms.com","Haiming",12,"100049190","Sun","Victor",1
+357,"3B8801000305066499240050","EAG-214","sunoom@avonoldfarms.com","Mark",12,"100676490","Sunoo","Mark",1
+358,"3b88010003050664996f001b","JAM-4","sweedlerc@avonoldfarms.com","Cameron",11,"100614630","Sweedler","Cam",1
+359,"3B88010003050664989700E2","DAY","szulukb@avonoldfarms.com","Beaudan",11,"100613190","Szuluk","Beaudan",2
+360,"3B8801000305066498968063","PEL-216","szulukp@avonoldfarms.com","Pehrson",10,"100626610","Szuluk","Pehrson",1
+361,"3B8801000305066498F7C042","ELE 3-305","taupiera@avonoldfarms.com","Albert",10,"100673060","Taupier","Mac",1
+362,"3b880100030506e497dd0027","ELE 2-B4","tolise@avonoldfarms.com","Emmett",11,"100082760","Tolis","Emmett",1
+363,"3b8801000305066499a28056","ELE 3-B8","tolisi@avonoldfarms.com","Ian",12,"100670720","Tolis","Ian",1
+364,"3b8801000305066499ad8059","JAM-5","tranh@avonoldfarms.com","Hoan",12,"100078640","Tran","Michael",1
+365,"3B88010003050664992E005A","PEL-306","tranp@avonoldfarms.com","Phat",11,"100613030","Tran","David",1
+366,"3B88010003050664992DC099","ELE 2-B3","trevinoj@avonoldfarms.com","Juan",12,"100082160","Trevino","Juan Pablo",1
+367,"3B88010003050664995CC0E8","ELE 3-305","trippn@avonoldfarms.com","Nathan",10,"100616300","Tripp","Nathan",1
+368,"3B8801000305066498E18014","BH-206","tucciz@avonoldfarms.com","Zachary",12,"100607530","Tucci","Zac",1
+369,"3b88010003050664991a80ee","EAG-223","tuckerz@avonoldfarms.com","Zachary",12,"100677270","Tucker","Zachary",1
+370,"3B880100030506649820C095","DAY","usicha@avonoldfarms.com","Alexander",10,"100605020","Usich","Lex",2
+371,"3B880100030506E49586C0BE","DAY","usichz@avonoldfarms.com","Zachary",12,"100049180","Usich","Zach",2
+372,"3b8801000305066498f20087","DAY","varanor@avonoldfarms.com","Ryan",10,"100613690","Varano","Ryan",2
+373,"3B8801000305066498938066","ELE 2-B2","vegaj@avonoldfarms.com","Joel",11,"100586360","Vega","Joel",1
+374,"3B88010003050664993B400F","PEL-223","vicinim@avonoldfarms.com","Matthew",10,"100685790","Vicini","Matthew",1
+375,"3b88010003050664990a007e","JEN-12","volkovd@avonoldfarms.com","Daniil",12,"100055760","Volkov","Danya",1
+376,"3B880100030506E496EC0017","DAY","vottac@avonoldfarms.com","Callaway",11,"100081550","Votta","Cal",2
+377,"3B8801000305066498FB008E","BH-207","walshj@avonoldfarms.com","Jesse",12,"100125280","Walsh","Jesse",1
+378,"3B880100030506E49777C04D","DIO-309","wangq@avonoldfarms.com","Qianchang",12,"100055960","Wang","Dennis",1
+379,"3B8801000305066498ED40D8","JAM-7","wangr@avonoldfarms.com","Raymond",12,"100047430","Wang","Raymond",1
+380,"3b880100030506649989807d","ELE 2-217","wangx@avonoldfarms.com","Xun",10,"100616970","Wang","Steven",1
+381,"3b88010003050664990d4039","BH-210","warnerj@avonoldfarms.com","John",10,"100616470","Warner","John",1
+382,"3B880100030506649912C0A6","PEL-206","weathersbyo@avonoldfarms.com","Owen",12,"100130830","Weathersby","Owen",1
+383,"3B880100030506E496EB4050","DIO-212","wehnert@avonoldfarms.com","Trevor",11,"100051550","Wehner","Trevor",1
+384,"3B880100030506649959002D","PEL-219","weils@avonoldfarms.com","Sandison",10,"100702540","Weil","Sandis",1
+385,"3B8801000305066499154021","JEN-10","wellfordh@avonoldfarms.com","Harry",12,"100715680","Wellford","Harry",1
+386,"3B880100030506649944C0F0","ELE 2-211","wellsj@avonoldfarms.com","Jonathan",9,"100604230","Wells","Jack",1
+387,"3b880100030506e4975e40e4","DAY","wheelero@avonoldfarms.com","Owen",12,"100055080","Wheeler","Owen",2
+388,"3B8801000305066499524066","DIO-307","wilbornj@avonoldfarms.com","James",9,"100730300","Wilborn","James",1
+389,"3B88010003050664985A406F","EAG-301","wildgoosen@avonoldfarms.com","Nicholas",12,"100602360","Wildgoose","Nicholas",1
+390,"3b88010003050664994a407e","DIO-207","wilsonm@avonoldfarms.com","Marquis",11,"100703580","Wilson","Marquis",1
+391,"3b880100030506649947c0f3","DAY","wionc@avonoldfarms.com","Charles",9,"100699940","Wion","Charlie",2
+392,"3B8801000305066499110065","PEL-200","wisemanj@avonoldfarms.com","James",12,"100616390","Wiseman","Mac",1
+393,"3B880100030506E497F6C0CC","EAG-203","wotorsonm@avonoldfarms.com","Miles",11,"100634780","Wotorson","Miles",1
+394,"3B8801000305066499404074","ELE 2-206","wunschr@avonoldfarms.com","Ryan",9,"10071030","Wunsch","Ryan",1
+395,"3B880100030506649956C0E2","ELE 2-208","xup@avonoldfarms.com","Pinlin",9,"100676260","Xu","Calvin",1
+396,"3B88010003050664994D0039","PEL-303","yangj@avonoldfarms.com","Joonhyeok",9,"100686030","Yang","Joon",1
+397,"3B88010003050664995B80AF","EAG-217","yorkr@avonoldfarms.com","Ryan",12,"100705290","York","Ryan",1
+398,"3B880100030506E496E90012","DIO-302","youngc@avonoldfarms.com","Cullen",11,"100132050","Young","Cullen",1
+399,"3B88010003050664989EC02B","PEL-214","youngn@avonoldfarms.com","Nicholas",10,"100596250","Young","Nick",1
+400,"3B880100030506649941C0F5","PEL-303","zadroznyj@avonoldfarms.com","John",9,"100696450","Zadrozny","John",1
+401,"3B880100030506E496E88093","BH Annex-B2","zarbm@avonoldfarms.com","Matthew",11,"100085420","Zarb","Matthew",1
+402,"3b8801000305066499b08044","JAM-10","zdobnovy@avonoldfarms.com","Yaroslav",12,"100126990","Zdobnov","Yaroslav",1
+403,"3B880100030506649829C09C","DAY","zeytoonjianh@avonoldfarms.com","Hunter",10,"100603180","Zeytoonjian","Hunter",2
+404,"3b8801000305066499b1c005","BH Annex-B2","zhangj@avonoldfarms.com","Jiaxing",10,"100611690","Zhang","Chris",1
+405,"3b88010003050664998200f6","DIO-202","zhangm@avonoldfarms.com","Mingyu",11,"100080600","Zhang","Kevin",1
+406,"3B8801000305066499544060","ELE 2-203","zhoub@avonoldfarms.com","Boyang",9,"100680080","Zhou","Bryan",1
+407,"3B880100030506E497E98093","EAG-208","zhouj@avonoldfarms.com","Jiapeng",11,"100076020","Zhou","Billy",1
+408,"3b88010003050664999600e2","PEL-217","zuob@avonoldfarms.com","Bainian",10,"100624120","Zuo","Gary",1
