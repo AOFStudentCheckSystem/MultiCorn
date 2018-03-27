@@ -11,6 +11,7 @@ import cn.com.guardiantech.aofgo.backend.service.note.StickyNoteService
 import javassist.NotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -44,15 +45,14 @@ class StickyNoteController @Autowired constructor(
         throw RepositoryException("Failed to save StickyNote due to conflict")
     }
 
-    @PutMapping("/del")
-    fun deleteStickyNote(@RequestBody @Valid noteRequest: StickyNoteRequest): List<StickyNote> = try {
-        stickyNoteService.deleteNote(noteRequest)
-    } catch (e: IllegalArgumentException) {
-        logger.error(e.message)
-        throw BadRequestException(e.message)
-    } catch (e: Throwable) {
-        logger.error("StickyNote Deleting Error:", e)
-        throw RepositoryException("Failed to delete StickyNote due to conflict")
+    @RequestMapping(path = ["/{id}"], method = [RequestMethod.DELETE])
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun removeStickyNote(@PathVariable("id") noteQueryId: String) {
+        try {
+            stickyNoteService.deleteNote(noteQueryId)
+        } catch (e: NoSuchElementException) {
+            throw BadRequestException(e.message)
+        }
     }
 
     @PostMapping("/edit")

@@ -7,14 +7,12 @@ import cn.com.guardiantech.aofgo.backend.repository.GuardianRepository
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.test.authutil.AuthenticationUtil
-import org.apache.catalina.webresources.FileResource
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -22,14 +20,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
-import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import java.io.File
-import java.io.FileInputStream
 
 /**
  * Created by dedztbh on 1/10/18.

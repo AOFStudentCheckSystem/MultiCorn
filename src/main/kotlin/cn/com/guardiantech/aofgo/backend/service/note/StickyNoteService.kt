@@ -2,7 +2,7 @@ package cn.com.guardiantech.aofgo.backend.service.note
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Notes.StickyNote
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
-import cn.com.guardiantech.aofgo.backend.repository.note.StickyNotesRepository
+import cn.com.guardiantech.aofgo.backend.repository.note.StickyNoteRepository
 import cn.com.guardiantech.aofgo.backend.request.note.StickyNoteRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -10,7 +10,7 @@ import javax.transaction.Transactional
 
 @Service
 class StickyNoteService @Autowired constructor(
-        val stickyNoteRepository: StickyNotesRepository
+        val stickyNoteRepository: StickyNoteRepository
 ) {
     fun listAllNotes(): List<StickyNote> {
         return stickyNoteRepository.findAll().toList()
@@ -30,8 +30,8 @@ class StickyNoteService @Autowired constructor(
     }
 
     @Transactional
-    fun deleteNote(request: StickyNoteRequest): List<StickyNote> {
-        return stickyNoteRepository.deleteByNoteId(request.noteQueryId)
+    fun deleteNote(noteQueryId: String): List<StickyNote> {
+        return stickyNoteRepository.deleteByNoteId(noteQueryId)
     }
 
     @Transactional
