@@ -51,8 +51,7 @@ class StickyNoteControllerMvcTest {
         addStickyNoteRawRequest = """
             {
 	        "title": "Another Salty Fish",
-	        "text": "Still me",
-	        "noteQueryId": ""
+	        "text": "Still me"
             }
         """.trimIndent()
 
@@ -60,7 +59,7 @@ class StickyNoteControllerMvcTest {
             {
 	        "title": "More Salty Fish",
 	        "text": "This is changed",
-	        "noteQueryId": "${note.id}"
+	        "id": ${note.id}
             }
         """.trimIndent()
 
@@ -107,7 +106,7 @@ class StickyNoteControllerMvcTest {
                     var response = JSONObject(it.response.contentAsString)
                     Assert.assertEquals("More Salty Fish", response.getString("title"))
                     Assert.assertEquals("This is changed", response.getString("text"))
-                    Assert.assertEquals(note.id, response.getString("id"))
+                    Assert.assertEquals(note.id, response.getLong("id"))
                 }
         Assert.assertNotNull(stickNoteRepo.count())
         Assert.assertEquals(1, stickNoteRepo.count())
