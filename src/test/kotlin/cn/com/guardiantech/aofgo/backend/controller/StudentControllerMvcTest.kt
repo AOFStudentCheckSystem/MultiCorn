@@ -222,7 +222,7 @@ class StudentControllerMvcTest {
 
     @Test
     fun createStudentWithGuardianTest() {
-        val ah = accountRepo.save(
+        val prt = accountRepo.save(
                 Account(
                         firstName = "a",
                         lastName = "b",
@@ -258,8 +258,8 @@ class StudentControllerMvcTest {
                                 },
                                 "guardians": [
                                     {
-                                        "accountId": ${ah.id},
-                                        "relation": "ASSOCIATE_HEADMASTER"
+                                        "accountId": ${prt.id},
+                                        "relation": "PARENT"
                                     }
                                 ]
                         }""".trimIndent()
@@ -312,7 +312,7 @@ class StudentControllerMvcTest {
                                 setOf(
                                         Guardian(
                                                 guardianAccount = a,
-                                                relation = GuardianType.ASSOCIATE_HEADMASTER
+                                                relation = GuardianType.COACH
                                         ),
                                         Guardian(
                                                 guardianAccount = b,

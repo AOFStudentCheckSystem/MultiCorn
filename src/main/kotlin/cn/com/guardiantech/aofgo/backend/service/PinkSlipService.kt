@@ -2,7 +2,6 @@ package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.GuardianType
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
-import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.data.entity.slip.*
 import cn.com.guardiantech.aofgo.backend.repository.slip.CampusLeaveRequestRepository
 import cn.com.guardiantech.aofgo.backend.repository.slip.PermissionRequestRepository
@@ -18,10 +17,10 @@ import java.util.*
 
 @Service
 class PinkSlipService @Autowired constructor(
-        val localLeaveRequestRepository: CampusLeaveRequestRepository,
+        val leaveRequestRepository: CampusLeaveRequestRepository,
         val permissionRequestRepository: PermissionRequestRepository
 ) {
-    fun getPinkSlip(id: Long) = localLeaveRequestRepository.findById(id).get()
+    fun getPinkSlip(id: Long) = leaveRequestRepository.findById(id).get()
 
     @Transactional
     fun addLocalLeaveRequest(
@@ -40,7 +39,7 @@ class PinkSlipService @Autowired constructor(
             contactPhone: String,
             contactAddress: String
     ): CampusLeaveRequest {
-        return localLeaveRequestRepository.save(
+        return leaveRequestRepository.save(
                 CampusLeaveRequest(
                         student = student,
                         type = type,
@@ -61,7 +60,7 @@ class PinkSlipService @Autowired constructor(
                                             acceptor = it
                                     )
                                 }
-                        ).toMutableSet<PermissionRequest>(),
+                        ).toMutableSet(),
                         dateOfLeave = dateOfLeave,
                         dateOfReturn = dateOfReturn,
                         missClass = missClass,
@@ -75,31 +74,39 @@ class PinkSlipService @Autowired constructor(
         )
     }
 
+    fun getLeaveRequestOwnedBySubject(leaveRequestId: Long, subjectId: Long) =
+            leaveRequestRepository.findByIdAndSubjectId(leaveRequestId, subjectId)
+
+
     @Transactional
-    fun studentSendPermissionRequests(id: Long): CampusLeaveRequest {
-        val request = localLeaveRequestRepository.findById(id).get()
-        request.permissionRequests.filterNot {
-            it.acceptor.relation == GuardianType.ASSOCIATE_HEADMASTER
-        }.forEach { sendPermissionRequestEmail(it) }
+    fun studentSendPermissionRequests(request: CampusLeaveRequest): CampusLeaveRequest {
+        request.permissionRequests.forEach { sendPermissionRequestEmail(it) }
         request.evalWaitingStatus()
-        return localLeaveRequestRepository.save(request)
+        return leaveRequestRepository.save(request)
     }
 
     fun sendPermissionRequestEmail(permissionRequest: PermissionRequest) {
 
     }
 
-    fun permissionRequestStatusChange(subject: Subject) {
+    fun getPermissionRequestRequiredBySubject(permissionRequestId: Long, subjectId: Long) =
+            permissionRequestRepository.findByIdAndSubjectId(permissionRequestId, subjectId)
 
+    @Transactional
+    fun setPermissionRequestAccepted(permissionRequest: PermissionRequest, accepted: Boolean, ip: String) {
+        permissionRequest.accepted = accepted
+        permissionRequest.acceptTime = Date()
+        permissionRequest.acceptorIp = ip
+        permissionRequestRepository.save(permissionRequest)
     }
 
     fun findLeaveRequestsByStatus(status: LeaveStatus) =
-            localLeaveRequestRepository.findByStatus(status)
+            leaveRequestRepository.findByStatus(status)
 
     @Transactional
-    fun setLeaveRequestStatus(id: Long, leaveStatus: LeaveStatus): CampusLeaveRequest {
-        val foundRequest = localLeaveRequestRepository.findById(id).get()
+    fun setLeaveRequestStatus(leaveRequestId: Long, leaveStatus: LeaveStatus): CampusLeaveRequest {
+        val foundRequest = leaveRequestRepository.findById(leaveRequestId).get()
         foundRequest.setStatus(leaveStatus)
-        return localLeaveRequestRepository.save(foundRequest)
+        return leaveRequestRepository.save(foundRequest)
     }
 }
