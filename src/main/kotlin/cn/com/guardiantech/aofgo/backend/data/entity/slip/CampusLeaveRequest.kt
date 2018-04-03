@@ -1,6 +1,5 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.slip
 
-import cn.com.guardiantech.aofgo.backend.data.entity.GuardianType
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import java.util.*
 import javax.persistence.*
@@ -63,7 +62,10 @@ class CampusLeaveRequest(
 
         @Column(name = "status")
         @Enumerated(EnumType.STRING)
-        private var status: LeaveStatus = LeaveStatus.PENDING
+        private var status: LeaveStatus = LeaveStatus.PENDING,
+
+        @Column(name = "submittedTime")
+        val submittedTime: Date = Date()
 ) {
 
     fun addPermissionRequest(pr: PermissionRequest) {
@@ -87,9 +89,6 @@ class CampusLeaveRequest(
     }
 
     fun evalWaitingStatus() {
-        val permissionRequests = permissionRequests.filterNot {
-            it.acceptor.relation === GuardianType.ASSOCIATE_HEADMASTER
-        }
         status = if (permissionRequests.all { it.accepted == true }) {
             LeaveStatus.WAITINGAPPROVAL
         } else {
