@@ -80,9 +80,7 @@ class PinkSlipService @Autowired constructor(
 
     @Transactional
     fun studentSendPermissionRequests(request: CampusLeaveRequest): CampusLeaveRequest {
-        request.permissionRequests.filterNot {
-            it.acceptor.relation == GuardianType.ASSOCIATE_HEADMASTER
-        }.forEach { sendPermissionRequestEmail(it) }
+        request.permissionRequests.forEach { sendPermissionRequestEmail(it) }
         request.evalWaitingStatus()
         return leaveRequestRepository.save(request)
     }
@@ -106,8 +104,8 @@ class PinkSlipService @Autowired constructor(
             leaveRequestRepository.findByStatus(status)
 
     @Transactional
-    fun setLeaveRequestStatus(id: Long, leaveStatus: LeaveStatus): CampusLeaveRequest {
-        val foundRequest = leaveRequestRepository.findById(id).get()
+    fun setLeaveRequestStatus(leaveRequestId: Long, leaveStatus: LeaveStatus): CampusLeaveRequest {
+        val foundRequest = leaveRequestRepository.findById(leaveRequestId).get()
         foundRequest.setStatus(leaveStatus)
         return leaveRequestRepository.save(foundRequest)
     }

@@ -1,8 +1,10 @@
 package cn.com.guardiantech.aofgo.backend.controller
 
+import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.authentication.AuthContext
 import cn.com.guardiantech.aofgo.backend.data.entity.slip.CampusLeaveRequest
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
+import cn.com.guardiantech.aofgo.backend.request.slip.LeaveRequestStatusRequest
 import cn.com.guardiantech.aofgo.backend.request.slip.LocalLeaveRequestRequest
 import cn.com.guardiantech.aofgo.backend.request.slip.PermissionRequestRequest
 import cn.com.guardiantech.aofgo.backend.service.PinkSlipService
@@ -60,5 +62,11 @@ class PinkSlipController @Autowired constructor(
         val optRequest = pinkSlipService.getPermissionRequestRequiredBySubject(req.id, authContext.session!!.subject.id)
         if (!optRequest.isPresent) throw EntityNotFoundException("No owned permission request was found")
         return pinkSlipService.setPermissionRequestAccepted(optRequest.get(), req.accepted, httpServletRequest.remoteAddr)
+    }
+
+    @Require(["LOCAL_LEAVE_REQUEST_STATUS_WRITE"])
+    @PostMapping("/status/{id}")
+    fun setLeaveRequestStatus(@PathVariable id: Long, @RequestBody @Valid statusRequest: LeaveRequestStatusRequest) {
+        pinkSlipService.setLeaveRequestStatus(id, statusRequest.status)
     }
 }
