@@ -3,7 +3,8 @@ package cn.com.guardiantech.aofgo.backend.service.note
 import cn.com.guardiantech.aofgo.backend.data.entity.Notes.StickyNote
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.note.StickyNoteRepository
-import cn.com.guardiantech.aofgo.backend.request.note.StickyNoteRequest
+import cn.com.guardiantech.aofgo.backend.request.note.StickyNoteAddRequest
+import cn.com.guardiantech.aofgo.backend.request.note.StickyNoteEditRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
@@ -16,38 +17,38 @@ class StickyNoteService @Autowired constructor(
         return stickyNoteRepository.findAll().toList()
     }
 
-    fun findByNoteId(id: String): StickyNote {
-        return stickyNoteRepository.findByNoteId(id).get()
+    fun findById(id: Long): StickyNote {
+        return stickyNoteRepository.findById(id).get()
     }
 
     @Transactional
-    fun addNote(request: StickyNoteRequest): StickyNote {
+    fun addNote(addRequest: StickyNoteAddRequest): StickyNote {
         val n = stickyNoteRepository.save(StickyNote(
-                title = request.title,
-                text = request.text
+                title = addRequest.title,
+                text = addRequest.text
         ))
         return n
     }
 
     @Transactional
-    fun deleteNote(noteQueryId: String): List<StickyNote> {
-        return stickyNoteRepository.deleteByNoteId(noteQueryId)
+    fun deleteNote(id: Long): List<StickyNote> {
+        return stickyNoteRepository.deleteById(id)
     }
 
     @Transactional
-    fun editNote(request: StickyNoteRequest): StickyNote {
+    fun editNote(editRequest: StickyNoteEditRequest): StickyNote {
 
         val theNote = try {
-            stickyNoteRepository.findByNoteId(request.noteQueryId).get()
+            stickyNoteRepository.findById(editRequest.id).get()
         } catch (e: NoSuchElementException) {
             throw EntityNotFoundException("Note not found")
         }
 
-        if (request.title != null) {
-            theNote.title = request.title
+        if (editRequest.title != null) {
+            theNote.title = editRequest.title
         }
-        if (request.text != null) {
-            theNote.text = request.text
+        if (editRequest.text != null) {
+            theNote.text = editRequest.text
         }
 
         return stickyNoteRepository.save(theNote)

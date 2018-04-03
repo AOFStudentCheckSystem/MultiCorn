@@ -5,8 +5,9 @@ import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.ControllerException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
+import cn.com.guardiantech.aofgo.backend.request.note.StickyNoteAddRequest
 import org.slf4j.Logger
-import cn.com.guardiantech.aofgo.backend.request.note.StickyNoteRequest
+import cn.com.guardiantech.aofgo.backend.request.note.StickyNoteEditRequest
 import cn.com.guardiantech.aofgo.backend.service.note.StickyNoteService
 import javassist.NotFoundException
 import org.slf4j.LoggerFactory
@@ -28,15 +29,15 @@ class StickyNoteController @Autowired constructor(
     }
 
     @GetMapping("/{id}")
-    fun getStickyNoteByIdNumber(@PathVariable id: String): StickyNote = try {
-        stickyNoteService.findByNoteId(id)
+    fun getStickyNoteByIdNumber(@PathVariable id: Long): StickyNote = try {
+        stickyNoteService.findById(id)
     } catch (e: NoSuchElementException) {
         throw NotFoundException("StickyNote Not Found")
     }
 
     @PutMapping("/add")
-    fun createStickyNote(@RequestBody @Valid noteRequest: StickyNoteRequest): StickyNote = try {
-        stickyNoteService.addNote(noteRequest)
+    fun createStickyNote(@RequestBody @Valid noteAddRequest: StickyNoteAddRequest): StickyNote = try {
+        stickyNoteService.addNote(noteAddRequest)
     } catch (e: IllegalArgumentException) {
         logger.error(e.message)
         throw BadRequestException(e.message)
@@ -47,17 +48,17 @@ class StickyNoteController @Autowired constructor(
 
     @RequestMapping(path = ["/{id}"], method = [RequestMethod.DELETE])
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun removeStickyNote(@PathVariable("id") noteQueryId: String) {
+    fun removeStickyNote(@PathVariable("id") id: Long) {
         try {
-            stickyNoteService.deleteNote(noteQueryId)
+            stickyNoteService.deleteNote(id)
         } catch (e: NoSuchElementException) {
             throw BadRequestException(e.message)
         }
     }
 
     @PostMapping("/edit")
-    fun editStickyNote(@RequestBody @Valid request: StickyNoteRequest) = try {
-        stickyNoteService.editNote(request)
+    fun editStickyNote(@RequestBody @Valid editRequest: StickyNoteEditRequest) = try {
+        stickyNoteService.editNote(editRequest)
     } catch (e: ControllerException) {
         throw e
     } catch (e: NoSuchElementException) {

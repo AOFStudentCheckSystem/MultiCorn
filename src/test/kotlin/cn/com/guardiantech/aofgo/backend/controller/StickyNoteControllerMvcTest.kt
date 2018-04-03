@@ -60,7 +60,7 @@ class StickyNoteControllerMvcTest {
             {
 	        "title": "More Salty Fish",
 	        "text": "This is changed",
-	        "noteQueryId": "${note.noteId}"
+	        "noteQueryId": "${note.id}"
             }
         """.trimIndent()
 
@@ -86,7 +86,7 @@ class StickyNoteControllerMvcTest {
     @Test
     fun deleteNote() {
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/notes/${note.noteId}")
+                MockMvcRequestBuilders.delete("/notes/${note.id}")
         )
                 .andExpect {
                     Assert.assertEquals(HttpStatus.NO_CONTENT.value(), it.response.status)
@@ -107,7 +107,7 @@ class StickyNoteControllerMvcTest {
                     var response = JSONObject(it.response.contentAsString)
                     Assert.assertEquals("More Salty Fish", response.getString("title"))
                     Assert.assertEquals("This is changed", response.getString("text"))
-                    Assert.assertEquals(note.noteId, response.getString("noteId"))
+                    Assert.assertEquals(note.id, response.getString("id"))
                 }
         Assert.assertNotNull(stickNoteRepo.count())
         Assert.assertEquals(1, stickNoteRepo.count())

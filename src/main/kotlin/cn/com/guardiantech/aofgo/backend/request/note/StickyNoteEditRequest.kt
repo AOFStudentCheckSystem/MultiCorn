@@ -1,7 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.request.note
 
-data class StickyNoteRequest (
+data class StickyNoteEditRequest (
         val title: String?,
         val text: String?,
-        val noteQueryId: String
+        val id: Long
 )

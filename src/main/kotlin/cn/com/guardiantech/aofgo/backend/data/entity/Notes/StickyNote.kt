@@ -12,7 +12,5 @@ class StickyNote(
 
         var title: String? = null,
 
-        var text: String? = null,
-
-        var noteId: String = System.currentTimeMillis().toString(36).toLowerCase()
+        var text: String? = null
 )

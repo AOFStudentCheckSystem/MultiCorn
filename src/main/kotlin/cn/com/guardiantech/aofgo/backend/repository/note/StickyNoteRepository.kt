@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository
 import java.util.*
 
 interface StickyNoteRepository: CrudRepository<StickyNote, Long> {
-    fun findByNoteId(noteId: String): Optional<StickyNote>
+    fun findById(id: Long): Optional<StickyNote>
 
-    fun deleteByNoteId(noteId: String): List<StickyNote>
+    fun deleteById(id: Long): List<StickyNote>
 }
