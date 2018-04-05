@@ -69,4 +69,9 @@ class PinkSlipController @Autowired constructor(
     fun setLeaveRequestStatus(@PathVariable id: Long, @RequestBody @Valid statusRequest: LeaveRequestStatusRequest) {
         pinkSlipService.setLeaveRequestStatus(id, statusRequest.status)
     }
+
+    @GetMapping("/own")
+    fun getOwnLeaveRequests(authContext: AuthContext): Set<CampusLeaveRequest> {
+        return pinkSlipService.getLocalLeaveRequestsBySubjectId(authContext.session!!.subject.id)
+    }
 }

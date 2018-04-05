@@ -13,4 +13,7 @@ interface CampusLeaveRequestRepository : CrudRepository<CampusLeaveRequest, Long
     fun findByIdAndSubjectId(requestId: Long, subjectId: Long): Optional<CampusLeaveRequest>
 
     fun findByStatus(status: LeaveStatus): Set<CampusLeaveRequest>
+
+    @Query("select r from #{#entityName} r WHERE r.student.account.subject.id = ?1")
+    fun findBySubjectId(subjectId: Long): Set<CampusLeaveRequest>
 }

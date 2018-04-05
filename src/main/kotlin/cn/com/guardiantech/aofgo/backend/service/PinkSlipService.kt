@@ -22,6 +22,8 @@ class PinkSlipService @Autowired constructor(
 ) {
     fun getPinkSlip(id: Long) = leaveRequestRepository.findById(id).get()
 
+    fun getLocalLeaveRequestsBySubjectId(subjectId: Long) = leaveRequestRepository.findBySubjectId(subjectId)
+
     @Transactional
     fun addLocalLeaveRequest(
             student: Student,
