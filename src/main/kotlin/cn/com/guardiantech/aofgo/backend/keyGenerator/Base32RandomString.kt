@@ -1,4 +1,4 @@
-package cn.com.guardiantech.aofgo.backend.util.keyGenerator
+package cn.com.guardiantech.aofgo.backend.keyGenerator
 
 import org.apache.commons.codec.binary.Base32
 import java.util.*

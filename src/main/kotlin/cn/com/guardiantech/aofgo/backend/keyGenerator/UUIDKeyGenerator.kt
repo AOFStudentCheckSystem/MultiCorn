@@ -1,4 +1,4 @@
-package cn.com.guardiantech.aofgo.backend.util.keyGenerator
+package cn.com.guardiantech.aofgo.backend.keyGenerator
 
 //import org.hibernate.engine.spi.SharedSessionContractImplementor
 //import org.hibernate.id.IdentifierGenerator
