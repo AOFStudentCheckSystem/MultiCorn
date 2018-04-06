@@ -38,6 +38,7 @@ class PinkSlipController @Autowired constructor(
 
     @PutMapping("/")
     @JsonView(SlipView.StudentView::class)
+    @Require
     fun addLocalLeaveRequest(@RequestBody r: LocalLeaveRequestRequest, authContext: AuthContext): CampusLeaveRequest {
         return pinkSlipService.addLocalLeaveRequest(
                 student = studentService.findStudentBySubjectId(authContext.session!!.subject.id),
@@ -59,6 +60,7 @@ class PinkSlipController @Autowired constructor(
 
     @PutMapping("/init/{id}")
     @JsonView(SlipView.StudentView::class)
+    @Require
     fun initiateLocalLeaveRequest(@PathVariable id: Long, authContext: AuthContext) {
         val optRequest = pinkSlipService.getLeaveRequestOwnedBySubject(id, authContext.session!!.subject.id)
         if (!optRequest.isPresent) throw EntityNotFoundException("No owned campus leave request was found")
@@ -67,6 +69,7 @@ class PinkSlipController @Autowired constructor(
 
     @PutMapping("/permission")
     @JsonView(SlipView.FacultyView::class)
+    @Require
     fun setPermissionRequestAccepted(@RequestBody @Valid req: PermissionRequestRequest, authContext: AuthContext, httpServletRequest: HttpServletRequest) {
         val optRequest = pinkSlipService.getPermissionRequestWithCorrectSubject(req.id, authContext.session!!.subject.id)
         if (!optRequest.isPresent) throw EntityNotFoundException("No owned permission request was found")
@@ -82,6 +85,7 @@ class PinkSlipController @Autowired constructor(
 
     @JsonView(SlipView.StudentView::class)
     @GetMapping("/own")
+    @Require
     fun getOwnLeaveRequests(authContext: AuthContext, pageable: Pageable): Page<CampusLeaveRequest> {
         return pinkSlipService.getLocalLeaveRequestsBySubjectIdPaged(authContext.session!!.subject.id, pageable)
     }
