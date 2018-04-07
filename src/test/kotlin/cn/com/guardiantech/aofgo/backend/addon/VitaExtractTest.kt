@@ -18,7 +18,7 @@ class VitaExtractTest {
 
     @Before
     fun setUp() {
-        vitaExtract.initialize("fengy", "Peter206")
+        vitaExtract.authenticate("fengy", "Peter206")
     }
 
     @Test
