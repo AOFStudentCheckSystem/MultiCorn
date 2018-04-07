@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 import javax.annotation.PostConstruct
 
@@ -114,14 +115,20 @@ class VitaExtract {
         println(headers)
         println("https://portals.veracross.com/aof/student/calendar/student/events?$dateUrlParam")
 
-        val calData = rest.exchange("https://portals.veracross.com/aof/student/calendar/student/events?$dateUrlParam", HttpMethod.GET, HttpEntity<Unit>(headers), String::class.java)
+        val url = UriComponentsBuilder.fromHttpUrl("https://portals.veracross.com/aof/student/calendar/student/events")
+        dateUrlParam.forEach { k, v ->
+            url.queryParam(k, v)
+        }
+        println(url.toUriString())
+
+        val calData = rest.exchange(url.toUriString(), HttpMethod.GET, HttpEntity<Unit>(headers), String::class.java)
         val calJson = calData.body
         // You get a json again, how nice is that
 
         return calJson
     }
 
-    fun generateCalendarParams(): String{
+    fun generateCalendarParams(): Map<String, String>{
         // calculate the url param for the next 30 days, to be sent to the Veracross API
         var calendar = Calendar.getInstance()
         val currentYear = calendar.get(Calendar.YEAR)
@@ -131,7 +138,9 @@ class VitaExtract {
         val endYear = calendar.get(Calendar.YEAR)
         val endMonth = calendar.get(Calendar.MONTH)
         val endDay = calendar.get(Calendar.DAY_OF_MONTH)
-
-        return "begin_date=$currentMonth%2F$currentDay%2F$currentYear&end_date=$endMonth%2F$endDay%2F$endYear"
+        val rtnMap = hashMapOf<String, String>()
+        rtnMap["begin_date"] = "$currentMonth/$currentDay/$currentYear"
+        rtnMap["end_date"] = "$endMonth/$endDay/$endYear"
+        return rtnMap
     }
 }
