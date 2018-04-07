@@ -6,16 +6,26 @@ import org.jsoup.Jsoup
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.*
+import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import javax.annotation.PostConstruct
 
+@Service
 class VitaExtract {
 
-    private val logger: Logger = LoggerFactory.getLogger(AuthenticationController::class.java)
+    companion object {
+        private val logger = LoggerFactory.getLogger(VitaExtract::class.java)
+    }
     private val rest = RestTemplate()
 
-    fun initialize(username: String, password: String) {
+    @PostConstruct
+    fun prepareRestTemplate() {
+
+    }
+
+    fun authenticate(username: String, password: String) {
         val authHome = rest.exchange("https://portals.veracross.com/aof/login", HttpMethod.GET, HttpEntity.EMPTY, String::class.java)
         if (authHome.statusCode == HttpStatus.OK) {
             val loginPage = Jsoup.parse(authHome.body).body()
@@ -69,6 +79,7 @@ class VitaExtract {
             headers.set("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36")
 
             val courseData = rest.exchange("https://portals.veracross.com/aof/component/ClassListStudent/1308/load_data", HttpMethod.POST, HttpEntity<Unit>(headers), String::class.java)
+            //https://portals.veracross.com/aof/student/calendar/student/events?begin_date=04%2F01%2F2018&end_date=05%2F13%2F2018
             print("\n\n\n\n\n\n\n")
             print(courseData)
             print("\n\n\n\n\n\n\n")
