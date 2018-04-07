@@ -18,7 +18,16 @@ class VitaExtractTest {
 
     @Before
     fun setUp() {
-        vitaExtract.authenticate("fengy", "Peter206")
+        val cookie = vitaExtract.authenticate("fengy", "Peter206")
+        print("\n\n\n\n\n\n\n")
+        print("\n\n\n\n\n\n\n")
+        print(cookie)
+        print("\n\n\n\n\n\n\n")
+        print(vitaExtract.extractCourseData(cookie))
+        print("\n\n\n\n\n\n\n")
+        print(vitaExtract.extractCalendarData(cookie))
+        print("\n\n\n\n\n\n\n")
+        print("\n\n\n\n\n\n\n")
     }
 
     @Test
