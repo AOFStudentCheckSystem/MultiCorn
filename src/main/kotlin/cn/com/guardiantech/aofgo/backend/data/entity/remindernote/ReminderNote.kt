@@ -9,8 +9,8 @@ import javax.persistence.*
 @Entity
 class ReminderNote (
 
-        val noteTitle: String,
-        val noteContent: String,
+        var noteTitle: String,
+        var noteContent: String,
 
         @OneToMany
         var grants: Set<NoteAccessGrant> = hashSetOf(),

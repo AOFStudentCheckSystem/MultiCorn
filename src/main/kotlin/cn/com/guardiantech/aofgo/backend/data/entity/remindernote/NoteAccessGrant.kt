@@ -15,7 +15,7 @@ class NoteAccessGrant(
         @ManyToOne
         val user: Subject,
         @Enumerated(EnumType.STRING)
-        val grantType: NoteAccessGrantType,
+        var grantType: NoteAccessGrantType,
         @Id
         @GeneratedValue
         val grantId: Long = -1
