@@ -7,6 +7,7 @@ import javax.persistence.*
  * Project AOFGoBackend
  */
 @Entity
+//TODO unique (assignment and course)
 class VeracrossAssignmentRecord (
         @Id
         @GeneratedValue

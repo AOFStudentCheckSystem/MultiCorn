@@ -5,6 +5,7 @@ import javax.persistence.*
 
 
 @Entity
+@Table(uniqueConstraints = [(UniqueConstraint(columnNames = ["vCourse", "student"]))])
 class VeracrossCourseAttendee (
         @Id
         @GeneratedValue
@@ -12,11 +13,11 @@ class VeracrossCourseAttendee (
         var id: Long = -1, // My Id changes every time... I guess //TODO
 
         @ManyToOne
-        @JoinColumn
+        @JoinColumn(name = "vCourse")
         var courseAttending: VeracrossCourse? = null, //TODO I might be attending the `null` class though
 
         @ManyToOne
-        @JoinColumn
+        @JoinColumn(name = "student")
         var student: Student,
 
         var grade: Float,
