@@ -1,8 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.remindernote
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 /**
  * Created by Codetector on 2018/04/06.
@@ -14,7 +12,11 @@ class ReminderNote (
         val noteTitle: String,
         val noteContent: String,
 
-        var grants: Array<NoteAccessGrant> = arrayOf(),
+        @OneToMany
+        var grants: Set<NoteAccessGrant> = hashSetOf(),
+
+        @OneToMany
+        var timers: Set<NoteTimer> = hashSetOf(),
 
         @Id
         @GeneratedValue

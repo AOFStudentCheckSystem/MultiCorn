@@ -1,7 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.remindernote
 
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
-import javax.persistence.Entity
+import javax.persistence.*
 
 /**
  * Created by Codetector on 2018/04/06.
@@ -9,7 +9,14 @@ import javax.persistence.Entity
  */
 @Entity
 class NoteAccessGrant(
+        @ManyToOne
+        @JoinColumn
         val note: ReminderNote,
+        @ManyToOne
         val user: Subject,
-        val grantType: NoteAccessGrantType
+        @Enumerated(EnumType.STRING)
+        val grantType: NoteAccessGrantType,
+        @Id
+        @GeneratedValue
+        val grantId: Long = -1
 )
