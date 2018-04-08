@@ -1,5 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.service
 
+import cn.com.guardiantech.aofgo.backend.authentication.AuthContext
+import cn.com.guardiantech.aofgo.backend.data.entity.veracross.VeracrossCookie
 import cn.com.guardiantech.aofgo.backend.exception.CannotLoginException
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
@@ -25,7 +27,7 @@ class VitaExtract {
 
     }
 
-    fun authenticate(username: String, password: String): MutableList<String>? {
+    fun authenticate(username: String, password: String, authContext: AuthContext): VeracrossCookie {
         val authHome = rest.exchange("https://portals.Veracross.com/aof/login", HttpMethod.GET, HttpEntity.EMPTY, String::class.java)
         if (authHome.statusCode == HttpStatus.OK) {
             val loginPage = Jsoup.parse(authHome.body).body()
@@ -65,10 +67,17 @@ class VitaExtract {
 
             val authCookie = sessionJump.headers.get("Set-VeracrossCookie")
 
-            return authCookie
-        } else {
-            throw CannotLoginException("Cannot access Veracross: https://portals.Veracross.com/aof/login")
+            var veracrossCookie: VeracrossCookie? = null
+            authCookie?.let {
+//                 veracrossCookie = VeracrossCookie(
+//                        session = it[0]
+//                )
+            }
+            if (veracrossCookie != null) {
+                return veracrossCookie!!
+            }
         }
+        throw CannotLoginException("Cannot access Veracross: https://portals.Veracross.com/aof/login")
     }
 
     fun extractCourseData(cookie: MutableList<String>?): String {

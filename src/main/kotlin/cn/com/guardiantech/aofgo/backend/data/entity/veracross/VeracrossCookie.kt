@@ -1,16 +1,18 @@
 package cn.com.guardiantech.aofgo.backend.data.entity.veracross
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import javax.persistence.*
 
 @Entity
 class VeracrossCookie (
         @Id
         @GeneratedValue
-        @Column(name = "student_id")
+        @Column(name = "id")
         var id: Long = -1,
+
+        @OneToOne
+        @JoinColumn(name = "student", unique = true)
+        var student: Student,
 
         @Column(name = "veracross_session", unique = true)
         var session: String? = null
