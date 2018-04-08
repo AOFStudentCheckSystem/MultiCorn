@@ -33,6 +33,7 @@ class PinkSlipService @Autowired constructor(
     fun addLocalLeaveRequest(
             student: Student,
             type: LeaveType,
+            visitPerson: String?,
             description: String,
             statusMessage: String,
             transportationMethod: TransportationMethod,
@@ -69,6 +70,7 @@ class PinkSlipService @Autowired constructor(
                 CampusLeaveRequest(
                         student = student,
                         type = type,
+                        visitPerson = visitPerson,
                         description = description,
                         statusMessage = statusMessage,
                         transportationMethod = transportationMethod,

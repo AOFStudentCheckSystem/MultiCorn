@@ -25,6 +25,10 @@ class CampusLeaveRequest(
         @JsonView(SlipView.StudentView::class)
         val type: LeaveType,
 
+        @Column(name = "visit_person")
+        @JsonView(SlipView.StudentView::class)
+        val visitPerson: String?,
+
         @Column(name = "description")
         @JsonView(SlipView.StudentView::class)
         val description: String,
@@ -35,7 +39,7 @@ class CampusLeaveRequest(
 
         @OneToMany
         @JoinColumn(name = "permission_requests")
-        @JsonView(SlipView.FacultyView::class)
+        @JsonView(SlipView.FullView::class)
         val permissionRequests: MutableSet<PermissionRequest> = mutableSetOf(),
 
         @Enumerated(EnumType.STRING)
@@ -109,7 +113,7 @@ class CampusLeaveRequest(
         return status
     }
 
-    fun evalWaitingStatus() {
+    private fun evalWaitingStatus() {
         status = if (permissionRequests.all { it.accepted == true }) {
             LeaveStatus.WAITINGAPPROVAL
         } else {

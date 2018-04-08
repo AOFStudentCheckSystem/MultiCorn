@@ -39,10 +39,11 @@ class PinkSlipController @Autowired constructor(
     @PutMapping("/")
     @JsonView(SlipView.StudentView::class)
     @Require
-    fun addLocalLeaveRequest(@RequestBody r: LocalLeaveRequestRequest, authContext: AuthContext): CampusLeaveRequest {
+    fun addLocalLeaveRequest(@RequestBody @Valid r: LocalLeaveRequestRequest, authContext: AuthContext): CampusLeaveRequest {
         return pinkSlipService.addLocalLeaveRequest(
                 student = studentService.findStudentBySubjectId(authContext.session!!.subject.id),
                 type = r.type,
+                visitPerson = r.visitPerson,
                 description = r.description,
                 statusMessage = r.statusMessage,
                 transportationMethod = r.transportationMethod,
