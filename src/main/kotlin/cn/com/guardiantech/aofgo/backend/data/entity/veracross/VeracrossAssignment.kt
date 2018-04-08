@@ -13,16 +13,17 @@ class VeracrossAssignment(
 
         @Column(name = "due_date")
         @Temporal(TemporalType.TIMESTAMP)
-        var dueDate: Date? = null, //TODO Homework is never due cool!
+        var dueDate: Date,
 
         @Column(name = "veracross_identifier")
-        var identifier: String? = null, //TODO I guess veracross forgot to generate an identifier for it.
+        var identifier: String,
 
         @ManyToOne
         @JoinColumn
-        var clazz: VeracrossCourse? = null, //TODO I just learned from Mr. Calvin that nullable is very good.
+        var clazz: VeracrossCourse,
 
-        var possiblePoint: Float,
+//        var possiblePoint: Float,
+//TODO: find Veracross API for this
 
         @Column(name = "last_update")
         @Temporal(TemporalType.TIMESTAMP)

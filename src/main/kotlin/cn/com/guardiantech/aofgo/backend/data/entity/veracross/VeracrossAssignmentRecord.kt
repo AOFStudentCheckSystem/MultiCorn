@@ -7,19 +7,20 @@ import javax.persistence.*
  * Project AOFGoBackend
  */
 @Entity
-//TODO unique (assignment and course)
+@Table(uniqueConstraints = [(UniqueConstraint(columnNames = ["vAssignment", "vAttendee"]))])
 class VeracrossAssignmentRecord (
         @Id
         @GeneratedValue
         val id: Long = -1,
 
         @ManyToOne
-        @JoinColumn
+        @JoinColumn(name = "vAssignment")
         var assignment: VeracrossAssignment,
 
         @ManyToOne
-        @JoinColumn
-        var courseAttendee: VeracrossCourseAttendee,
+        @JoinColumn(name = "vAttendee")
+        var courseAttendee: VeracrossCourseAttendee
 
-        var pointsEarned: Float = -1f
+//        var pointsEarned: Float = -1f
+//TODO: find Veracross API for this
 )

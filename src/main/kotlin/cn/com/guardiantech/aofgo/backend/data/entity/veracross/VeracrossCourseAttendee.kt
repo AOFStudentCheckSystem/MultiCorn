@@ -10,11 +10,11 @@ class VeracrossCourseAttendee (
         @Id
         @GeneratedValue
         @Column(name = "attendence_id")
-        var id: Long = -1, // My Id changes every time... I guess //TODO
+        val id: Long = -1,
 
         @ManyToOne
         @JoinColumn(name = "vCourse")
-        var courseAttending: VeracrossCourse? = null, //TODO I might be attending the `null` class though
+        var courseAttending: VeracrossCourse,
 
         @ManyToOne
         @JoinColumn(name = "student")
