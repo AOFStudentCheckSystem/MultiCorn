@@ -2,10 +2,7 @@ package cn.com.guardiantech.aofgo.backend.service.auth
 
 import cn.com.guardiantech.aofgo.backend.authentication.AuthenticationMechanism
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
-import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Credential
-import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Principal
-import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
-import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
+import cn.com.guardiantech.aofgo.backend.data.entity.authentication.*
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.repository.auth.*
 import cn.com.guardiantech.aofgo.backend.request.authentication.AuthenticationRequest
@@ -132,5 +129,9 @@ class AuthenticationService @Autowired constructor(
         sessionRepo.findBySessionKey(sessionKey).orElseGet { null }?.let { session ->
             sessionRepo.delete(session)
         }
+    }
+
+    fun subjectExists(type: PrincipalType, value: String): Boolean {
+        return subjectRepo.findByInPrincipals(type, value).isPresent
     }
 }
