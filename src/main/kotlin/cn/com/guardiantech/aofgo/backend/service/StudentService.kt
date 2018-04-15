@@ -203,4 +203,7 @@ class StudentService @Autowired constructor(
             }
         }
     }
+
+    @Transactional
+    fun findStudentByAccountEmail(email: String) = studentRepo.findStudentByAccountEmail(email)
 }

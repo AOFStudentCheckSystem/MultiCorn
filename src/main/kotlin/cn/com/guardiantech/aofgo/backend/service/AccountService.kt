@@ -50,7 +50,7 @@ class AccountService @Autowired constructor(
         )
     }
 
-    fun getAccountByEmail(email: String): Account? {
+    fun getAccountByEmail(email: String): Account {
         return accountRepo.findByEmail(email).get()
     }
 }

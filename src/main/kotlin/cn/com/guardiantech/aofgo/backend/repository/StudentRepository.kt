@@ -11,4 +11,7 @@ interface StudentRepository : CrudRepository<Student, Long> {
     fun findByCardSecret(cardSecret: String): Optional<Student>
     @Query("select s from #{#entityName} s WHERE s.account.subject.id = ?1")
     fun findStudentBySubjectId(subjectId: Long): Optional<Student>
+
+    @Query("select s from #{#entityName} s WHERE s.account.email = ?1")
+    fun findStudentByAccountEmail(email: String): Optional<Student>
 }
