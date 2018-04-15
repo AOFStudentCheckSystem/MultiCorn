@@ -19,6 +19,8 @@ class LocalLeaveRequestRequest(
         @field:NotNull
         val type: LeaveType,
 
+        val visitPerson: String?,
+
         val description: String = "",
 
         val statusMessage: String = "",
