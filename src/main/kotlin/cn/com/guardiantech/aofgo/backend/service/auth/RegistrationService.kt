@@ -13,7 +13,6 @@ import cn.com.guardiantech.aofgo.backend.service.StudentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class RegistrationService @Autowired constructor(
@@ -67,12 +66,8 @@ class RegistrationService @Autowired constructor(
     }
 
     private fun registerNonStudent(email: String, newSubject: Subject): Subject {
-        try {
-            val account = accountService.getAccountByEmail(email)
-            account.subject = newSubject
-            return accountRepository.save(account).subject!!
-        } catch (e: NoSuchElementException) {
-            throw BadRequestException("Account Not Found")
-        }
+        val account = accountService.getAccountByEmail(email) ?: throw EntityNotFoundException("Account not found")
+        account.subject = newSubject
+        return accountRepository.save(account).subject!!
     }
 }
