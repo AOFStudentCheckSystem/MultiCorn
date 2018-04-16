@@ -34,13 +34,9 @@ class Student(
         @Column(name = "dorm_info")
         var dormInfo: String? = null,
 
-        @OneToMany
+        @OneToMany(cascade = [(CascadeType.ALL)], orphanRemoval = true)
         @JoinTable
-        var advisors: MutableSet<Account> = hashSetOf(),
-
-        @OneToMany
-        @JoinTable
-        var parents: MutableSet<Account> = hashSetOf(),
+        var guardians: MutableSet<Guardian> = hashSetOf(),
 
         @OneToOne
         @JoinColumn
@@ -49,4 +45,28 @@ class Student(
 //        @OneToMany
 //        @Column(name = "courses")
 //        var courses: MutableSet<Courses> = hashSetOf()
-)
+) {
+    fun relationWith(account: Account): GuardianType? {
+        return guardians.firstOrNull {
+            it.guardianAccount.id == account.id
+        }?.relation
+    }
+
+    fun addGuardian(guardian: Guardian) {
+        guardians.add(guardian)
+    }
+
+    fun removeGuardian(accountId: Long) {
+        guardians.remove(guardians.find {
+            it.guardianAccount.id == accountId
+        })
+    }
+
+    fun updateGuardian(accountId: Long, relation: GuardianType): Guardian {
+        val found = guardians.first {
+            it.guardianAccount.id == accountId
+        }
+        found.relation = relation
+        return found
+    }
+}

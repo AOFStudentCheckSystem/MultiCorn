@@ -32,7 +32,8 @@ class AuthenticationUtil @Autowired constructor(
 ) {
     private var userSession: Session? = null
 
-    @PersistenceContext lateinit var entityManager: EntityManager
+    @PersistenceContext
+    lateinit var entityManager: EntityManager
 
     fun prepare() {
         assertEquals("Non Empty Repository (Subject)", 0, subjectRepository.count())

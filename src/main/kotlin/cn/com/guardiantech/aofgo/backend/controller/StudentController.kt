@@ -2,10 +2,7 @@ package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
-import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
-import cn.com.guardiantech.aofgo.backend.exception.ControllerException
-import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
-import cn.com.guardiantech.aofgo.backend.exception.RepositoryException
+import cn.com.guardiantech.aofgo.backend.exception.*
 import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
@@ -17,11 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import java.sql.SQLException
+import javax.servlet.ServletContext
 import javax.validation.Valid
+
 
 @RestController
 @RequestMapping("/student")
 class StudentController @Autowired constructor(
+        @Autowired
+        val context: ServletContext,
         val studentService: StudentService,
         private val studentPagedRepository: StudentPagedRepository
 ) {
@@ -34,6 +37,7 @@ class StudentController @Autowired constructor(
     } catch (e: NoSuchElementException) {
         throw EntityNotFoundException("Account Not Found")
     } catch (e: IllegalArgumentException) {
+        logger.error(e.message)
         throw BadRequestException(e.message)
     } catch (e: Throwable) {
         logger.error("Student Saving Error:", e)
@@ -94,4 +98,16 @@ class StudentController @Autowired constructor(
         throw RepositoryException("Failed to save student")
     }
 
+    @Require(["STUDENT_WRITE", "ACCOUNT_WRITE"])
+    @PostMapping("/import")
+    @ResponseBody
+    fun importStudentsFromCsv(
+            @RequestParam("file") file: MultipartFile) = try {
+        val fileStream = file.inputStream
+        studentService.importStudentsFromCsv(fileStream)
+    } catch (e: SQLException) {
+        throw ImportBadConstraintException("Constraint violation; check for duplicate entries")
+    } catch (e: Throwable) {
+        throw RepositoryException("Failed to save students")
+    }
 }

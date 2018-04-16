@@ -5,6 +5,7 @@ import cn.com.guardiantech.aofgo.backend.BackendApplicationTestConfiguration
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import cn.com.guardiantech.aofgo.backend.repository.GuardianRepository
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.test.authutil.AuthenticationUtil
@@ -45,6 +46,8 @@ class StudentControllerMvcTest {
     private lateinit var accountRepo: AccountRepository
     @Autowired
     private lateinit var authenticationUtil: AuthenticationUtil
+    @Autowired
+    private lateinit var guardianRepository: GuardianRepository
 
     @Before
     fun initialize() {
@@ -217,6 +220,57 @@ class StudentControllerMvcTest {
                         }""".trimIndent()
                 ))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
+    }
+
+    @Test
+    fun createStudentWithGuardianTest() {
+        val prt = accountRepo.save(
+                Account(
+                        firstName = "a",
+                        lastName = "b",
+                        email = null,
+                        phone = null,
+                        type = AccountType.FACULTY,
+                        preferredName = "c"
+                )
+        )
+        assertEquals(2L, accountRepo.count())
+        assertEquals(0L, studentRepo.count())
+        mockMvc.perform(put("/student/")
+                .with({
+                    it.addHeader("Authorization", authenticationUtil.getSession().sessionKey)
+                    it
+                })
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(
+                        """{
+                                "idNumber": "123456A",
+                                "cardSecret": null,
+                                "grade": 10,
+                                "gender": "FEMALE",
+                                "dateOfBirth": 612939600,
+                                "dorm": "ELE",
+                                "dormInfo": "DNE",
+                                "account": {
+                                    "firstName": "fn",
+                                    "lastName": "ln",
+                                    "email": "a@b.c",
+                                    "type": "OTHER",
+                                    "preferredName": "pn"
+                                },
+                                "guardians": [
+                                    {
+                                        "accountId": ${prt.id},
+                                        "relation": "PARENT"
+                                    }
+                                ]
+                        }""".trimIndent()
+                ))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect {
+                    assertEquals(1L, studentRepo.count())
+                    assertEquals(1, studentRepo.findAll().first().guardians.size)
+                }
     }
 
     @Test
@@ -398,7 +452,7 @@ class StudentControllerMvcTest {
                 })
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(
-                """{
+                        """{
                     "idNumber": "${student.idNumber}",
                     "cardSecret": "very slow"
                 }""".trimIndent()

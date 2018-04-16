@@ -10,7 +10,10 @@ import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRecordRepository
 import cn.com.guardiantech.aofgo.backend.repository.checkin.EventRepository
-import org.junit.Assert.*
+import org.json.JSONArray
+import org.json.JSONObject
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,11 +26,10 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
-import java.util.*
-import org.json.JSONArray
-import org.json.JSONObject
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.util.*
 
 /**
  * Created by calvinx on 2018/01/08.
@@ -42,12 +44,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @EnableSpringDataWebSupport
 class CheckInControllerMvcTest {
 
-    @Autowired private lateinit var mockMvc: MockMvc
+    @Autowired
+    private lateinit var mockMvc: MockMvc
 
-    @Autowired private lateinit var checkInController: CheckInController
-    @Autowired private lateinit var eventRepo: EventRepository
-    @Autowired private lateinit var studentRepo: StudentRepository
-    @Autowired private lateinit var eventRecordRepository: EventRecordRepository
+    @Autowired
+    private lateinit var checkInController: CheckInController
+    @Autowired
+    private lateinit var eventRepo: EventRepository
+    @Autowired
+    private lateinit var studentRepo: StudentRepository
+    @Autowired
+    private lateinit var eventRecordRepository: EventRecordRepository
 
     private lateinit var event: ActivityEvent
     private lateinit var student: Student

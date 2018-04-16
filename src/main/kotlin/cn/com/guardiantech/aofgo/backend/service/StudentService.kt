@@ -1,19 +1,26 @@
 package cn.com.guardiantech.aofgo.backend.service
 
-import cn.com.guardiantech.aofgo.backend.data.entity.Account
-import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
-import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import cn.com.guardiantech.aofgo.backend.data.entity.*
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
+import cn.com.guardiantech.aofgo.backend.repository.GuardianRepository
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
+import com.opencsv.CSVReaderBuilder
+import com.opencsv.enums.CSVReaderNullFieldIndicator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.io.InputStream
+import java.io.InputStreamReader
+
 
 @Service
 class StudentService @Autowired constructor(
         private val studentRepo: StudentRepository,
-        private val accountService: AccountService
+        private val accountService: AccountService,
+        private val guardianRepository: GuardianRepository,
+        private val accountRepo: AccountRepository
 ) {
     /**
      * Failed to save student due to conflict
@@ -31,7 +38,7 @@ class StudentService @Autowired constructor(
             }
         }
 
-        return studentRepo.save(Student(
+        val s = studentRepo.save(Student(
                 idNumber = request.idNumber,
                 cardSecret = request.cardSecret,
                 grade = request.grade,
@@ -41,6 +48,22 @@ class StudentService @Autowired constructor(
                 dormInfo = request.dormInfo,
                 account = theAccount
         ))
+
+        if (request.guardians !== null && request.guardians.isNotEmpty()) {
+            guardianRepository.save(
+                    request.guardians.map {
+                        Guardian(
+                                guardianAccount = accountService.getAccountById(it.accountId),
+                                relation = it.relation
+                        )
+                    }
+            ).forEach {
+                s.addGuardian(it)
+            }
+            studentRepo.save(s)
+        }
+
+        return s
     }
 
     fun listAllStudents(): List<Student> {
@@ -99,4 +122,88 @@ class StudentService @Autowired constructor(
                 it.cardSecret = cardSecret
                 studentRepo.save(it)
             }
+
+    fun findStudentBySubjectId(subjectId: Long): Student = studentRepo.findStudentBySubjectId(subjectId).get()
+
+    @Transactional
+    fun importStudentsFromCsv(csvContent: InputStream) {
+        val csvReader = CSVReaderBuilder(InputStreamReader(csvContent))
+                .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
+                // Skip the header
+                .withSkipLines(1)
+                .build()
+
+        importStudentsFrom2DArray(csvReader.readAll())
+    }
+
+    @Transactional
+    fun importStudentsFrom2DArray(records: List<Array<String>>) {
+        for (record: Array<String> in records) {
+            val newAccount =
+                    accountRepo.findByEmail(record[3]).let {
+                        if (it.isPresent) {
+                            it.get().let {
+                                it.firstName = record[4]
+                                it.lastName = record[7]
+                                it.phone = null
+                                it.type = AccountType.STUDENT
+                                it.preferredName = record[8]
+                                it.subject = null
+                                accountRepo.save(it)
+                            }
+                        } else {
+                            accountRepo.save(
+                                    Account(
+                                            firstName = record[4],
+                                            lastName = record[7],
+                                            email = record[3],
+                                            phone = null,
+                                            type = AccountType.STUDENT,
+                                            preferredName = record[8],
+                                            subject = null
+                                    )
+                            )
+                        }
+                    }
+
+            val processedCardSecret = if (record[1] == "NULL") null else record[1]
+            if (processedCardSecret !== null) {
+                studentRepo.findByCardSecret(processedCardSecret).let {
+                    if (it.isPresent) {
+                        it.get().cardSecret = null
+                        studentRepo.save(it.get())
+                    }
+                }
+            }
+
+            studentRepo.findByIdNumber(record[6]).let {
+                if (it.isPresent) {
+                    it.get().let {
+                        it.cardSecret = processedCardSecret
+                        it.grade = record[5].toInt()
+                        it.dateOfBirth = null
+                        it.gender = Gender.MALE
+                        it.dorm = record[2]
+                        it.dormInfo = null
+                        it.account = newAccount
+                        studentRepo.save(it)
+                    }
+                } else {
+                    studentRepo.save(Student(
+                            idNumber = record[6],
+                            cardSecret = processedCardSecret,
+                            grade = record[5].toInt(),
+                            dateOfBirth = null,
+                            gender = Gender.MALE,
+                            dorm = record[2],
+                            dormInfo = null,
+                            account = newAccount
+                    ))
+                }
+            }
+        }
+    }
+
+    @Transactional
+    fun findStudentByAccountEmail(email: String) = studentRepo.findStudentByAccountEmail(email)
 }

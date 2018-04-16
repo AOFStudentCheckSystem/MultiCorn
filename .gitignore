@@ -37,3 +37,8 @@ local.properties
 
 logs
 .vertx
+src/main/kotlin/\.DS_Store
+
+src/\.DS_Store
+
+\.DS_Store

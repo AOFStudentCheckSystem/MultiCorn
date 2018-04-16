@@ -11,7 +11,7 @@ import javax.persistence.*
  * Project aofgo-backend
  */
 @Entity
-class Credential (
+class Credential(
         @Id
         @GeneratedValue
         val id: Long = -1,

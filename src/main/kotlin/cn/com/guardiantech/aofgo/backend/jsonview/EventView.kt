@@ -6,7 +6,7 @@ package cn.com.guardiantech.aofgo.backend.jsonview
  */
 interface EventView {
     interface NormalView
-    interface EventGroupView: NormalView
-    interface EventRecordView: NormalView
-    interface FullEvent: EventGroupView, EventRecordView
+    interface EventGroupView : NormalView
+    interface EventRecordView : NormalView
+    interface FullEvent : EventGroupView, EventRecordView
 }

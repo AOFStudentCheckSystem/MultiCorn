@@ -7,8 +7,8 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Session
  */
 class AuthContext(private val internalSession: Session? = null) {
 
-    fun isAuthenticated():Boolean {
-        return (this.internalSession?.isAuthenticated()?:false) && (this.internalSession?.isAuthorized()?:false)
+    fun isAuthenticated(): Boolean {
+        return (this.internalSession?.isAuthenticated() ?: false) && (this.internalSession?.isAuthorized() ?: false)
     }
 
     val session: Session?
