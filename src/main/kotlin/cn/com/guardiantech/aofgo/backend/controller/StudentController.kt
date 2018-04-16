@@ -6,6 +6,7 @@ import cn.com.guardiantech.aofgo.backend.exception.*
 import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
+import cn.com.guardiantech.aofgo.backend.request.student.StudentSearchRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import javassist.NotFoundException
 import org.slf4j.Logger
@@ -109,5 +110,11 @@ class StudentController @Autowired constructor(
         throw ImportBadConstraintException("Constraint violation; check for duplicate entries")
     } catch (e: Throwable) {
         throw RepositoryException("Failed to save students")
+    }
+
+    @Require(["STUDENT_READ"])
+    @PostMapping("/search")
+    fun findStudentFiltered(@RequestBody @Valid request: StudentSearchRequest, pageable: Pageable): Page<Student> {
+        return studentService.findStudentFiltered(request.column, request.search, pageable)
     }
 }
