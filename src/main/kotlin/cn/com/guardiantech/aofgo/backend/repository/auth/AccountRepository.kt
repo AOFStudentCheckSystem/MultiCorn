@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.repository.auth
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
+import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import java.util.*
@@ -11,4 +12,6 @@ interface AccountRepository : CrudRepository<Account, Long> {
 
     @Query("SELECT a FROM #{#entityName} a WHERE a.subject.id = ?1")
     fun findBySubjectId(subjectId: Long): Optional<Account>
+
+    fun findByType(type: AccountType): Set<Account>
 }
