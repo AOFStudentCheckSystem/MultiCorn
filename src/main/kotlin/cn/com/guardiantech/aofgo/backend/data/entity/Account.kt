@@ -30,5 +30,7 @@ class Account(
         var type: AccountType = AccountType.OTHER,
 
         @Column(name = "preferred_name")
-        var preferredName: String = firstName
+        var preferredName: String = firstName,
+
+        var accountStatus: AccountStatus = AccountStatus.INACTIVE
 )
