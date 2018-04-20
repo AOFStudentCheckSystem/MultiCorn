@@ -2,6 +2,7 @@ package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Guardian
 import cn.com.guardiantech.aofgo.backend.data.entity.GuardianType
+import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.repository.GuardianRepository
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.request.student.GuardianRequest
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class GuardianService @Autowired constructor(
         private val studentRepo: StudentRepository,
+        private val studentSerive: StudentService,
         private val accountService: AccountService,
         private val guardianRepository: GuardianRepository
 ) {
@@ -81,6 +83,16 @@ class GuardianService @Autowired constructor(
             )
             student.guardians.add(guardian)
             studentRepo.save(student)
+        }
+    }
+
+    @Transactional
+    fun deleteGuardians(studentId: String, guardianId: Long): Student {
+        return studentSerive.getStudentByIdNumber(studentId).let {
+            it.guardians.removeIf {
+                it.id == guardianId
+            }
+            studentRepo.save(it)
         }
     }
 }

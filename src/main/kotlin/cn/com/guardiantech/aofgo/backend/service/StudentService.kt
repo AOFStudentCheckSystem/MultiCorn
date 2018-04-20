@@ -3,12 +3,16 @@ package cn.com.guardiantech.aofgo.backend.service
 import cn.com.guardiantech.aofgo.backend.data.entity.*
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.GuardianRepository
+import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
 import cn.com.guardiantech.aofgo.backend.repository.StudentRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
+import cn.com.guardiantech.aofgo.backend.request.student.StudentSearchColumn
 import com.opencsv.CSVReaderBuilder
 import com.opencsv.enums.CSVReaderNullFieldIndicator
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.io.InputStream
@@ -18,6 +22,7 @@ import java.io.InputStreamReader
 @Service
 class StudentService @Autowired constructor(
         private val studentRepo: StudentRepository,
+        private val studentPagedRepository: StudentPagedRepository,
         private val accountService: AccountService,
         private val guardianRepository: GuardianRepository,
         private val accountRepo: AccountRepository
@@ -204,6 +209,15 @@ class StudentService @Autowired constructor(
         }
     }
 
-    @Transactional
     fun findStudentByAccountEmail(email: String) = studentRepo.findStudentByAccountEmail(email)
+
+    fun findStudentFiltered(column: StudentSearchColumn, search: String, pageable: Pageable): Page<Student> {
+        return when (column) {
+            StudentSearchColumn.FUZZY -> studentPagedRepository.fuzzySearch(search, pageable)
+            StudentSearchColumn.FIRST_NAME -> studentPagedRepository.searchByFirstName(search, pageable)
+            StudentSearchColumn.ID_NUMBER -> studentPagedRepository.searchByIdNumber(search, pageable)
+            StudentSearchColumn.PREFERRED_NAME -> studentPagedRepository.searchByPreferredName(search, pageable)
+            StudentSearchColumn.LAST_NAME -> studentPagedRepository.searchByLastName(search, pageable)
+        }
+    }
 }

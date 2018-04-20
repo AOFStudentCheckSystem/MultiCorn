@@ -2,8 +2,12 @@ package cn.com.guardiantech.aofgo.backend.controller
 
 import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.data.entity.Guardian
+import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import cn.com.guardiantech.aofgo.backend.jsonview.SubjectView
 import cn.com.guardiantech.aofgo.backend.request.student.GuardianRequest
 import cn.com.guardiantech.aofgo.backend.service.GuardianService
+import cn.com.guardiantech.aofgo.backend.service.StudentService
+import com.fasterxml.jackson.annotation.JsonView
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +18,8 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/student/{studentId}/guardian")
 class GuardianController @Autowired constructor(
-        val guardianService: GuardianService
+        val guardianService: GuardianService,
+        val studentService: StudentService
 ) {
     private val logger: Logger = LoggerFactory.getLogger(GuardianController::class.java)
 
@@ -36,5 +41,19 @@ class GuardianController @Autowired constructor(
                 guardian.accountId,
                 guardian.relation
         )
+    }
+
+    @Require(["STUDENT_READ"])
+    @GetMapping("/")
+    @JsonView(SubjectView.BriefView::class)
+    fun getStudentGuardians(@PathVariable studentId: String): MutableSet<Guardian> {
+        return studentService.getStudentByIdNumber(studentId).guardians
+    }
+
+    @Require(["STUDENT_WRITE"])
+    @DeleteMapping("/{guardianId}")
+    @JsonView(SubjectView.BriefView::class)
+    fun deleteStudentGuardian(@PathVariable studentId: String, @PathVariable guardianId: Long): Student {
+        return guardianService.deleteGuardians(studentId, guardianId)
     }
 }
