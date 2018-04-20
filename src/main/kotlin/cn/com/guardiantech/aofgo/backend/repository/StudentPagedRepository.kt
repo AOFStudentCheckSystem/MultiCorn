@@ -24,4 +24,20 @@ interface StudentPagedRepository : PagingAndSortingRepository<Student, Long> {
     fun findByEmailIsNotNull(): List<Student>
 
     override fun findAll(p0: Pageable): Page<Student>
+
+    @Query("SELECT s FROM Student s WHERE ((s.account IS NOT NULL) AND (LOWER(s.account.firstName) like LOWER(?1%)))")
+    fun searchByFirstName(firstName: String): Page<Student>
+
+    @Query("SELECT s FROM Student s WHERE ((s.account IS NOT NULL) AND (s.account.idNumber like ?1%))")
+    fun searchByIdNumber(idNumber: String): Page<Student>
+
+    @Query("SELECT s FROM Student s WHERE ((s.account IS NOT NULL) AND (LOWER(s.account.lastName) like LOWER(?1%)))")
+    fun searchByLastName(lastName: String): Page<Student>
+
+    @Query("SELECT s FROM Student s WHERE ((s.account IS NOT NULL) AND (LOWER(s.account.preferredName) like LOWER(?1%)))")
+    fun searchByPreferredName(preferredName: String): Page<Student>
+
+    @Query("SELECT s FROM Student s WHERE ((s.account IS NOT NULL) AND ((LOWER(s.account.firstName) LIKE LOWER(?1%)) OR " +
+            "(LOWER(s.account.lastName) LIKE LOWER(?1%)) OR (LOWER(s.account.preferredName) LIKE LOWER(?1%)) OR (LOWER(s.idNumber) LIKE LOWER(?1%)) OR )")
+    fun fuzzySearch(searchKey: String): Page<Student>
 }

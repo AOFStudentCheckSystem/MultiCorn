@@ -9,13 +9,13 @@
         {{studentList}}
     </div>
     <div style="text-align:center;">
-        <a href="http://www.aofactivities.com">AOF Check-in System</a>
+        <a href="http://www.aofportal.org">AOF Check-in System</a>
         <br>
         <a>{{eventId}}</a>
     </div>
 </div>
 <div style="font-family: 'Helvetica Neue', Arial, sans-serif; text-align: center;margin-top: 40px;color: #AAA;font-size: 14px;line-height: 24px;">
-    Built by Yaotian Feng, Peiqi Liu, Yuanchu Xie with ♥︎
+    Built by Yaotian Feng, Peiqi Liu, Yuanchu Xie, Calvin Xu with ♥
 </div>
 </body>
 </html>
