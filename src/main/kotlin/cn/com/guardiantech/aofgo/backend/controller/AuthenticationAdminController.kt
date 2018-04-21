@@ -201,4 +201,11 @@ class AuthenticationAdminController @Autowired constructor(
             } catch (e: Throwable) {
                 throw BadRequestException("naive request")
             }
+
+    @GetMapping("/account/guardian")
+    @JsonView(SubjectView.BriefView::class)
+    @Require(["ACCOUNT_READ", "SUBJECT_READ"])
+    fun listAllGuardianAccounts(): Set<Account> {
+        return accountService.getGuardianAccounts()
+    }
 }

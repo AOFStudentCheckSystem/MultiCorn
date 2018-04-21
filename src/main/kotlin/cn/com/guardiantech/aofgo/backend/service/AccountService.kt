@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
+import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
 import cn.com.guardiantech.aofgo.backend.repository.auth.SubjectRepository
@@ -50,7 +51,13 @@ class AccountService @Autowired constructor(
         )
     }
 
-    fun getAccountByEmail(email: String): Account {
-        return accountRepo.findByEmail(email).get()
+    fun getAccountByEmail(email: String): Account? {
+        return accountRepo.findByEmail(email).orElseGet { null }
+    }
+
+    fun getGuardianAccounts(): Set<Account> {
+        return accountRepo.findByType(AccountType.PARENT)
+                .union(accountRepo.findByType(AccountType.FACULTY))
+                .union(accountRepo.findByType(AccountType.OTHER))
     }
 }

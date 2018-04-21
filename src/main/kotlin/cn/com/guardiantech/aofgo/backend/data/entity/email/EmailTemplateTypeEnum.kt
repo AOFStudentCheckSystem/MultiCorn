@@ -5,5 +5,6 @@ package cn.com.guardiantech.aofgo.backend.data.entity.email
  * Project AOFGoBackend
  */
 enum class EmailTemplateTypeEnum {
-    CHECKIN
+    CHECKIN,
+    PINKSLIP
 }
