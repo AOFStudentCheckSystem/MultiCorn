@@ -4,15 +4,12 @@ import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.AccountStatus
 import cn.com.guardiantech.aofgo.backend.data.entity.emailvalidation.EmailValidationCode
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
+import cn.com.guardiantech.aofgo.backend.keyGenerator.Base32RandomString
 import cn.com.guardiantech.aofgo.backend.repository.emailvalidation.EmailValidationCodeRepository
-import cn.com.guardiantech.aofgo.backend.util.keyGenerator.Base32RandomString
-import org.apache.commons.codec.binary.Base32
-import org.apache.commons.text.RandomStringGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.security.SecureRandom
-import javax.security.auth.Subject
 
 @Service
 class EmailVerificationService @Autowired constructor(

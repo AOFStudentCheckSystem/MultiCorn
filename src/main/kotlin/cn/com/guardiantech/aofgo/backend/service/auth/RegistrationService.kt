@@ -35,8 +35,7 @@ class RegistrationService @Autowired constructor(
         private val studentService: StudentService,
         private val emailVerificationService: EmailVerificationService,
         private val emailService: EmailService,
-        private val emailTemplatingService: EmailTemplatingService
-        private val studentService: StudentService,
+        private val emailTemplatingService: EmailTemplatingService,
         private val principalRepository: PrincipalRepository
 ) {
     fun checkEmailAddressValidity(email: String): EmailValidationResult {
