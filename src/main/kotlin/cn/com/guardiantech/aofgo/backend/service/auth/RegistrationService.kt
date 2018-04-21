@@ -5,6 +5,7 @@ import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.CredentialType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.PrincipalType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
+import cn.com.guardiantech.aofgo.backend.data.entity.email.EmailTemplateTypeEnum
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
@@ -16,6 +17,8 @@ import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.Regi
 import cn.com.guardiantech.aofgo.backend.service.AccountService
 import cn.com.guardiantech.aofgo.backend.service.EmailVerificationService
 import cn.com.guardiantech.aofgo.backend.service.StudentService
+import cn.com.guardiantech.aofgo.backend.service.email.EmailService
+import cn.com.guardiantech.aofgo.backend.service.email.EmailTemplatingService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,7 +29,9 @@ class RegistrationService @Autowired constructor(
         private val accountService: AccountService,
         private val accountRepository: AccountRepository,
         private val studentService: StudentService,
-        private val emailVerificationService: EmailVerificationService
+        private val emailVerificationService: EmailVerificationService,
+        private val emailService: EmailService,
+        private val emailTemplatingService: EmailTemplatingService
 ) {
     fun checkEmailAddressValidity(email: String): EmailValidationResult {
         // Check If a subject already exists
@@ -83,19 +88,26 @@ class RegistrationService @Autowired constructor(
                 throw BadRequestException("Cannot create account because email status is: $emailValidity")
             }
         }
-        //TODO: Send this
-        emailVerificationService.assignEmailValidationCode(account)
+        val validationCode = emailVerificationService.assignEmailValidationCode(account)
+        emailService.defaultTemplate[EmailTemplateTypeEnum.REGVERIFY]!!.let {
+            emailTemplatingService.compileTemplate(
+                    it,
+                    HashMap<String, Any>().apply {
+                        put("firstName", account.firstName)
+                        put("lastName", account.lastName)
+                        put("link", validationCode.code)
+                    }
+            ).let {
+                emailService.sendEmail(it.first, it.second, account.email!!)
+            }
+        }
     }
 
     @Transactional
     private fun registerNonStudent(email: String, newSubject: Subject): Account {
-        try {
-            val account = accountService.getAccountByEmail(email)
-            if (account.subject !== null) throw BadRequestException("Account occupied")
-            account.subject = newSubject
-            return accountRepository.save(account)
-        } catch (e: NoSuchElementException) {
-            throw BadRequestException("Account Not Found")
-        }
+        val account = accountService.getAccountByEmail(email) ?: throw BadRequestException("Account Not Found")
+        if (account.subject !== null) throw BadRequestException("Account occupied")
+        account.subject = newSubject
+        return accountRepository.save(account)
     }
 }

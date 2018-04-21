@@ -1,6 +1,5 @@
 package cn.com.guardiantech.aofgo.backend.controller
 
-import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.request.authentication.EmailAddressSubmissionRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.EmailValidationResult
 import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.RegistrationRequest
@@ -30,7 +29,7 @@ class RegisterController @Autowired constructor(
     }
 
     @PutMapping(path = ["/"])
-    fun registerUserWithEmail(@RequestBody @Valid registerRequest: RegistrationRequest): Subject {
+    fun registerUserWithEmail(@RequestBody @Valid registerRequest: RegistrationRequest) {
         return registerService.registerUserWithEmail(registerRequest)
     }
 }

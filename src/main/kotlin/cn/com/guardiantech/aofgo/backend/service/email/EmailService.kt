@@ -140,6 +140,21 @@ class EmailService {
                 )
         ))
 
+        initializeByTemplateType(EmailTemplateTypeEnum.REGVERIFY, setOf(
+                EmailTemplateVariable(
+                        name = "firstName",
+                        type = EmailTemplateVariableType.STRING
+                ),
+                EmailTemplateVariable(
+                        name = "lastName",
+                        type = EmailTemplateVariableType.STRING
+                ),
+                EmailTemplateVariable(
+                        name = "link",
+                        type = EmailTemplateVariableType.STRING
+                )
+        ))
+
         logger.debug("Active templates:" + objectMapper.writeValueAsString(defaultTemplate))
     }
 

@@ -6,5 +6,6 @@ package cn.com.guardiantech.aofgo.backend.data.entity.email
  */
 enum class EmailTemplateTypeEnum {
     CHECKIN,
-    PINKSLIP
+    PINKSLIP,
+    REGVERIFY
 }
