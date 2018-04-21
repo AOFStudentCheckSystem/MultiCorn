@@ -1,14 +1,20 @@
 package cn.com.guardiantech.aofgo.backend.service.auth
 
+import cn.com.guardiantech.aofgo.backend.data.entity.Account
 import cn.com.guardiantech.aofgo.backend.data.entity.AccountType
+import cn.com.guardiantech.aofgo.backend.data.entity.authentication.CredentialType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.PrincipalType
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
+import cn.com.guardiantech.aofgo.backend.request.authentication.CredentialRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.PrincipalRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.EmailValidationResult
+import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.RegistrationRequest
 import cn.com.guardiantech.aofgo.backend.service.AccountService
+import cn.com.guardiantech.aofgo.backend.service.EmailVerificationService
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -20,7 +26,8 @@ class RegistrationService @Autowired constructor(
         private val authenticationService: AuthenticationService,
         private val accountService: AccountService,
         private val accountRepository: AccountRepository,
-        private val studentService: StudentService
+        private val studentService: StudentService,
+        private val emailVerificationService: EmailVerificationService
 ) {
     fun checkEmailAddressValidity(email: String): EmailValidationResult {
         // Check If a subject already exists
@@ -40,37 +47,54 @@ class RegistrationService @Autowired constructor(
     }
 
     @Transactional
-    fun bindingRegisterSubject(subjectRequest: SubjectRequest): Subject {
-        if (authenticationService.subjectExists(subjectRequest.principal.type, subjectRequest.principal.identification)) throw BadRequestException("Subject Already Exists")
-        val emailValidity = checkEmailAddressValidity(subjectRequest.principal.identification)
-        val newSubject = authenticationService.registerSubject(subjectRequest)
-        when (emailValidity) {
+    fun registerUserWithEmail(registerRequest: RegistrationRequest) {
+        if (authenticationService.subjectExists(PrincipalType.EMAIL, registerRequest.email)) throw BadRequestException("Subject Already Exists")
+        val emailValidity = checkEmailAddressValidity(registerRequest.email)
+        val newSubject = authenticationService.registerSubject(
+                SubjectRequest(
+                        principal = PrincipalRequest(
+                                type = PrincipalType.EMAIL,
+                                identification = registerRequest.email
+                        ),
+                        credential = CredentialRequest(
+                                type = CredentialType.PASSWORD,
+                                secret = registerRequest.password
+                        )
+                )
+        )
+        val account = when (emailValidity) {
             EmailValidationResult.STUDENT_RECORD -> {
-                val optStudent = studentService.findStudentByAccountEmail(subjectRequest.principal.identification)
+                val optStudent = studentService.findStudentByAccountEmail(registerRequest.email)
                 if (!optStudent.isPresent) throw EntityNotFoundException("Student Not Found")
                 // If account is null, findStudentByAccountEmail would not have found it
-                return optStudent.get().let {
+                optStudent.get().let {
+                    if (it.account!!.subject !== null) throw BadRequestException("Account occupied")
                     it.account!!.subject = newSubject
                     accountRepository.save(it.account)
-                }!!.subject!!
+                }!!
             }
             EmailValidationResult.FACULTY_RECORD -> {
-                return registerNonStudent(subjectRequest.principal.identification, newSubject)
+                registerNonStudent(registerRequest.email, newSubject)
             }
             EmailValidationResult.PARENT_RECORD -> {
-                return registerNonStudent(subjectRequest.principal.identification, newSubject)
+                registerNonStudent(registerRequest.email, newSubject)
             }
+        //TODO: User registration without existing account with email
             else -> {
                 throw BadRequestException("Cannot create account because email status is: $emailValidity")
             }
         }
+        //TODO: Send this
+        emailVerificationService.assignEmailValidationCode(account)
     }
 
-    private fun registerNonStudent(email: String, newSubject: Subject): Subject {
+    @Transactional
+    private fun registerNonStudent(email: String, newSubject: Subject): Account {
         try {
             val account = accountService.getAccountByEmail(email)
+            if (account.subject !== null) throw BadRequestException("Account occupied")
             account.subject = newSubject
-            return accountRepository.save(account).subject!!
+            return accountRepository.save(account)
         } catch (e: NoSuchElementException) {
             throw BadRequestException("Account Not Found")
         }
