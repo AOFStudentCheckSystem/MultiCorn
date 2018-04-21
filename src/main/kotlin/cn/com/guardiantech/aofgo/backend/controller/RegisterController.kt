@@ -6,6 +6,8 @@ import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.request.authentication.EmailAddressSubmissionRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.EmailValidationResult
+import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.UsernameValidationRequest
+import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.UsernameValidationResponse
 import cn.com.guardiantech.aofgo.backend.service.auth.RegistrationService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -29,6 +31,13 @@ class RegisterController @Autowired constructor(
     @PostMapping(path = ["/valid/email"])
     fun checkEmailAddressValidity(@RequestBody @Valid emailRequest: EmailAddressSubmissionRequest): EmailValidationResult {
         return registerService.checkEmailAddressValidity(emailRequest.address)
+    }
+
+    @PostMapping(path = ["/valid/username"])
+    fun checkUsernameValidity(@RequestBody @Valid usernameValidationRequest: UsernameValidationRequest): UsernameValidationResponse{
+        val result = registerService.checkUsernameValidity(username = usernameValidationRequest.username)
+        return UsernameValidationResponse(username = usernameValidationRequest.username,
+                result = result)
     }
 
     @PutMapping(path = ["/"])

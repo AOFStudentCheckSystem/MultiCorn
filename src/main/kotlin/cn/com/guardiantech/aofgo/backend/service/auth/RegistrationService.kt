@@ -6,13 +6,16 @@ import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.auth.AccountRepository
+import cn.com.guardiantech.aofgo.backend.repository.auth.PrincipalRepository
 import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.EmailValidationResult
+import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.UsernameValidationResult
 import cn.com.guardiantech.aofgo.backend.service.AccountService
 import cn.com.guardiantech.aofgo.backend.service.StudentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Year
 import java.util.*
 
 @Service
@@ -20,7 +23,8 @@ class RegistrationService @Autowired constructor(
         private val authenticationService: AuthenticationService,
         private val accountService: AccountService,
         private val accountRepository: AccountRepository,
-        private val studentService: StudentService
+        private val studentService: StudentService,
+        private val principalRepository: PrincipalRepository
 ) {
     fun checkEmailAddressValidity(email: String): EmailValidationResult {
         // Check If a subject already exists
@@ -37,6 +41,20 @@ class RegistrationService @Autowired constructor(
                     }
                 }
         return validationResult
+    }
+
+    fun checkUsernameValidity(username: String): UsernameValidationResult {
+        // Verify Username conforms to the regex:
+
+        if(username.matches(Regex("[A-z][0-9A-z\\-_.]*"))) {
+            val find = principalRepository.findByTypeAndIdentification(PrincipalType.USERNAME, username)
+            if (find.isPresent) {
+                return UsernameValidationResult.OCCUPIED
+            } else {
+                return UsernameValidationResult.AVAILABLE
+            }
+        }
+        return UsernameValidationResult.INVALID
     }
 
     @Transactional
