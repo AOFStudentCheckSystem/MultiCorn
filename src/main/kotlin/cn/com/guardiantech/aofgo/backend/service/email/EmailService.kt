@@ -111,8 +111,7 @@ class EmailService {
      */
     @PostConstruct
     fun initialize() {
-        val checkinDefault = emailTemplateTypeRepository.findByTemplateType(EmailTemplateTypeEnum.CHECKIN)
-        val templateVariableSet = setOf(
+        initializeByTemplateType(EmailTemplateTypeEnum.CHECKIN, setOf(
                 EmailTemplateVariable(
                         name = "eventName",
                         type = EmailTemplateVariableType.STRING
@@ -128,47 +127,76 @@ class EmailService {
                 EmailTemplateVariable(
                         name = "eventId",
                         type = EmailTemplateVariableType.STRING
+                )))
+
+        initializeByTemplateType(EmailTemplateTypeEnum.PINKSLIP, setOf(
+                EmailTemplateVariable(
+                        name = "studentName",
+                        type = EmailTemplateVariableType.STRING
+                ),
+                EmailTemplateVariable(
+                        name = "permissionRequestLink",
+                        type = EmailTemplateVariableType.LINK
                 )
-        )
+        ))
+
+        initializeByTemplateType(EmailTemplateTypeEnum.REGVERIFY, setOf(
+                EmailTemplateVariable(
+                        name = "firstName",
+                        type = EmailTemplateVariableType.STRING
+                ),
+                EmailTemplateVariable(
+                        name = "lastName",
+                        type = EmailTemplateVariableType.STRING
+                ),
+                EmailTemplateVariable(
+                        name = "link",
+                        type = EmailTemplateVariableType.STRING
+                )
+        ))
+
+        logger.debug("Active templates:" + objectMapper.writeValueAsString(defaultTemplate))
+    }
+
+    private fun initializeByTemplateType(type: EmailTemplateTypeEnum, templateVariables: Set<EmailTemplateVariable>) {
+        val defaultTemplateOpt = emailTemplateTypeRepository.findByTemplateType(type)
         var variablesValid = false
-        var gotCheckin = if (checkinDefault.isPresent) {
-            checkinDefault.get().let {
+        var defaultTemplate = if (defaultTemplateOpt.isPresent) {
+            defaultTemplateOpt.get().let {
                 variablesValid = it.variables.map {
                     Pair(it.name, it.type)
-                }.toSet() == templateVariableSet.map {
+                }.toSet() == templateVariables.map {
                     Pair(it.name, it.type)
                 }.toSet()
             }
-            checkinDefault.get()
+            defaultTemplateOpt.get()
         } else {
             emailTemplateTypeRepository.save(EmailTemplateType(
-                    templateType = EmailTemplateTypeEnum.CHECKIN
+                    templateType = type
             ))
         }
 
-        logger.debug("CHECKIN variables valid: $variablesValid")
+        logger.debug("$type variables valid: $variablesValid")
         if (!variablesValid) {
-            gotCheckin = emailTemplateTypeRepository.save(
-                    gotCheckin.let {
+            defaultTemplate = emailTemplateTypeRepository.save(
+                    defaultTemplate.let {
                         it.variables.clear()
                         it
                     }
             )
-            templateVariableSet.let {
+            templateVariables.let {
                 it.forEach {
-                    gotCheckin.addVariable(it)
+                    defaultTemplate.addVariable(it)
                 }
                 emailTemplateVariableRepository.save(it)
             }
         }
 
-        if (gotCheckin.defaultTemplate !== null) {
-            setDefaultTemplate(gotCheckin.defaultTemplate!!)
+        if (defaultTemplate.defaultTemplate !== null) {
+            setDefaultTemplate(defaultTemplate.defaultTemplate!!)
         } else {
-            loadDefaultTemplate(EmailTemplateTypeEnum.CHECKIN)
+            loadDefaultTemplate(type)
         }
-
-        logger.debug("Active templates:" + objectMapper.writeValueAsString(defaultTemplate))
     }
 
     private fun setDefaultTemplate(template: EmailTemplate) {

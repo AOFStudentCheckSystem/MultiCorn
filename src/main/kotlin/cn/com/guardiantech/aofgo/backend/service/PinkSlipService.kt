@@ -2,14 +2,18 @@ package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.GuardianType
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
+import cn.com.guardiantech.aofgo.backend.data.entity.email.EmailTemplateTypeEnum
 import cn.com.guardiantech.aofgo.backend.data.entity.slip.*
 import cn.com.guardiantech.aofgo.backend.repository.slip.CampusLeaveRequestRepository
 import cn.com.guardiantech.aofgo.backend.repository.slip.PermissionRequestRepository
+import cn.com.guardiantech.aofgo.backend.service.email.EmailService
+import cn.com.guardiantech.aofgo.backend.service.email.EmailTemplatingService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by dedztbh on 18-1-24.
@@ -19,7 +23,9 @@ import java.util.*
 @Service
 class PinkSlipService @Autowired constructor(
         val leaveRequestRepository: CampusLeaveRequestRepository,
-        val permissionRequestRepository: PermissionRequestRepository
+        val permissionRequestRepository: PermissionRequestRepository,
+        val emailService: EmailService,
+        val emailTemplatingService: EmailTemplatingService
 ) {
     fun getPinkSlip(id: Long) = leaveRequestRepository.findById(id).get()
 
@@ -97,13 +103,28 @@ class PinkSlipService @Autowired constructor(
 
     @Transactional
     fun studentSendPermissionRequests(request: CampusLeaveRequest) {
-        request.permissionRequests.forEach { sendPermissionRequestEmail(it) }
+        request.getStudentName().let { studentName ->
+            request.permissionRequests.filter {
+                it.accepted != true
+            }.forEach { sendPermissionRequestEmail(it, studentName) }
 //        request.evalWaitingStatus()
 //        return leaveRequestRepository.save(request)
+        }
     }
 
-    fun sendPermissionRequestEmail(permissionRequest: PermissionRequest) {
-
+    private fun sendPermissionRequestEmail(permissionRequest: PermissionRequest, studentName: String) {
+        emailService.defaultTemplate[EmailTemplateTypeEnum.PINKSLIP]!!.let {
+            emailTemplatingService.compileTemplate(
+                    it,
+                    HashMap<String, Any>().apply {
+                        put("studentName", studentName)
+                        // TODO: finish permissionRequestLink
+                        put("permissionRequestLink", "")
+                    }
+            ).let {
+                emailService.sendEmail(it.first, it.second)
+            }
+        }
     }
 
     fun getPermissionRequestWithCorrectSubject(permissionRequestId: Long, subjectId: Long) =

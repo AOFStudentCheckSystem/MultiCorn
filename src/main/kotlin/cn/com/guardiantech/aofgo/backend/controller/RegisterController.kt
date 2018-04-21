@@ -1,13 +1,10 @@
 package cn.com.guardiantech.aofgo.backend.controller
 
-import cn.com.guardiantech.aofgo.backend.data.entity.authentication.PrincipalType
-import cn.com.guardiantech.aofgo.backend.data.entity.authentication.Subject
-import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.request.authentication.EmailAddressSubmissionRequest
-import cn.com.guardiantech.aofgo.backend.request.authentication.SubjectRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.EmailValidationResult
 import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.UsernameValidationRequest
 import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.UsernameValidationResponse
+import cn.com.guardiantech.aofgo.backend.request.authentication.registraion.RegistrationRequest
 import cn.com.guardiantech.aofgo.backend.service.auth.RegistrationService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -41,8 +38,7 @@ class RegisterController @Autowired constructor(
     }
 
     @PutMapping(path = ["/"])
-    fun bindingRegisterSubject(@RequestBody @Valid registerRequest: SubjectRequest): Subject {
-        if (registerRequest.principal.type !== PrincipalType.EMAIL) throw BadRequestException("Please register with email")
-        return registerService.bindingRegisterSubject(registerRequest)
+    fun registerUserWithEmail(@RequestBody @Valid registerRequest: RegistrationRequest) {
+        return registerService.registerUserWithEmail(registerRequest)
     }
 }
