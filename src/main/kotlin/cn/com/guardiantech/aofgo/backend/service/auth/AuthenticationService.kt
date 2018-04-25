@@ -39,8 +39,11 @@ class AuthenticationService @Autowired constructor(
     @Modifying
     fun register(registerRequest: SubjectRequest): Account {
         val newSubject = registerSubject(registerRequest)
-        val account = accountRepository.save(Account(
-                subject = newSubject)
+        val account = accountRepository.save(
+                Account(
+                        subject = newSubject,
+                        accountStatus = AccountStatus.ACTIVE
+                )
         )
         entityManager.refresh(newSubject)
         return account
