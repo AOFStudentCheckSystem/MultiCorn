@@ -2,6 +2,7 @@ package cn.com.guardiantech.aofgo.backend.service.auth
 
 import cn.com.guardiantech.aofgo.backend.authentication.AuthenticationMechanism
 import cn.com.guardiantech.aofgo.backend.data.entity.Account
+import cn.com.guardiantech.aofgo.backend.data.entity.AccountStatus
 import cn.com.guardiantech.aofgo.backend.data.entity.authentication.*
 import cn.com.guardiantech.aofgo.backend.exception.UnauthorizedException
 import cn.com.guardiantech.aofgo.backend.repository.auth.*
@@ -76,6 +77,12 @@ class AuthenticationService @Autowired constructor(
                 authRequest.principal.type,
                 authRequest.principal.identification).get()
         val owner = principal.owner
+
+        val accountActivated = accountRepository.findBySubjectId(owner.id).let {
+            if (!it.isPresent) true else it.get().accountStatus === AccountStatus.ACTIVE
+        }
+        if (!accountActivated) throw UnauthorizedException("Account not activated")
+
         val ownerFoundCredential = owner.credentials.find {
             it.type == authRequest.credential.type && authenticationMechanism.verifyCredentialSecret(it, authRequest.credential.secret)
         }

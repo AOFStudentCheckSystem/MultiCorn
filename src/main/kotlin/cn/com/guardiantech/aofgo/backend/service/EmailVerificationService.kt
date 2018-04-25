@@ -6,18 +6,19 @@ import cn.com.guardiantech.aofgo.backend.data.entity.emailvalidation.EmailValida
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.emailvalidation.EmailValidationCodeRepository
 import cn.com.guardiantech.aofgo.backend.util.keyGenerator.Base32RandomString
-import org.apache.commons.codec.binary.Base32
-import org.apache.commons.text.RandomStringGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.security.SecureRandom
-import javax.security.auth.Subject
+
+/**
+ * Note: Code is Token !!
+ */
 
 @Service
 class EmailVerificationService @Autowired constructor(
         private val emailValidationCodeRepository: EmailValidationCodeRepository
-){
+) {
 
     private val randomGen = Base32RandomString(20, SecureRandom())
 
@@ -44,7 +45,7 @@ class EmailVerificationService @Autowired constructor(
         emailValidationCodeRepository.findByCode(code)?.let {
             return it
         }
-        throw EntityNotFoundException("Validation Token does not exists,")
+        throw EntityNotFoundException("Validation Token does not exists")
     }
 
     @Transactional
