@@ -32,5 +32,6 @@ class Account(
         @Column(name = "preferred_name")
         var preferredName: String = firstName,
 
+        @Enumerated(EnumType.STRING)
         var accountStatus: AccountStatus = AccountStatus.INACTIVE
 )
