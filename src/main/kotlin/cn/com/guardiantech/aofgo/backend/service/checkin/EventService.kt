@@ -123,7 +123,6 @@ class EventService @Autowired constructor(
                             //                            if (o1.student.account != null && o2.student.account != null) {
                             o1.student.account!!.lastName.compareTo(o2.student.account!!.lastName, true)
 //                            }
-//                            TODO("Student without account?")
                         }).forEach {
                             val sb = StringBuilder()
                             sb.append(it.student.account!!.preferredName)

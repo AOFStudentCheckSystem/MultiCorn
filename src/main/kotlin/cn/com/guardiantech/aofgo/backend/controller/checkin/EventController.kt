@@ -89,7 +89,6 @@ class EventController @Autowired constructor(
         throw EntityNotFoundException("Cannot find event")
     }
 
-    //TODO: Judgement and dealing with Student without account
     @RequestMapping(path = ["/sendmail"], method = [RequestMethod.POST])
     @Require(["SEND_EMAIL"])
     fun sendSummaryEmail(@RequestBody @Valid request: EventSendEmailRequest) = try {
