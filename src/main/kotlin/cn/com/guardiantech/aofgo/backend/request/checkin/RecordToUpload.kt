@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.request.checkin
 
 import cn.com.guardiantech.aofgo.backend.annotation.NoArg
+import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import com.fasterxml.jackson.annotation.JsonProperty
 import javax.validation.constraints.NotNull
 
@@ -12,8 +13,8 @@ import javax.validation.constraints.NotNull
 data class RecordToUpload(
         @field:NotNull
         val timestamp: Long,
-        @get:JsonProperty(defaultValue = "1")
-        val status: Int = 1,
+        @get:JsonProperty(defaultValue = "BOARDING")
+        val status: EventStatus = EventStatus.BOARDING,
         @field:NotNull
         val studentId: String
 )

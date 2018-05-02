@@ -1,5 +1,6 @@
 package cn.com.guardiantech.aofgo.backend.controller.checkin
 
+import cn.com.guardiantech.aofgo.backend.data.entity.checkin.EventStatus
 import cn.com.guardiantech.aofgo.backend.request.checkin.RecordToUpload
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -29,13 +30,13 @@ class RecordToUploadSerializationTest {
             {
             "timestamp": 123456789,
             "studentId": "123456798",
-            "status": 1
+            "status": "BOARDING"
             }
         """.trimIndent()
         val resultWithStatus = jacksonTest.parseObject(jsonWithStatus)
         assertNotNull(resultWithStatus)
         assertEquals(123456789, resultWithStatus.timestamp)
-        assertEquals(1, resultWithStatus.status)
+        assertEquals(EventStatus.BOARDING, resultWithStatus.status)
 
         val jsonWithOutStatus = """
             {
@@ -46,7 +47,7 @@ class RecordToUploadSerializationTest {
         val resultWithOutStatus = jacksonTest.parseObject(jsonWithOutStatus)
         assertNotNull(resultWithOutStatus)
         assertEquals(123456789, resultWithOutStatus.timestamp)
-        assertEquals(1, resultWithOutStatus.status)
+        assertEquals(EventStatus.BOARDING, resultWithOutStatus.status)
     }
 
 }
