@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class GuardianService @Autowired constructor(
         private val studentRepo: StudentRepository,
-        private val studentSerive: StudentService,
+        private val studentService: StudentService,
         private val accountService: AccountService,
         private val guardianRepository: GuardianRepository
 ) {
@@ -67,28 +67,24 @@ class GuardianService @Autowired constructor(
     @Transactional
     fun addExistingOrNewGuardianToStudent(studentId: String, guardianAccountId: Long, guardianRelation: GuardianType) {
         val student = studentRepo.findByIdNumber(studentId).get()
-        val guardianOpt = guardianRepository.findByAccountId(guardianAccountId)
-        if (guardianOpt.isPresent) {
-            val guardian = guardianOpt.get()
-            if (student.guardians.none { it.id == guardian.id }) {
-                student.guardians.add(guardian)
-                studentRepo.save(student)
-            }
+        val guardianOpt = guardianRepository.findByAccountIdAndRelation(guardianAccountId, guardianRelation)
+        val guardian = if (guardianOpt.isPresent) {
+            guardianOpt.get()
         } else {
-            val guardian = guardianRepository.save(
+            guardianRepository.save(
                     Guardian(
                             guardianAccount = accountService.getAccountById(guardianAccountId),
                             relation = guardianRelation
                     )
             )
-            student.guardians.add(guardian)
-            studentRepo.save(student)
         }
+        student.addGuardian(guardian)
+        studentRepo.save(student)
     }
 
     @Transactional
     fun deleteGuardians(studentId: String, guardianId: Long): Student {
-        return studentSerive.getStudentByIdNumber(studentId).let {
+        return studentService.getStudentByIdNumber(studentId).let {
             it.guardians.removeIf {
                 it.id == guardianId
             }

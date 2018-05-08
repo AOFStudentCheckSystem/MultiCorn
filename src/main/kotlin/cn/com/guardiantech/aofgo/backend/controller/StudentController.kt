@@ -8,6 +8,8 @@ import cn.com.guardiantech.aofgo.backend.request.student.StudentEditCardSecretRe
 import cn.com.guardiantech.aofgo.backend.request.student.StudentRequest
 import cn.com.guardiantech.aofgo.backend.request.student.StudentSearchRequest
 import cn.com.guardiantech.aofgo.backend.service.StudentService
+import com.opencsv.CSVReaderBuilder
+import com.opencsv.enums.CSVReaderNullFieldIndicator
 import javassist.NotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.io.InputStreamReader
 import java.sql.SQLException
 import javax.servlet.ServletContext
 import javax.validation.Valid
@@ -110,6 +113,32 @@ class StudentController @Autowired constructor(
         throw ImportBadConstraintException("Constraint violation; check for duplicate entries")
     } catch (e: Throwable) {
         throw RepositoryException("Failed to save students")
+    }
+
+    @Require(["STUDENT_WRITE", "GUARDIAN_WRITE"])
+    @PostMapping("/guardian/import")
+    @ResponseBody
+    fun importGuardiansFromCsv(
+            @RequestParam("file") file: MultipartFile) = try {
+        studentService.importGuardians(
+                CSVReaderBuilder(InputStreamReader(file.inputStream))
+                        .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
+                        // Skip the header
+                        .withSkipLines(1)
+                        .build()
+                        .readAll()
+        )
+    } catch (e: SQLException) {
+        throw ImportBadConstraintException("Constraint violation; check for duplicate entries")
+    } catch (e: Throwable) {
+        when (e) {
+            is ControllerException -> {
+                throw e
+            }
+            else -> {
+                throw RepositoryException("Failed to save students")
+            }
+        }
     }
 
     @Require(["STUDENT_READ"])

@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.service
 
 import cn.com.guardiantech.aofgo.backend.data.entity.*
+import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.repository.GuardianRepository
 import cn.com.guardiantech.aofgo.backend.repository.StudentPagedRepository
@@ -11,6 +12,7 @@ import cn.com.guardiantech.aofgo.backend.request.student.StudentSearchColumn
 import com.opencsv.CSVReaderBuilder
 import com.opencsv.enums.CSVReaderNullFieldIndicator
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -27,6 +29,11 @@ class StudentService @Autowired constructor(
         private val guardianRepository: GuardianRepository,
         private val accountRepo: AccountRepository
 ) {
+
+    @Autowired
+    @Lazy
+    private lateinit var guardianService: GuardianService
+
     /**
      * Failed to save student due to conflict
      */
@@ -206,6 +213,34 @@ class StudentService @Autowired constructor(
                     ))
                 }
             }
+        }
+    }
+
+    @Transactional
+    fun importGuardians(importGuardians: List<Array<String>>) {
+        val processedSet = HashSet<Triple<Student, Account, GuardianType>>()
+        importGuardians.forEachIndexed { index, row ->
+            if (row.size != 3) throw BadRequestException("Row ${index + 2} in csv file doesn't have three items")
+            val studentEmail = findStudentByAccountEmail(row[0]).let {
+                if (it.isPresent) it.get() else throw BadRequestException("Row ${index + 2} in csv file have unregistered student email")
+            }
+            val guardianEmail = accountRepo.findByEmail(row[1]).let {
+                if (it.isPresent) it.get() else throw BadRequestException("Row ${index + 2} in csv file have unregistered guardian email")
+            }
+            val relation = try {
+                GuardianType.valueOf(row[2])
+            } catch (e: Throwable) {
+                throw BadRequestException("Row ${index + 2} in csv file contains invalid relation")
+            }
+            processedSet.add(Triple(studentEmail, guardianEmail, relation))
+        }
+
+        processedSet.forEach {
+            guardianService.addExistingOrNewGuardianToStudent(
+                    it.first.idNumber,
+                    it.second.id,
+                    it.third
+            )
         }
     }
 
