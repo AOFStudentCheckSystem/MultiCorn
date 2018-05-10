@@ -1,6 +1,7 @@
 package cn.com.guardiantech.aofgo.backend.service.email
 
 import cn.com.guardiantech.aofgo.backend.data.entity.email.*
+import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateRepository
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateTypeRepository
 import cn.com.guardiantech.aofgo.backend.repository.email.EmailTemplateVariableRepository
@@ -46,6 +47,7 @@ class EmailService {
     var defaultTemplate: MutableMap<EmailTemplateTypeEnum, EmailTemplate> = mutableMapOf()
 
     fun sendEmail(title: String, body: String, vararg recipients: String) {
+        if (recipients.isEmpty()) throw BadRequestException("Fuck you add a recipient")
         mailSender.send(mailSender.createMimeMessage().let { msg ->
             msg.setFrom(from)
             msg.subject = title
@@ -137,6 +139,10 @@ class EmailService {
                 EmailTemplateVariable(
                         name = "permissionRequestLink",
                         type = EmailTemplateVariableType.LINK
+                ),
+                EmailTemplateVariable(
+                        name = "requestBody",
+                        type = EmailTemplateVariableType.STRING
                 )
         ))
 
