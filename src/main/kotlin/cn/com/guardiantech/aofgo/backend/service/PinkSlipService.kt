@@ -5,11 +5,14 @@ import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.data.entity.email.EmailTemplateTypeEnum
 import cn.com.guardiantech.aofgo.backend.data.entity.slip.*
 import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
+import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.jsonview.SlipView
 import cn.com.guardiantech.aofgo.backend.repository.slip.CampusLeaveRequestRepository
 import cn.com.guardiantech.aofgo.backend.repository.slip.PermissionRequestRepository
+import cn.com.guardiantech.aofgo.backend.repository.slip.PermissionRequestTokenRepository
 import cn.com.guardiantech.aofgo.backend.service.email.EmailService
 import cn.com.guardiantech.aofgo.backend.service.email.EmailTemplatingService
+import cn.com.guardiantech.aofgo.backend.util.keyGenerator.Base32RandomString
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.lang3.StringUtils
@@ -18,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.security.SecureRandom
+import java.text.DateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -31,7 +36,8 @@ class PinkSlipService @Autowired constructor(
         val leaveRequestRepository: CampusLeaveRequestRepository,
         val permissionRequestRepository: PermissionRequestRepository,
         val emailService: EmailService,
-        val emailTemplatingService: EmailTemplatingService
+        val emailTemplatingService: EmailTemplatingService,
+        val permissionRequestTokenRepository: PermissionRequestTokenRepository
 ) {
     fun getPinkSlip(id: Long) = leaveRequestRepository.findById(id).get()
 
@@ -125,8 +131,7 @@ class PinkSlipService @Autowired constructor(
 
         if (permissionRequests.isEmpty()) return
 
-        emailService.defaultTemplate[EmailTemplateTypeEnum.PINKSLIP]!!.let {
-
+        emailService.defaultTemplate[EmailTemplateTypeEnum.PINKSLIP]!!.let { emailTemplate ->
             val pinkslip = permissionRequests[0].campusLeaveRequest
             val jsonPinkSlip = JSONObject(pinkSlipJsonMapper
                     .writerWithView(SlipView.FacultyView::class.java)
@@ -139,17 +144,20 @@ class PinkSlipService @Autowired constructor(
                     val value = jsonPinkSlip.get(it)
                     val appendValue =
                             if (value !== null) {
-                                if (value !== "type" && value !== "transportationMethod") {
-                                    if (value !== "dateOfLeave" && value !== "dateOfReturn") {
+                                if (it !== "type" && it !== "transportationMethod") {
+                                    if (it !== "dateOfLeave" && it !== "dateOfReturn") {
                                         when (value) {
                                             is Boolean -> if (value) "Yes" else "No"
                                             else -> value.toString()
                                         }
                                     } else {
-                                        // pROCESS time
-                                        "TIME"
+                                        value as Long
+                                        // Process time
+                                        DateFormat.getDateInstance(DateFormat.DEFAULT)
+                                                .format(Date(value * 1000))
                                     }
                                 } else {
+                                    //Enum
                                     value.toString().replace("_", " ").toLowerCase().capitalize()
                                 }
                             } else {
@@ -159,21 +167,26 @@ class PinkSlipService @Autowired constructor(
                 }
             }
 
-            val compiledEmail = emailTemplatingService.compileTemplate(
-                    it,
-                    HashMap<String, Any>().apply {
-                        put("studentName", studentName)
-                        // TODO: finish permissionRequestLink
-                        put("permissionRequestLink", "")
-                        put("requestBody", compiledPinkSlip.toString())
-                    }
-            )
-            emailService.sendEmail(compiledEmail.first, compiledEmail.second,
-                    *permissionRequests.map {
-                        it.acceptor.guardianAccount.email
-                                ?: throw BadRequestException("Guardian ${it.acceptor.guardianAccount.lastName} has no email")
-                    }
-                            .toTypedArray())
+            val compiledPinkSlipStr = compiledPinkSlip.toString()
+
+            permissionRequests.forEach {
+                val guardianEmail = it.acceptor.guardianAccount.email
+                        ?: throw BadRequestException("Guardian ${it.acceptor.guardianAccount.lastName} has no email")
+
+                val compiledEmail = emailTemplatingService.compileTemplate(
+                        emailTemplate,
+                        HashMap<String, Any>().apply {
+                            put("studentName", studentName)
+                            // TODO: finish permissionRequestLink
+                            put("permissionRequestLink", "")
+                            put("requestBody", compiledPinkSlipStr)
+                        }
+                )
+
+                Thread(Runnable {
+                    emailService.sendEmail(compiledEmail.first, compiledEmail.second, guardianEmail)
+                })
+            }
         }
     }
 
@@ -203,5 +216,25 @@ class PinkSlipService @Autowired constructor(
         val foundRequest = leaveRequestRepository.findById(leaveRequestId).get()
         foundRequest.setStatus(leaveStatus)
         return leaveRequestRepository.save(foundRequest)
+    }
+
+
+    private val randomGen = Base32RandomString(20, SecureRandom())
+
+    @Transactional
+    fun assignPermissionRequestToken(permissionRequest: PermissionRequest): PermissionRequestToken {
+        var token: String
+        do {
+            token = randomGen.nextString()
+        } while (permissionRequestTokenRepository.findByToken(token).isPresent)
+
+        return permissionRequestTokenRepository.save(
+                PermissionRequestToken(token = token, permissionRequest = permissionRequest)
+        )
+    }
+
+    fun findPermissionRequestToken(token: String): PermissionRequest {
+        return (permissionRequestTokenRepository.findByToken(token).orElseGet { null }
+                ?: throw EntityNotFoundException("Validation Token does not exists")).permissionRequest
     }
 }

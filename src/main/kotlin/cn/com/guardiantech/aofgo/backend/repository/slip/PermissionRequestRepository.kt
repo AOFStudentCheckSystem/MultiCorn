@@ -10,5 +10,4 @@ interface PermissionRequestRepository : CrudRepository<PermissionRequest, Long> 
 
     @Query("select r from #{#entityName} r WHERE r.id = ?1 AND r.acceptor.guardianAccount.subject.id = ?2")
     fun findByIdAndSubjectId(requestId: Long, subjectId: Long): Optional<PermissionRequest>
-
 }
