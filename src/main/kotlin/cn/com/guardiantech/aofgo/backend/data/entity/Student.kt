@@ -34,7 +34,7 @@ class Student(
         @Column(name = "dorm_info")
         var dormInfo: String? = null,
 
-        @OneToMany(cascade = [(CascadeType.ALL)], orphanRemoval = true)
+        @OneToMany(cascade = [(CascadeType.DETACH)], orphanRemoval = true)
         @JoinTable
         var guardians: MutableSet<Guardian> = hashSetOf(),
 

@@ -15,6 +15,4 @@ class Guardian(
         @Enumerated(EnumType.STRING)
         @Column
         var relation: GuardianType
-
-
 )

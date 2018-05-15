@@ -177,8 +177,7 @@ class PinkSlipService @Autowired constructor(
                         emailTemplate,
                         HashMap<String, Any>().apply {
                             put("studentName", studentName)
-                            // TODO: finish permissionRequestLink
-                            put("permissionRequestLink", "")
+                            put("permissionRequestToken", assignPermissionRequestToken(it).token)
                             put("requestBody", compiledPinkSlipStr)
                         }
                 )
@@ -236,5 +235,11 @@ class PinkSlipService @Autowired constructor(
     fun findPermissionRequestToken(token: String): PermissionRequest {
         return (permissionRequestTokenRepository.findByToken(token).orElseGet { null }
                 ?: throw EntityNotFoundException("Validation Token does not exists")).permissionRequest
+    }
+
+    fun invalidatePermissionRequestTokenByPermissionRequest(permissionRequest: PermissionRequest) {
+        permissionRequestTokenRepository.findByPermissionRequest(permissionRequest).ifPresent {
+            permissionRequestTokenRepository.delete(it)
+        }
     }
 }
