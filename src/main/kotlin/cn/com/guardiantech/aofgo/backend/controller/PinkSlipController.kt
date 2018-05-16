@@ -3,6 +3,9 @@ package cn.com.guardiantech.aofgo.backend.controller
 import cn.com.guardiantech.aofgo.backend.annotation.Require
 import cn.com.guardiantech.aofgo.backend.authentication.AuthContext
 import cn.com.guardiantech.aofgo.backend.data.entity.slip.CampusLeaveRequest
+import cn.com.guardiantech.aofgo.backend.data.entity.slip.PermissionRequest
+import cn.com.guardiantech.aofgo.backend.exception.BadRequestException
+import cn.com.guardiantech.aofgo.backend.exception.ControllerException
 import cn.com.guardiantech.aofgo.backend.exception.EntityNotFoundException
 import cn.com.guardiantech.aofgo.backend.jsonview.SlipView
 import cn.com.guardiantech.aofgo.backend.request.slip.LeaveRequestStatusRequest
@@ -71,7 +74,7 @@ class PinkSlipController @Autowired constructor(
     @PutMapping("/permission")
     @JsonView(SlipView.FacultyView::class)
     @Require
-    fun setPermissionRequestAccepted(@RequestBody @Valid req: PermissionRequestRequest, authContext: AuthContext, httpServletRequest: HttpServletRequest) {
+    fun setPermissionRequestAccepted(@RequestBody @Valid req: PermissionRequestRequest, authContext: AuthContext, httpServletRequest: HttpServletRequest): PermissionRequest {
         val optRequest = pinkSlipService.getPermissionRequestWithCorrectSubject(req.id, authContext.session!!.subject.id)
         if (!optRequest.isPresent) throw EntityNotFoundException("No owned permission request was found")
         return pinkSlipService.setPermissionRequestAccepted(optRequest.get(), req.accepted, httpServletRequest.remoteAddr)
@@ -96,5 +99,32 @@ class PinkSlipController @Autowired constructor(
     @Require(["LOCAL_LEAVE_REQUEST_STATUS_READ"])
     fun getLeaveRequestsByStatus(@RequestBody @Valid statusRequest: LeaveRequestStatusRequest): Set<CampusLeaveRequest> {
         return pinkSlipService.getLeaveRequestByStatus(statusRequest.status)
+    }
+
+    @GetMapping("/permission/token/{token}")
+    @JsonView(SlipView.FacultyView::class)
+    fun getPermissionRequestByToken(@PathVariable token: String): PermissionRequest {
+        try {
+            return pinkSlipService.getPermissionRequestByToken(token)
+        } catch (e: Throwable) {
+            if (e is ControllerException) throw e
+            throw BadRequestException(e.message)
+        }
+    }
+
+    @PutMapping("/permission/{token}")
+    @JsonView(SlipView.FacultyView::class)
+    fun setPermissionRequestAcceptedByToken(@RequestBody req: PermissionRequestRequest, @PathVariable token: String, httpServletRequest: HttpServletRequest) {
+        try {
+            pinkSlipService.invalidatePermissionRequestTokenByPermissionRequest(
+                    pinkSlipService.setPermissionRequestAccepted(
+                            pinkSlipService.getPermissionRequestByToken(token),
+                            req.accepted,
+                            httpServletRequest.remoteAddr)
+            )
+        } catch (e: Throwable) {
+            if (e is ControllerException) throw e
+            throw BadRequestException(e.message)
+        }
     }
 }

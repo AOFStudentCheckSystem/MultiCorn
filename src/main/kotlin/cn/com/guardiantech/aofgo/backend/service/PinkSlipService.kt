@@ -200,11 +200,11 @@ class PinkSlipService @Autowired constructor(
             permissionRequestRepository.findByIdAndSubjectId(permissionRequestId, subjectId)
 
     @Transactional
-    fun setPermissionRequestAccepted(permissionRequest: PermissionRequest, accepted: Boolean, ip: String) {
+    fun setPermissionRequestAccepted(permissionRequest: PermissionRequest, accepted: Boolean, ip: String): PermissionRequest {
         permissionRequest.accepted = accepted
         permissionRequest.acceptTime = Date()
         permissionRequest.acceptorIp = ip
-        permissionRequestRepository.save(permissionRequest)
+        return permissionRequestRepository.save(permissionRequest)
     }
 
     fun findLeaveRequestsByStatus(status: LeaveStatus) =
@@ -232,9 +232,13 @@ class PinkSlipService @Autowired constructor(
         )
     }
 
-    fun findPermissionRequestToken(token: String): PermissionRequest {
+    fun getPermissionRequestByToken(token: String): PermissionRequest {
+        return getPermissionRequestToken(token).permissionRequest
+    }
+
+    fun getPermissionRequestToken(token: String): PermissionRequestToken {
         return (permissionRequestTokenRepository.findByToken(token).orElseGet { null }
-                ?: throw EntityNotFoundException("Validation Token does not exists")).permissionRequest
+                ?: throw EntityNotFoundException("Token does not exists"))
     }
 
     fun invalidatePermissionRequestTokenByPermissionRequest(permissionRequest: PermissionRequest) {

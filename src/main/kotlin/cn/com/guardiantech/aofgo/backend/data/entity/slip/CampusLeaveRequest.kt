@@ -2,6 +2,7 @@ package cn.com.guardiantech.aofgo.backend.data.entity.slip
 
 import cn.com.guardiantech.aofgo.backend.data.entity.Student
 import cn.com.guardiantech.aofgo.backend.jsonview.SlipView
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonView
 import java.util.*
@@ -39,7 +40,8 @@ class CampusLeaveRequest(
 
         @OneToMany
         @JoinColumn(name = "permission_requests")
-        @JsonView(SlipView.FullView::class)
+//        @JsonView(SlipView.FullView::class)
+        @JsonBackReference
         val permissionRequests: MutableSet<PermissionRequest> = mutableSetOf(),
 
         @Enumerated(EnumType.STRING)
