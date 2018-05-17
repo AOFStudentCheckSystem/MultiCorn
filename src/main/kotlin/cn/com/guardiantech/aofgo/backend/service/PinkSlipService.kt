@@ -106,7 +106,13 @@ class PinkSlipService @Autowired constructor(
                         contactAddress = contactAddress,
                         status = appointedStatus
                 )
-        )
+        ).let { campusLeaveRequest ->
+            campusLeaveRequest.permissionRequests.forEach {
+                it.campusLeaveRequest = campusLeaveRequest
+            }
+            permissionRequestRepository.save(campusLeaveRequest.permissionRequests)
+            campusLeaveRequest
+        }
     }
 
     fun getLeaveRequestOwnedBySubject(leaveRequestId: Long, subjectId: Long) =

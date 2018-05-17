@@ -112,7 +112,7 @@ class PinkSlipController @Autowired constructor(
         }
     }
 
-    @PutMapping("/permission/{token}")
+    @PostMapping("/permission/{token}")
     @JsonView(SlipView.FacultyView::class)
     fun setPermissionRequestAcceptedByToken(@RequestBody req: PermissionRequestRequest, @PathVariable token: String, httpServletRequest: HttpServletRequest) {
         try {
