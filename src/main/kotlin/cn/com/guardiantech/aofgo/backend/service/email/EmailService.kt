@@ -138,7 +138,7 @@ class EmailService {
                 ),
                 EmailTemplateVariable(
                         name = "permissionRequestToken",
-                        type = EmailTemplateVariableType.LINK
+                        type = EmailTemplateVariableType.STRING
                 ),
                 EmailTemplateVariable(
                         name = "requestBody",

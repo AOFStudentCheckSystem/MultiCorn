@@ -22,7 +22,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.security.SecureRandom
-import java.text.DateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -143,37 +142,38 @@ class PinkSlipService @Autowired constructor(
                     .writerWithView(SlipView.FacultyView::class.java)
                     .writeValueAsString(pinkslip))
 
-            val compiledPinkSlip = StringBuilder()
-            jsonPinkSlip.keys().forEach {
-                if (it !== "id" && it !== "status") {
-                    compiledPinkSlip.append("${processKey(it)}: ")
-                    val value = jsonPinkSlip.get(it)
-                    val appendValue =
-                            if (value !== null) {
-                                if (it !== "type" && it !== "transportationMethod") {
-                                    if (it !== "dateOfLeave" && it !== "dateOfReturn") {
-                                        when (value) {
-                                            is Boolean -> if (value) "Yes" else "No"
-                                            else -> value.toString()
-                                        }
-                                    } else {
-                                        value as Long
-                                        // Process time
-                                        DateFormat.getDateInstance(DateFormat.DEFAULT)
-                                                .format(Date(value * 1000))
-                                    }
-                                } else {
-                                    //Enum
-                                    value.toString().replace("_", " ").toLowerCase().capitalize()
-                                }
-                            } else {
-                                "None"
-                            }
-                    compiledPinkSlip.append("$appendValue</br>")
-                }
-            }
-
-            val compiledPinkSlipStr = compiledPinkSlip.toString()
+//            val compiledPinkSlip = StringBuilder()
+//            jsonPinkSlip.keys().forEach {
+//                if (it !== "id" && it !== "status") {
+//                    compiledPinkSlip.append("${processKey(it)}: ")
+//                    val value = jsonPinkSlip.get(it)
+//                    val appendValue =
+//                            if (value !== null) {
+//                                if (it !== "type" && it !== "transportationMethod") {
+//                                    if (it !== "dateOfLeave" && it !== "dateOfReturn") {
+//                                        when (value) {
+//                                            is Boolean -> if (value) "Yes" else "No"
+//                                            else -> value.toString()
+//                                        }
+//                                    } else {
+//                                        value as Long
+//                                        // Process time
+//                                        DateFormat.getDateInstance(DateFormat.DEFAULT)
+//                                                .format(Date(value * 1000))
+//                                    }
+//                                } else {
+//                                    //Enum
+//                                    value.toString().replace("_", " ").toLowerCase().capitalize()
+//                                }
+//                            } else {
+//                                "None"
+//                            }
+//                    compiledPinkSlip.append("$appendValue</br>")
+//                }
+//            }
+//
+//            val compiledPinkSlipStr = compiledPinkSlip.toString()
+            val compiledPinkSlipStr = "<br/>"
 
             permissionRequests.forEach {
                 val guardianEmail = it.acceptor.guardianAccount.email
@@ -190,7 +190,7 @@ class PinkSlipService @Autowired constructor(
 
                 Thread(Runnable {
                     emailService.sendEmail(compiledEmail.first, compiledEmail.second, guardianEmail)
-                })
+                }).start()
             }
         }
     }
@@ -228,6 +228,13 @@ class PinkSlipService @Autowired constructor(
 
     @Transactional
     fun assignPermissionRequestToken(permissionRequest: PermissionRequest): PermissionRequestToken {
+        var existingToken: PermissionRequestToken? = null
+        permissionRequestTokenRepository.findByPermissionRequest(permissionRequest).ifPresent {
+            it.createdTime = Date()
+            existingToken = permissionRequestTokenRepository.save(it)
+        }
+        if (existingToken !== null) return existingToken as PermissionRequestToken
+
         var token: String
         do {
             token = randomGen.nextString()
